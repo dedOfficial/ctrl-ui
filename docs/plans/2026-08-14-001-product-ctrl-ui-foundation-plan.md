@@ -66,7 +66,7 @@ All documents, plans, READMEs, Storybook docs, JSDoc, inline comments, commit me
 - Customization contract (below).
 - Full Storybook coverage of every public export (tokens, atoms, molecules, organisms, templates).
 - Vitest with a strict 100% coverage gate in every category (statements, branches, functions, lines), per file.
-- English-only committed prose (documents and comments).
+- English-only committed prose: documents, plans, READMEs, Storybook docs, JSDoc, inline comments, commit messages, and pull request text.
 - RFC 2119 keyword language in every future implementation plan.
 
 ### Out of scope (this foundation)
@@ -135,7 +135,7 @@ These decisions are product constraints because this brainstorm is about stack. 
 | Node | **Node 22** (Active/LTS at plan time) | |
 | Package module | **ESM-only** | CJS dual-publish only if a real consumer is blocked |
 | Styles | Tokens → CSS custom properties; component styles live in TypeScript, not a large SCSS codebase | so oxlint covers style code and oxfmt formats the rare CSS dump |
-| Repo language | **English only** for documents and comments | session-settled |
+| Repo language | **English only** for documents, plans, READMEs, Storybook docs, JSDoc, inline comments, commit messages, and pull request text | session-settled |
 
 ### Test descriptions
 
@@ -187,7 +187,7 @@ Consequence for Ctrl UI:
 - **R10.** Overlay and composite widgets (when they exist) ship their own focus management and keyboard behavior.
 - **R11.** Package version and changelog are driven by Changesets; a public API breaking change is a major.
 - **R12.** Component docs describe: purpose, variants, tokens, and what must not be overridden.
-- **R13.** All committed documents and code comments are English.
+- **R13.** All committed documents, plans, READMEs, Storybook docs, JSDoc, inline comments, commit messages, and pull request text are English.
 - **R14.** Kit source MUST meet Vitest coverage of 100% statements, branches, functions, and lines, globally and per file. CI MUST fail otherwise.
 - **R15.** Every public export MUST have Storybook stories. A public component without stories MUST NOT merge.
 - **R16.** Test titles MUST follow the specification-style convention in `.cursor/rules/tests.mdc` (`describe` + `it`, no “should” prefix, behavior not implementation).
@@ -233,7 +233,7 @@ Consequence for Ctrl UI:
 - **D10.** ESM-only, Node 22, React as peer. `recommended default`
 - **D11.** WCAG 2.2 AA is the floor, not a later goal. `session-settled: user-stated` (AA level is the recommended default)
 - **D12.** Overlay/composite behavior is not written from scratch when a proven a11y primitive exists; the visual layer still belongs to Ctrl UI. Primitive library choice is `ce-plan`. `recommended default`
-- **D13.** All repository documents and implementation comments are English only. `session-settled: user-stated`
+- **D13.** All repository documents, plans, READMEs, Storybook docs, JSDoc, inline comments, commit messages, and pull request text are English only. `session-settled: user-stated`
 - **D14.** Vitest with strict 100% coverage in all four categories, per file. Istanbul is the recommended provider. `session-settled: user-stated`
 - **D15.** The kit is fully Storybooked: every public export has CSF3 stories, including tokens. `session-settled: user-stated`
 - **D16.** Test descriptions use specification-style `describe`/`it` titles (Vitest testing-in-practice + BDD grouping; no “should” prefix). `session-settled: investigated-from-user-intent`
@@ -280,7 +280,7 @@ Infrastructure challenger: Vite+ as a unified oxlint+oxfmt orchestrator. Rejecte
 - A public atom cannot be used so that the automated a11y scanner and keyboard smoke fail on the default story.
 - Consumer theming does not require a fork.
 - Git history is readable conventional commits; a release has a Changeset changelog.
-- No non-English documents or comments land in the repository.
+- No non-English documents, comments, commit messages, or pull request text land in the repository.
 - Coverage report is 100% statements, branches, functions, and lines on every kit source file.
 - Every public export appears in Storybook under an Atomic Design title.
 
