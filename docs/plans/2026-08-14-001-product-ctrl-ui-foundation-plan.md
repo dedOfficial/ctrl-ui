@@ -55,7 +55,7 @@ A consumer can assemble an accessible screen from Ctrl UI, restyle it through se
 
 ### Language (repo artifacts)
 
-All documents, plans, READMEs, Storybook docs, JSDoc, inline comments, commit messages, and pull request text in this repository are **English only**. Chat with humans may use another language; committed work must not. Standing instruction for agents: `AGENTS.md` and `.cursor/rules/english-language.mdc`.
+All documents, plans, READMEs, Storybook docs, JSDoc, inline comments, commit messages, and pull request text in this repository are **English only**. Chat with humans may use another language; committed work must not. Standing instruction for agents: `AGENTS.md`, `.cursor/rules/english-language.mdc`, and `.cursor/rules/ctrl-ui-architecture.mdc`.
 
 ### In scope
 
@@ -64,9 +64,10 @@ All documents, plans, READMEs, Storybook docs, JSDoc, inline comments, commit me
 - Three-tier tokens: primitive → semantic → component.
 - WCAG 2.2 AA as the floor for every public component.
 - Customization contract (below).
-- Component catalog (Storybook or equivalent) as a required development surface, not a marketing site.
-- Automated checks: types, lint, format, unit/a11y tests on critical behavior.
+- Full Storybook coverage of every public export (tokens, atoms, molecules, organisms, templates).
+- Vitest with a strict 100% coverage gate in every category (statements, branches, functions, lines), per file.
 - English-only committed prose (documents and comments).
+- RFC 2119 keyword language in every future implementation plan.
 
 ### Out of scope (this foundation)
 
@@ -122,8 +123,9 @@ These decisions are product constraints because this brainstorm is about stack. 
 | Package manager | **pnpm** + Corepack | kit/workspace default; predictable lockfile invariants |
 | Repo shape | **pnpm workspace with two surfaces**: public kit package and internal catalog/docs app | catalog must not ship in the npm artifact; full Turborepo on day one is extra ceremony |
 | Library bundler | **tsdown** (Rolldown, ESM-first, dts) | tsup successor; Vite stays for the catalog, not for publish |
-| Catalog | **Storybook on Vite** | isolated states, a11y addon, visual contract |
+| Catalog | **Storybook on Vite; every public export has CSF3 stories** | session-settled “fully storybooked” |
 | Tests | **Vitest + Testing Library + axe** | oxlint has Vitest rules; Jest is unnecessary |
+| Coverage | **100% statements, branches, functions, lines; `perFile: true`** | session-settled; Vitest `coverage.thresholds['100']`; istanbul recommended |
 | Lint | **oxlint only** for JS/TS/TSX | session-settled; ESLint is not introduced |
 | Format | **oxfmt**, not Prettier and not oxlint | oxlint is not a formatter; oxfmt is the Prettier-compatible Oxc replacement |
 | CSS lint | **no Stylelint at foundation** | oxlint does not lint CSS; keep Stylelint YAGNI by shrinking the CSS surface (see investigation below) |
@@ -134,6 +136,28 @@ These decisions are product constraints because this brainstorm is about stack. 
 | Package module | **ESM-only** | CJS dual-publish only if a real consumer is blocked |
 | Styles | Tokens → CSS custom properties; component styles live in TypeScript, not a large SCSS codebase | so oxlint covers style code and oxfmt formats the rare CSS dump |
 | Repo language | **English only** for documents and comments | session-settled |
+
+### Test descriptions
+
+Proven convention locked for this repo (Vitest testing-in-practice: titles describe behavior and read as a spec; BDD `describe` grouping; drop the redundant `should` prefix):
+
+```ts
+describe('Button', () => {
+  describe('when loading is true', () => {
+    it('exposes a busy state and ignores press', () => {});
+  });
+});
+```
+
+Use `describe` + `it`. Name the unit, then the condition, then the observable outcome. One behavior per `it`. Arrange–Act–Assert in the body. Colocate `*.test.tsx` with source.
+
+### Storybook completeness
+
+Every public export is catalogued. Story titles follow Atomic Design (`Atoms/Button`, `Tokens/Color`). Required stories: Default, each public variant, each meaningful public state. Autodocs and a11y addon are on.
+
+### Implementation-plan language
+
+`ce-plan` and any later implementation plan MUST interpret and write requirements with RFC 2119 keywords (MUST / MUST NOT / SHOULD / MAY, and equivalents). The RFC 2119 key-words sentence MUST appear near the top of that plan.
 
 ### Oxlint / Prettier / Stylelint investigation
 
@@ -157,13 +181,17 @@ Consequence for Ctrl UI:
 - **R4.** The public package does not contain catalog, tests, or toolchain configs as runtime dependencies.
 - **R5.** Tokens are the only source of visual decisions. Primitives do not leak into the component API.
 - **R6.** Atomic Design layers depend only downward. A layer violation is a defect, not a style choice.
-- **R7.** Every public component has: a TypeScript prop contract, catalog stories for key states (default, hover/focus, disabled, error, RTL when relevant), and an a11y check.
+- **R7.** Every public component has: a TypeScript prop contract, CSF3 stories for Default, each public variant, and each meaningful public state, plus an a11y check.
 - **R8.** Theme switches without forking components (semantic layer / CSS variables).
 - **R9.** A feature consumer customizes appearance only through channels 1–4 above. Breaking semantics through the public API is impossible or rejected by types.
 - **R10.** Overlay and composite widgets (when they exist) ship their own focus management and keyboard behavior.
 - **R11.** Package version and changelog are driven by Changesets; a public API breaking change is a major.
 - **R12.** Component docs describe: purpose, variants, tokens, and what must not be overridden.
 - **R13.** All committed documents and code comments are English.
+- **R14.** Kit source MUST meet Vitest coverage of 100% statements, branches, functions, and lines, globally and per file. CI MUST fail otherwise.
+- **R15.** Every public export MUST have Storybook stories. A public component without stories MUST NOT merge.
+- **R16.** Test titles MUST follow the specification-style convention in `.cursor/rules/ctrl-ui-architecture.mdc` (`describe` + `it`, no “should” prefix, behavior not implementation).
+- **R17.** Every implementation plan MUST use RFC 2119 keywords and include the RFC 2119 key-words sentence.
 
 ### Primary flows
 
@@ -181,6 +209,8 @@ Consequence for Ctrl UI:
 - Commit `fixed button` is rejected; `fix(button): restore focus ring on dark theme` is accepted.
 - The published tarball does not contain `apps/catalog` or toolchain `node_modules`.
 - A new plan, comment, or JSDoc committed in a non-English language is rejected in review (and later by lint/CI if such a gate exists).
+- CI fails if any kit source file is below 100% statements, branches, functions, or lines.
+- A new public `Button` variant without a story and without an `it('…')` for that state cannot merge.
 
 ### Non-goals
 
@@ -204,6 +234,11 @@ Consequence for Ctrl UI:
 - **D11.** WCAG 2.2 AA is the floor, not a later goal. `session-settled: user-stated` (AA level is the recommended default)
 - **D12.** Overlay/composite behavior is not written from scratch when a proven a11y primitive exists; the visual layer still belongs to Ctrl UI. Primitive library choice is `ce-plan`. `recommended default`
 - **D13.** All repository documents and implementation comments are English only. `session-settled: user-stated`
+- **D14.** Vitest with strict 100% coverage in all four categories, per file. Istanbul is the recommended provider. `session-settled: user-stated`
+- **D15.** The kit is fully Storybooked: every public export has CSF3 stories, including tokens. `session-settled: user-stated`
+- **D16.** Test descriptions use specification-style `describe`/`it` titles (Vitest testing-in-practice + BDD grouping; no “should” prefix). `session-settled: investigated-from-user-intent`
+- **D17.** Future implementation plans use RFC 2119 requirement keywords. `session-settled: user-stated`
+- **D18.** Standing architecture rule: `.cursor/rules/ctrl-ui-architecture.mdc`. `session-settled: user-stated`
 
 ### Assumptions
 
@@ -246,19 +281,21 @@ Infrastructure challenger: Vite+ as a unified oxlint+oxfmt orchestrator. Rejecte
 - Consumer theming does not require a fork.
 - Git history is readable conventional commits; a release has a Changeset changelog.
 - No non-English documents or comments land in the repository.
+- Coverage report is 100% statements, branches, functions, and lines on every kit source file.
+- Every public export appears in Storybook under an Atomic Design title.
 
 ## Implementation Units (requirements-level)
 
 Code planning will slice this further. These boundaries exist so `ce-plan` does not mix phases.
 
-1. **U1 — Platform.** Workspace, pnpm, tsdown, oxlint, oxfmt, Lefthook, commitlint, Changesets, Vitest, Storybook skeleton, CI gates. No UI except a smoke component if the pipeline needs one.
+1. **U1 — Platform.** Workspace, pnpm, tsdown, oxlint, oxfmt, Lefthook, commitlint, Changesets, Vitest with 100% coverage thresholds (per file), Storybook skeleton with a11y addon, CI gates. No UI except a smoke component if the pipeline needs one. The smoke component MUST have a test and a story so the gates are real.
 2. **U2 — Tokens.** Primitive / semantic / component token pipeline and CSS variable contract, light theme (dark per Q3).
 3. **U3 — Atom contract.** The first atom (most likely Button + Text/Icon) as the API, a11y, story, test, and customization template. Later atoms copy this template instead of inventing a second one.
 4. **U4+.** Molecules → organisms (modal, table) → layout templates. Each layer may use only layers below it. Do not start with table/modal.
 
 ## Ready for Planning
 
-Complete: actors, outcome, in/out, a11y floor, customization contract, toolchain constraints, language rule, acceptance.  
-Consistent: oxfmt vs oxlint are separated; Stylelint does not contradict the oxc-native goal; English-only is standing, not a one-off.  
+Complete: actors, outcome, in/out, a11y floor, customization contract, toolchain constraints, language rule, coverage, Storybook, RFC 2119, acceptance.  
+Consistent: oxfmt vs oxlint are separated; Stylelint does not contradict the oxc-native goal; English-only, 100% coverage, and full Storybook are standing.  
 Focused: one product — Ctrl UI foundation.  
-Usable by planning: U1–U3 can be planned without answers to Q1–Q4.
+Usable by planning: U1–U3 can be planned without answers to Q1–Q4. Implementation plans MUST use RFC 2119.

@@ -1,0 +1,113 @@
+---
+description: Ctrl UI architecture, toolchain, tests, Storybook, and plan language
+alwaysApply: true
+---
+
+# Ctrl UI architecture
+
+The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this rule are to be interpreted as described in [RFC 2119](https://www.rfc-editor.org/rfc/rfc2119).
+
+Product authority until planning is enriched: `docs/plans/2026-08-14-001-product-ctrl-ui-foundation-plan.md`. Language of committed prose: `.cursor/rules/english-language.mdc`.
+
+## Product
+
+Ctrl UI is an opinionated React + TypeScript design-system kit. It is not a headless library and not a copy-paste catalog.
+
+Dependencies MUST flow downward only:
+
+```
+tokens → atoms → molecules → organisms → templates
+```
+
+A layer MUST NOT import a layer above it.
+
+## Tokens
+
+Tokens MUST use three tiers: primitive → semantic → component.
+
+Components and consumers MUST use semantic or component tokens. They MUST NOT use primitive tokens directly. Visual values MUST come from the token pipeline, not literals.
+
+## Customization
+
+Public customization MUST use only these channels, in this order:
+
+1. Semantic tokens / theme
+2. Closed variant props (`intent`, `size`, `appearance` as finite enums)
+3. Composition (compound components and documented slots)
+4. `className` / slot class on documented nodes (last resort)
+
+Public API MUST NOT expose `sx`, `backgroundColor`, or an arbitrary CSS-in-JS theme object as the primary styling path. Public API MUST NOT allow stripping semantics or keyboard behavior to make styling easier.
+
+## Accessibility
+
+Every public component MUST meet WCAG 2.2 AA, including Target Size 2.5.8 (24×24 CSS px minimum) and Focus Not Obscured 2.4.12. Overlay and composite widgets MUST ship focus management and keyboard behavior. Consumers MAY add ARIA. They MUST NOT remove the kit-owned contract.
+
+## Toolchain (foundation)
+
+| Concern | Required choice |
+| --- | --- |
+| Package manager | pnpm + Corepack |
+| Library bundler | tsdown (ESM-first) |
+| Catalog | Storybook on Vite |
+| Tests | Vitest + Testing Library + axe |
+| Lint | oxlint (no ESLint) |
+| Format | oxfmt (no Prettier) |
+| CSS lint | no Stylelint unless a hand-written CSS codebase appears |
+| Git hooks | Lefthook + commitlint (Conventional Commits) |
+| Versioning | Changesets + semver |
+| Node | 22 |
+| Module | ESM-only; React is a peer |
+
+## Tests and coverage
+
+The published kit source MUST be fully covered by Vitest. CI MUST fail unless coverage is **100% in every category**: statements, branches, functions, and lines.
+
+Configuration MUST use Vitest `coverage.thresholds` with `100: true` and `perFile: true`. Coverage include MUST list kit source so uncovered files count. The RECOMMENDED provider is `istanbul` (stricter branch accounting for a 100% gate). `v8` MAY be used only if it is proven equivalent on this repo.
+
+Coverage MAY exclude Storybook files, generated token dumps, and catalog-app scaffolding that is not published. Those exclusions MUST NOT hide kit source. A file is not "covered" by existing only as a story.
+
+Do not mock components, hooks, or modules unless the dependency is an external boundary (I/O, browser API). Prefer real behavior.
+
+### Test description convention
+
+Use specification-style titles. This matches Vitest's own testing-in-practice guidance (names describe behavior, output reads as a spec) and BDD grouping without the noisy `should` prefix.
+
+```ts
+describe('Button', () => {
+  describe('when loading is true', () => {
+    it('exposes a busy state and ignores press', () => {
+      // Arrange / Act / Assert
+    });
+  });
+});
+```
+
+Rules:
+
+- MUST use `describe` + `it` (not `test`) so titles read as sentences.
+- `describe` MUST name the unit (`Button`, `resolveColorToken`).
+- Nested `describe('when <condition>')` SHOULD group states and variants.
+- `it('<observable outcome>')` MUST be third-person present tense.
+- Titles MUST NOT start with "should", "test that", or "works".
+- Titles MUST describe behavior and condition, not implementation (`calls setState`, `uses clsx`).
+- Each `it` MUST assert one behavior.
+- Test body MUST follow Arrange–Act–Assert.
+- Colocate `Component.test.tsx` next to the source file.
+
+## Storybook
+
+The kit MUST be fully Storybooked.
+
+Every public export (token sets, atoms, molecules, organisms, templates) MUST have CSF3 stories. Required stories for a component: Default, each public variant, and each meaningful state the public API exposes (disabled, loading, error, focus where relevant). Tokens MUST have visual stories, not only JSON.
+
+Story `title` MUST follow Atomic Design (`Atoms/Button`, `Tokens/Color`, `Organisms/Table`). Autodocs and the a11y addon MUST run on stories. A public component without stories MUST NOT merge.
+
+## Implementation plans
+
+Any future implementation plan MUST use RFC 2119 keywords for requirements.
+
+The plan MUST include this sentence near the top:
+
+> The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in RFC 2119.
+
+Use those keywords sparingly and only for real requirements or prohibitions. Body text that is not a requirement MUST NOT be capitalized as a keyword. Implementation plans MUST be English.
