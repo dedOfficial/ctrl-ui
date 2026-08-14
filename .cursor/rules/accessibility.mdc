@@ -1,0 +1,10 @@
+---
+description: WCAG 2.2 AA floor for every public component
+alwaysApply: true
+---
+
+# Accessibility
+
+Every public component MUST meet WCAG 2.2 AA, including Target Size 2.5.8 (24×24 CSS px minimum) and Focus Not Obscured 2.4.12.
+
+Overlay and composite widgets MUST ship focus management and keyboard behavior. Consumers MAY add ARIA. They MUST NOT remove the kit-owned contract.

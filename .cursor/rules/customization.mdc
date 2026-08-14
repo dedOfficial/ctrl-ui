@@ -1,0 +1,15 @@
+---
+description: Public customization channels and forbidden style APIs
+alwaysApply: true
+---
+
+# Customization
+
+Public customization MUST use only these channels, in this order:
+
+1. Semantic tokens / theme
+2. Closed variant props (`intent`, `size`, `appearance` as finite enums)
+3. Composition (compound components and documented slots)
+4. `className` / slot class on documented nodes (last resort)
+
+Public API MUST NOT expose `sx`, `backgroundColor`, or an arbitrary CSS-in-JS theme object as the primary styling path. Public API MUST NOT allow stripping semantics or keyboard behavior to make styling easier.

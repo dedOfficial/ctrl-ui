@@ -1,0 +1,10 @@
+---
+description: Three-tier design tokens; no primitive leakage
+alwaysApply: true
+---
+
+# Design tokens
+
+Tokens MUST use three tiers: primitive → semantic → component.
+
+Components and consumers MUST use semantic or component tokens. They MUST NOT use primitive tokens directly. Visual values MUST come from the token pipeline, not literals.

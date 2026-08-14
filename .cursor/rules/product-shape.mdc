@@ -1,0 +1,10 @@
+---
+description: Ctrl UI is an opinionated design-system kit
+alwaysApply: true
+---
+
+# Product shape
+
+Ctrl UI is an opinionated React + TypeScript design-system kit.
+
+It is not a headless library. It is not a copy-paste catalog.

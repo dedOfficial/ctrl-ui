@@ -1,0 +1,20 @@
+---
+description: Required foundation toolchain choices
+alwaysApply: true
+---
+
+# Toolchain
+
+| Concern | Required choice |
+| --- | --- |
+| Package manager | pnpm + Corepack |
+| Library bundler | tsdown (ESM-first) |
+| Catalog | Storybook on Vite |
+| Tests | Vitest + Testing Library + axe |
+| Lint | oxlint (no ESLint) |
+| Format | oxfmt (no Prettier) |
+| CSS lint | no Stylelint unless a hand-written CSS codebase appears |
+| Git hooks | Lefthook + commitlint (Conventional Commits) |
+| Versioning | Changesets + semver |
+| Node | 22 |
+| Module | ESM-only; React is a peer |

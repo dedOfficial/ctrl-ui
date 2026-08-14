@@ -55,7 +55,7 @@ A consumer can assemble an accessible screen from Ctrl UI, restyle it through se
 
 ### Language (repo artifacts)
 
-All documents, plans, READMEs, Storybook docs, JSDoc, inline comments, commit messages, and pull request text in this repository are **English only**. Chat with humans may use another language; committed work must not. Standing instruction for agents: `AGENTS.md`, `.cursor/rules/english-language.mdc`, and `.cursor/rules/ctrl-ui-architecture.mdc`.
+All documents, plans, READMEs, Storybook docs, JSDoc, inline comments, commit messages, and pull request text in this repository are **English only**. Chat with humans may use another language; committed work must not. Standing instruction for agents: `AGENTS.md` and the single-responsibility files in `.cursor/rules/`.
 
 ### In scope
 
@@ -190,7 +190,7 @@ Consequence for Ctrl UI:
 - **R13.** All committed documents and code comments are English.
 - **R14.** Kit source MUST meet Vitest coverage of 100% statements, branches, functions, and lines, globally and per file. CI MUST fail otherwise.
 - **R15.** Every public export MUST have Storybook stories. A public component without stories MUST NOT merge.
-- **R16.** Test titles MUST follow the specification-style convention in `.cursor/rules/ctrl-ui-architecture.mdc` (`describe` + `it`, no “should” prefix, behavior not implementation).
+- **R16.** Test titles MUST follow the specification-style convention in `.cursor/rules/tests.mdc` (`describe` + `it`, no “should” prefix, behavior not implementation).
 - **R17.** Every implementation plan MUST use RFC 2119 keywords and include the RFC 2119 key-words sentence.
 
 ### Primary flows
@@ -238,7 +238,7 @@ Consequence for Ctrl UI:
 - **D15.** The kit is fully Storybooked: every public export has CSF3 stories, including tokens. `session-settled: user-stated`
 - **D16.** Test descriptions use specification-style `describe`/`it` titles (Vitest testing-in-practice + BDD grouping; no “should” prefix). `session-settled: investigated-from-user-intent`
 - **D17.** Future implementation plans use RFC 2119 requirement keywords. `session-settled: user-stated`
-- **D18.** Standing architecture rule: `.cursor/rules/ctrl-ui-architecture.mdc`. `session-settled: user-stated`
+- **D18.** Standing agent rules are single-responsibility files in `.cursor/rules/` (product shape, layers, tokens, customization, accessibility, toolchain, tests, Storybook, implementation plans, English). `session-settled: user-stated`
 
 ### Assumptions
 

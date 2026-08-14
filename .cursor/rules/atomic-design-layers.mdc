@@ -1,0 +1,14 @@
+---
+description: Atomic Design layers depend only downward
+alwaysApply: true
+---
+
+# Atomic Design layers
+
+Dependencies MUST flow downward only:
+
+```
+tokens → atoms → molecules → organisms → templates
+```
+
+A layer MUST NOT import a layer above it.
