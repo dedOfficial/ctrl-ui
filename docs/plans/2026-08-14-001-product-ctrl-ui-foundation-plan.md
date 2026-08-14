@@ -11,244 +11,254 @@ status: requirements-only
 
 ## Goal Capsule
 
-**Objective.** Зафиксировать продуктовую рамку и инфраструктурный контракт Ctrl UI: публичный React + TypeScript UI kit, который растёт по Atomic Design от токенов до сложных композиций, доступен из коробки и даёт потребителям предсказуемую кастомизацию без размывания системы.
+**Objective.** Lock the product frame and infrastructure contract for Ctrl UI: a public React + TypeScript UI kit that grows through Atomic Design from tokens to complex compositions, is accessible out of the box, and gives consumers predictable customization without dissolving the system.
 
-**Product authority.** Этот документ — источник требований до `ce-plan`. Репозиторий `dedOfficial/ctrl-ui` сейчас пустой (MIT, Compound Engineering config example). Код, схемы пакетов и точные конфиги сюда не входят.
+**Product authority.** This document is the requirements source until `ce-plan`. The `dedOfficial/ctrl-ui` repository is currently empty (MIT, Compound Engineering config example). Code, package schemas, and exact configs are out of this document.
 
-**Open blockers.** Нет блокирующих неизвестных для планирования инфраструктуры и token/atom слоя. Визуальный бренд и первое consuming-приложение не заданы — они не блокируют фундамент, но ограничивают конкретную палитру до выбора нейтральной стартовой темы.
+**Open blockers.** Nothing blocks planning of infrastructure and the token/atom layer. Visual brand and the first consuming app are unset — they do not block the foundation, but they keep the starting palette to a neutral shipped theme.
 
 ## How This Work Fits Together
 
-Одна единица работы: **фундамент Ctrl UI**. Инфраструктура и дизайн-система не разделяются в отдельные контракты — пакет без слойной модели бессмыслен, а слои без toolchain нельзя честно проверять (a11y, lint, versioning).
+One work unit: the **Ctrl UI foundation**. Infrastructure and the design system are not split into separate contracts — a package without a layer model is meaningless, and layers without a toolchain cannot be honestly gated (a11y, lint, versioning).
 
-Порядок поставки внутри этой единицы:
+Delivery order inside this unit:
 
-1. Toolchain и git-дисциплина (чтобы каждый следующий слой сразу жил в правильных воротах).
-2. Sub-atoms: токены и CSS-variable контракт.
-3. Atoms с a11y-контрактом.
+1. Toolchain and git discipline (so every later layer already lives behind the right gates).
+2. Sub-atoms: tokens and the CSS-variable contract.
+3. Atoms with the a11y contract.
 4. Molecules.
-5. Organisms (modal, table и аналоги).
+5. Organisms (modal, table, and similar).
 6. Templates / layout shells.
 
-Пункты 4–6 — продолжение того же продукта, не отдельные продукты. Планирование реализации может нарезать их на implementation units, но не менять правила слоёв, a11y и кастомизации.
+Items 4–6 continue the same product; they are not separate products. Implementation planning may slice them into units, but it must not change layer, a11y, or customization rules.
 
 ## Product Contract
 
 ### Primary actors
 
-- **Kit author** — развивает Ctrl UI в этом репозитории.
-- **Feature consumer** — команда продукта, которая ставит пакет и собирает экраны. Не должна сама собирать клавиатурную навигацию, фокус-ловушки и ARIA для поставленных компонентов.
+- **Kit author** — develops Ctrl UI in this repository.
+- **Feature consumer** — a product team that installs the package and builds screens. Must not have to assemble keyboard navigation, focus traps, and ARIA for shipped components.
 
 ### Positioning
 
-Ctrl UI — **мнениятый (opinionated) дизайн-системный kit**, не headless-набор и не copy-paste каталог вроде shadcn. Потребитель получает готовый визуальный язык и доступное поведение. Кастомизация идёт через токены, закрытый набор вариантов и композицию, а не через бесконечные style-пропсы.
+Ctrl UI is an **opinionated design-system kit**, not a headless set and not a copy-paste catalog like shadcn. The consumer gets a finished visual language and accessible behavior. Customization goes through tokens, a closed variant set, and composition — not through unbounded style props.
 
-Соседние модели, которые сознательно не выбираем как продукт:
+Adjacent product shapes we are not building:
 
-- Headless-only (Radix/React Aria «как есть») — максимум свободы, но нет системы.
-- Utility-first kit на Tailwind как публичный API — потребители начинают обходить токены.
-- Source-copy kit — ломает Conventional Commits / semver как контракт поставки.
+- Headless-only (Radix/React Aria as the product) — maximum freedom, no system.
+- Utility-first kit with Tailwind as the public API — consumers bypass tokens.
+- Source-copy kit — breaks Conventional Commits / semver as the delivery contract.
 
 ### Core outcome
 
-Потребитель может собрать доступный экран из Ctrl UI, сменить тему через семантические токены и не сломать a11y или визуальную иерархию «случайным» пропом.
+A consumer can assemble an accessible screen from Ctrl UI, restyle it through semantic tokens, and cannot break a11y or visual hierarchy with a one-off prop.
+
+### Language (repo artifacts)
+
+All documents, plans, READMEs, Storybook docs, JSDoc, inline comments, commit messages, and pull request text in this repository are **English only**. Chat with humans may use another language; committed work must not. Standing instruction for agents: `AGENTS.md` and `.cursor/rules/english-language.mdc`.
 
 ### In scope
 
-- Инфраструктурный контракт: package manager, library build, docs/catalog, lint/format, git hooks, conventional commits, versioning.
-- Atomic Design со строгой зависимостью **вниз**: tokens → atoms → molecules → organisms → templates.
-- Трёхуровневые токены: primitive → semantic → component.
-- WCAG 2.2 AA как пол для каждого публичного компонента.
-- Контракт кастомизации (см. ниже).
-- Каталог компонентов (Storybook или эквивалент) как обязательная поверхность разработки, не как маркетинговый сайт.
-- Автопроверки: типы, lint, format, unit/a11y тесты на критичное поведение.
+- Infrastructure contract: package manager, library build, docs/catalog, lint/format, git hooks, conventional commits, versioning.
+- Atomic Design with strict **downward** dependencies: tokens → atoms → molecules → organisms → templates.
+- Three-tier tokens: primitive → semantic → component.
+- WCAG 2.2 AA as the floor for every public component.
+- Customization contract (below).
+- Component catalog (Storybook or equivalent) as a required development surface, not a marketing site.
+- Automated checks: types, lint, format, unit/a11y tests on critical behavior.
+- English-only committed prose (documents and comments).
 
 ### Out of scope (this foundation)
 
-- Нативный iOS/Android kit.
-- Figma-library как обязательный артефакт первой поставки.
-- Маркетинговый сайт, changelog-портал, платный продукт.
-- Копирование чужого визуального языка (MUI, Chakra, shadcn).
-- App-router / Next-specific framework kit как отдельный пакет — kit должен работать в обычном React. Совместимость с RSC (`"use client"` там, где нужно) — требование потребителей, не отдельный продукт.
-- Organisms/templates в первой поставке кода — они в продуктовой траектории, но не в первом implementation slice.
+- Native iOS/Android kit.
+- A Figma library as a required first-delivery artifact.
+- Marketing site, changelog portal, paid product.
+- Copying another visual language (MUI, Chakra, shadcn).
+- An App Router / Next-specific framework kit as a separate package — the kit must work in ordinary React. RSC compatibility (`"use client"` where needed) is a consumer requirement, not a separate product.
+- Organisms/templates in the first code delivery — they are on the product trajectory, not in the first implementation slice.
 
 ### Customization vs strictness
 
-Кастомизация разрешена только по четырём каналам, в этом приоритете:
+Customization is allowed only through four channels, in this priority:
 
-1. **Семантические токены / тема** — основной канал (цвет роли, плотность, радиус, типографика, светлая/тёмная схема).
-2. **Закрытые variant-пропсы** (`intent`, `size`, `appearance`) — конечные enum, не свободные строки со стилями.
-3. **Композиция** — compound components и слоты для структуры, не для подмены семантики.
-4. **Escape hatch** — `className` / slot class на документированных узлах, last resort.
+1. **Semantic tokens / theme** — the primary channel (role color, density, radius, typography, light/dark scheme).
+2. **Closed variant props** (`intent`, `size`, `appearance`) — finite enums, not free-form style strings.
+3. **Composition** — compound components and slots for structure, not for replacing semantics.
+4. **Escape hatch** — `className` / slot class on documented nodes, last resort.
 
-Запрещено как публичный API:
+Forbidden as public API:
 
-- Пропсы вида `backgroundColor`, `sx`, произвольный CSS-in-JS theme object как главный путь.
-- Отключение семантики и клавиатуры «чтобы проще стилизовать».
-- Прямое использование primitive-токенов в компонентах и у потребителей (только semantic / component).
+- Props such as `backgroundColor`, `sx`, or an arbitrary CSS-in-JS theme object as the main path.
+- Turning off semantics and keyboard behavior “to make styling easier”.
+- Direct use of primitive tokens in components and by consumers (semantic / component only).
 
-Строгость со стороны kit author:
+Kit-author strictness:
 
-- Компонент не содержит литеральных цветов, отступов и шрифтов вне token pipeline.
-- Новый визуальный одноразовый проп не добавляется; сначала токен или variant.
-- Слои Atomic Design не импортируют «вверх».
+- A component contains no literal colors, spacing, or type values outside the token pipeline.
+- A one-off visual prop is not added; add a token or a variant first.
+- Atomic Design layers do not import upward.
 
 ### Accessibility floor
 
-Каждый публичный компонент:
+Every public component:
 
-- Соответствует WCAG 2.2 AA, включая Target Size 2.5.8 (минимум 24×24 CSS px) и Focus Not Obscured 2.4.12.
-- Клавиатура: Tab/Arrow/Enter/Space/Escape по APG для данного паттерна.
-- Есть видимый `:focus-visible`.
-- Icon-only controls имеют accessible name.
-- Ошибки форм объявляются через `role="alert"` / `aria-live`, не только цветом.
-- Модалки: focus trap, возврат фокуса, `Escape`.
-- Автопроверки a11y в каталоге и в тестах обязательны; ручной клавиатурный проход — часть Definition of Done для overlay и composite widgets.
+- Meets WCAG 2.2 AA, including Target Size 2.5.8 (minimum 24×24 CSS px) and Focus Not Obscured 2.4.12.
+- Keyboard: Tab/Arrow/Enter/Space/Escape per APG for that pattern.
+- Has a visible `:focus-visible` indicator.
+- Icon-only controls have an accessible name.
+- Form errors are announced with `role="alert"` / `aria-live`, not color alone.
+- Modals: focus trap, focus return, `Escape`.
+- Automated a11y checks in the catalog and in tests are required; a manual keyboard pass is part of Definition of Done for overlay and composite widgets.
 
-Потребитель может **добавить** ARIA, но не может снять контракт, который держит kit.
+A consumer may **add** ARIA, but cannot strip the contract the kit owns.
 
 ### Quality toolchain (product constraints)
 
-Эти решения — часть продукта, потому что brainstorm явно про stack. Детали конфигов — в `ce-plan`.
+These decisions are product constraints because this brainstorm is about stack. Config details belong in `ce-plan`.
 
 | Concern | Decision | Why |
 | --- | --- | --- |
 | Language | React + TypeScript, `strict` | session-settled |
-| Package manager | **pnpm** + Corepack | стандарт для kit/workspaces, предсказуемые lockfile-инварианты |
-| Repo shape | **pnpm workspace с двумя поверхностями**: публичный kit-пакет и внутренний catalog/docs app | catalog не должен попадать в npm-артефакт; полноценный turborepo с первого дня — лишняя церемония |
-| Library bundler | **tsdown** (Rolldown, ESM-first, dts) | преемник tsup; Vite остаётся для catalog, не для publish |
-| Catalog | **Storybook на Vite** | изолированные состояния, a11y addon, визуальный контракт |
-| Tests | **Vitest + Testing Library + axe** | oxlint имеет vitest-правила; Jest не нужен |
-| Lint | **oxlint only** для JS/TS/TSX | session-settled; ESLint не вводится |
-| Format | **oxfmt**, не Prettier и не oxlint | oxlint не форматтер; oxfmt — Prettier-совместимая замена из той же линейки Oxc |
-| CSS lint | **не Stylelint на старте** | oxlint CSS не линтит; Stylelint оставляем YAGNI, сжав CSS-поверхность (см. исследование ниже) |
-| Git hooks | **Lefthook** | один раннер: staged oxlint/oxfmt + commit-msg |
-| Commits | **Conventional Commits** через commitlint | session-settled |
-| Versioning | **Changesets** + semver | для библиотеки changelog важнее авто-bump из commit type; conventional commits остаются дисциплиной истории |
-| Node | **Node 22** (Active/LTS на момент плана) | |
-| Package module | **ESM-only** | CJS dual-publish — только если появится реальный consumer-блокер |
-| Styles | Токены → CSS custom properties; стили компонентов живут в TypeScript, не в большой SCSS-кодовой базе | чтобы oxlint покрывал стиль-код, а oxfmt форматтировал редкий CSS dump |
+| Package manager | **pnpm** + Corepack | kit/workspace default; predictable lockfile invariants |
+| Repo shape | **pnpm workspace with two surfaces**: public kit package and internal catalog/docs app | catalog must not ship in the npm artifact; full Turborepo on day one is extra ceremony |
+| Library bundler | **tsdown** (Rolldown, ESM-first, dts) | tsup successor; Vite stays for the catalog, not for publish |
+| Catalog | **Storybook on Vite** | isolated states, a11y addon, visual contract |
+| Tests | **Vitest + Testing Library + axe** | oxlint has Vitest rules; Jest is unnecessary |
+| Lint | **oxlint only** for JS/TS/TSX | session-settled; ESLint is not introduced |
+| Format | **oxfmt**, not Prettier and not oxlint | oxlint is not a formatter; oxfmt is the Prettier-compatible Oxc replacement |
+| CSS lint | **no Stylelint at foundation** | oxlint does not lint CSS; keep Stylelint YAGNI by shrinking the CSS surface (see investigation below) |
+| Git hooks | **Lefthook** | one runner: staged oxlint/oxfmt + commit-msg |
+| Commits | **Conventional Commits** via commitlint | session-settled |
+| Versioning | **Changesets** + semver | library changelog quality beats auto-bump from commit type; conventional commits remain history discipline |
+| Node | **Node 22** (Active/LTS at plan time) | |
+| Package module | **ESM-only** | CJS dual-publish only if a real consumer is blocked |
+| Styles | Tokens → CSS custom properties; component styles live in TypeScript, not a large SCSS codebase | so oxlint covers style code and oxfmt formats the rare CSS dump |
+| Repo language | **English only** for documents and comments | session-settled |
 
 ### Oxlint / Prettier / Stylelint investigation
 
-Факты на август 2026 (Oxc docs + compatibility matrix):
+Facts as of August 2026 (Oxc docs + compatibility matrix):
 
-- **Oxlint** — линтер JS/TS/JSX/TSX (и script-блоков Vue/Svelte/Astro). Это замена ESLint. CSS/SCSS/HTML/Markdown **не в scope линтинга**.
-- **Oxfmt** — отдельный форматтер той же линейки. Форматирует JS/TS и также CSS, SCSS, Less, JSON, YAML, Markdown, HTML и др. Это замена Prettier, не часть oxlint.
-- **Stylelint** не заменяется oxlint. Oxfmt закрывает *форматирование* CSS, но не *правила качества* CSS (неизвестные свойства, specificity-дисциплина, запрет литералов).
+- **Oxlint** is a JS/TS/JSX/TSX linter (plus script blocks in Vue/Svelte/Astro). It replaces ESLint. CSS/SCSS/HTML/Markdown are **out of linting scope**.
+- **Oxfmt** is a separate formatter in the same line. It formats JS/TS and also CSS, SCSS, Less, JSON, YAML, Markdown, HTML, and more. It replaces Prettier; it is not part of oxlint.
+- **Stylelint** is not replaced by oxlint. Oxfmt covers CSS *formatting*, not CSS *quality rules* (unknown properties, specificity discipline, bans on literals).
 
-Следствие для Ctrl UI:
+Consequence for Ctrl UI:
 
-1. Prettier не ставим — **oxfmt**.
-2. ESLint не ставим — **oxlint** (включая jsx-a11y / React правила, которые oxlint уже несёт).
-3. Stylelint не ставим, пока нет рукописной CSS-кодовой базы. Токены компилируются в CSS variables; компоненты стилизуются так, чтобы основной стиль-код был TypeScript. Если позже появится существенный hand-written CSS — тогда узкий Stylelint, не «на всякий случай».
+1. Do not add Prettier — use **oxfmt**.
+2. Do not add ESLint — use **oxlint** (including jsx-a11y / React rules oxlint already ships).
+3. Do not add Stylelint until there is a hand-written CSS codebase. Tokens compile to CSS variables; components are styled so most style code is TypeScript. If substantial hand-written CSS appears later — then a narrow Stylelint, not “just in case”.
 
 ### Requirements
 
-- **R1.** Kit author может клонировать репозиторий, включить Corepack и получить хуки, lint, format, typecheck, test и catalog одной установкой зависимостей.
-- **R2.** Commit с неконвенциональным сообщением отвергается локально (commit-msg hook) и в CI.
-- **R3.** Staged JS/TS проходит oxlint и oxfmt до попадания в git; CI повторяет полную проверку.
-- **R4.** Публичный пакет не содержит catalog, тесты и toolchain-конфиги как runtime-зависимости.
-- **R5.** Токены — единственный источник визуальных решений. Primitive не протекают в компонент-API.
-- **R6.** Слои Atomic Design зависят только вниз. Нарушение слоя — дефект, не стиль.
-- **R7.** Каждый публичный компонент имеет: TypeScript-контракт пропсов, catalog story для ключевых состояний (default, hover/focus, disabled, error, RTL если релевантно), a11y-проверку.
-- **R8.** Тема переключается без форка компонентов (семантический слой / CSS variables).
-- **R9.** Feature consumer кастомизирует внешний вид только каналами 1–4 выше. Попытка сломать семантику через публичный API невозможна или явно отвергается типами.
-- **R10.** Overlay и composite widgets (когда появятся) поставляют focus management и клавиатуру сами.
-- **R11.** Версия пакета и changelog ведутся через Changesets; breaking change публичного API — major.
-- **R12.** Документация компонента описывает: для чего, какие variants, какие токены, что нельзя переопределять.
+- **R1.** A kit author can clone the repository, enable Corepack, and get hooks, lint, format, typecheck, test, and catalog from one dependency install.
+- **R2.** A commit with a non-conventional message is rejected locally (commit-msg hook) and in CI.
+- **R3.** Staged JS/TS passes oxlint and oxfmt before it enters git; CI repeats the full check.
+- **R4.** The public package does not contain catalog, tests, or toolchain configs as runtime dependencies.
+- **R5.** Tokens are the only source of visual decisions. Primitives do not leak into the component API.
+- **R6.** Atomic Design layers depend only downward. A layer violation is a defect, not a style choice.
+- **R7.** Every public component has: a TypeScript prop contract, catalog stories for key states (default, hover/focus, disabled, error, RTL when relevant), and an a11y check.
+- **R8.** Theme switches without forking components (semantic layer / CSS variables).
+- **R9.** A feature consumer customizes appearance only through channels 1–4 above. Breaking semantics through the public API is impossible or rejected by types.
+- **R10.** Overlay and composite widgets (when they exist) ship their own focus management and keyboard behavior.
+- **R11.** Package version and changelog are driven by Changesets; a public API breaking change is a major.
+- **R12.** Component docs describe: purpose, variants, tokens, and what must not be overridden.
+- **R13.** All committed documents and code comments are English.
 
 ### Primary flows
 
-1. **Bootstrap.** Author ставит зависимости → хуки активны → `lint` / `fmt:check` / `typecheck` / `test` / `catalog` работают на пустом каркасе.
-2. **Add a token.** Author добавляет primitive и semantic mapping → CSS variables обновляются → ни один компонент не правится вручную для смены роли цвета.
-3. **Add an atom.** Author создаёт компонент на токенах → story + a11y test → changeset → conventional commit. Consumer видит закрытые variants и тему, не внутренние primitive.
-4. **Theme a product.** Consumer подключает пакет, задаёт семантические токены (или выбирает shipped theme), собирает экран. Focus/keyboard работают без дополнительного кода.
-5. **Release.** Changeset на PR → CI зелёный → version bump + changelog → publish ESM-пакета.
+1. **Bootstrap.** Author installs dependencies → hooks are active → `lint` / `fmt:check` / `typecheck` / `test` / `catalog` work on the empty skeleton.
+2. **Add a token.** Author adds a primitive and a semantic mapping → CSS variables update → no component is edited by hand to change a color role.
+3. **Add an atom.** Author builds the component on tokens → story + a11y test → changeset → conventional commit. The consumer sees closed variants and theme, not internal primitives.
+4. **Theme a product.** Consumer installs the package, sets semantic tokens (or picks a shipped theme), and builds a screen. Focus/keyboard work with no extra code.
+5. **Release.** Changeset on the PR → CI green → version bump + changelog → publish the ESM package.
 
 ### Acceptance examples
 
-- Потребитель меняет `--color-action-primary` (или эквивалент semantic token) — все primary-кнопки, ссылки действия и соответствующие состояния следуют за ним. Компонентный код не трогается.
-- `Button` без accessible name в icon-only конфигурации не проходит a11y-тест / type-level запрет.
-- `className` на корне меняет внешнюю обёртку, но не снимает `role`, focus ring контракта и keyboard handler.
-- Commit `fixed button` отклоняется; `fix(button): restore focus ring on dark theme` принимается.
-- В опубликованном tarball нет `apps/catalog` и `node_modules` toolchain.
+- A consumer changes `--color-action-primary` (or the equivalent semantic token) — all primary buttons, action links, and matching states follow it. Component source is untouched.
+- An icon-only `Button` without an accessible name fails the a11y test and/or a type-level ban.
+- `className` on the root changes the outer wrapper but does not remove `role`, the focus-ring contract, or the keyboard handler.
+- Commit `fixed button` is rejected; `fix(button): restore focus ring on dark theme` is accepted.
+- The published tarball does not contain `apps/catalog` or toolchain `node_modules`.
+- A new plan, comment, or JSDoc committed in a non-English language is rejected in review (and later by lint/CI if such a gate exists).
 
 ### Non-goals
 
-- Универсальный CSS-фреймворк.
-- Поддержка Vue/Svelte/React Native в этом продукте.
-- Pixel-perfect копия существующей библиотеки.
-- «Любая кастомизация любой ценой».
+- A universal CSS framework.
+- Vue / Svelte / React Native support in this product.
+- A pixel-perfect copy of an existing library.
+- “Any customization at any cost”.
 
 ### Key decisions
 
 - **D1.** React + TypeScript. `session-settled: user-stated`
-- **D2.** Atomic Design с sub-atoms = tokens. `session-settled: user-stated`
+- **D2.** Atomic Design with sub-atoms = tokens. `session-settled: user-stated`
 - **D3.** Conventional Commits + git hooks. `session-settled: user-stated`
-- **D4.** ESLint не используется; JS/TS lint = oxlint. `session-settled: user-stated`
-- **D5.** Prettier не используется; format = oxfmt (не oxlint). `session-settled: investigated-from-user-intent`
-- **D6.** Stylelint не вводится на фундаменте; CSS-поверхность сознательно сжата. Revisit, если появится hand-written CSS. `session-settled: investigated-from-user-intent`
-- **D7.** Продукт — opinionated kit, не headless и не copy-paste. `recommended default`
-- **D8.** Кастомизация: tokens → variants → composition → className last resort. `recommended default`
+- **D4.** ESLint is not used; JS/TS lint = oxlint. `session-settled: user-stated`
+- **D5.** Prettier is not used; format = oxfmt (not oxlint). `session-settled: investigated-from-user-intent`
+- **D6.** Stylelint is not introduced at foundation; CSS surface is deliberately small. Revisit if hand-written CSS appears. `session-settled: investigated-from-user-intent`
+- **D7.** The product is an opinionated kit, not headless and not copy-paste. `recommended default`
+- **D8.** Customization: tokens → variants → composition → className last resort. `recommended default`
 - **D9.** pnpm + tsdown + Storybook/Vite + Vitest + Lefthook + commitlint + Changesets. `recommended default`
-- **D10.** ESM-only, Node 22, React как peer. `recommended default`
-- **D11.** WCAG 2.2 AA — пол, не цель «когда-нибудь». `session-settled: user-stated` (уточнение уровня — recommended AA)
-- **D12.** Сложное поведение overlay/composite не пишется с нуля, если существует проверенный a11y-примитив; визуальный слой всё равно принадлежит Ctrl UI. Выбор библиотеки примитива — `ce-plan`. `recommended default`
+- **D10.** ESM-only, Node 22, React as peer. `recommended default`
+- **D11.** WCAG 2.2 AA is the floor, not a later goal. `session-settled: user-stated` (AA level is the recommended default)
+- **D12.** Overlay/composite behavior is not written from scratch when a proven a11y primitive exists; the visual layer still belongs to Ctrl UI. Primitive library choice is `ce-plan`. `recommended default`
+- **D13.** All repository documents and implementation comments are English only. `session-settled: user-stated`
 
 ### Assumptions
 
-- **A1.** Репозиторий публичный MIT; kit предполагается публиковать в npm под именем, производным от `ctrl-ui`. Точный scope (`ctrl-ui` vs `@ctrl-ui/react`) уточняется при первой публикации.
-- **A2.** Первое consuming-приложение ещё нет — стартовая тема нейтральная, не бренд конкретного продукта.
-- **A3.** Документация-каталог достаточно Storybook; отдельный маркетинговый docs-сайт не нужен в фундаменте.
-- **A4.** i18n (RTL, строковые defaults) учитывается в API (не зашивать английский в обязательный visible text без override), полноценная локализационная платформа не строится сейчас.
-- **A5.** Visual regression (скриншот-тесты) желательны позже; в фундаменте достаточно a11y + unit + story states.
-- **A6.** Brainstorm выполнен в non-interactive режиме Cloud Agent: продуктовые развилки, которые пользователь не зафиксировал явно, записаны как recommended default, а не как неявно «уже согласованные».
+- **A1.** The repository is public MIT; the kit is intended for npm under a name derived from `ctrl-ui`. Exact scope (`ctrl-ui` vs `@ctrl-ui/react`) is confirmed at first publish.
+- **A2.** There is no first consuming app yet — the starting theme is neutral, not a specific product brand.
+- **A3.** Storybook is enough documentation catalog; a marketing docs site is not needed in the foundation.
+- **A4.** i18n (RTL, string defaults) is considered in the API (do not hardcode English as required visible text without override); a full localization platform is not built now.
+- **A5.** Visual regression (screenshot tests) is desirable later; foundation is a11y + unit + story states.
+- **A6.** The brainstorm ran in a non-interactive Cloud Agent mode: product forks the user did not lock are recorded as recommended defaults, not as silently “already agreed”.
 
 ### Outstanding questions
 
-- **Q1.** Нужен ли npm-publish в первом implementation slice или достаточно private/workspace пакета?
-- **Q2.** Есть ли референс визуального языка (существующий продукт, palettes, density)?
-- **Q3.** Нужен ли dark theme в первой поставке токенов или только контракт под него?
-- **Q4.** Имя публичного пакета и org scope.
+- **Q1.** Is npm publish part of the first implementation slice, or is a private/workspace package enough?
+- **Q2.** Is there a visual-language reference (existing product, palettes, density)?
+- **Q3.** Is dark theme in the first token drop, or only the contract for it?
+- **Q4.** Public package name and org scope.
 
-Эти вопросы не блокируют `ce-plan` инфраструктуры и token/atom слоя, если принять A1–A3.
+These questions do not block `ce-plan` for infrastructure and the token/atom layer if A1–A3 are accepted.
 
 ### Approaches considered
 
-Три продуктовые формы. Рекомендация — Approach A.
+Three product shapes. Recommendation: Approach A.
 
 **Approach A — Token-strict Atomic kit (recommended).**  
-Слои, токены, закрытые variants, a11y в API. Потребитель получает систему. Риск: медленнее «накидать кнопку». Подходит, потому что пользователь явно хочет систему, а не набор виджетов.
+Layers, tokens, closed variants, a11y in the API. The consumer gets a system. Risk: slower to “throw a button together”. Fits because the user wants a system, not a widget bag.
 
 **Approach B — Headless primitives + optional theme.**  
-Максимум кастомизации, слабая визуальная дисциплина, kit легко превращается в обёртку над Radix. Отклонено: ломает баланс strictness.
+Maximum customization, weak visual discipline; the kit easily becomes a Radix wrapper. Rejected: breaks the strictness balance.
 
 **Approach C — Copy-paste source kit.**  
-Компоненты живут у потребителя. Отклонено: конфликтует с versioning/changelog как продуктовым контрактом.
+Components live in the consumer repo. Rejected: conflicts with versioning/changelog as a product contract.
 
-Инфраструктурный challenger: Vite+ как единый оркестратор oxlint+oxfmt. Отклонён для фундамента — отдельные CLI oxlint/oxfmt проще для библиотеки; catalog и так на Vite. Пересмотреть, если toolchain-команд станет слишком много.
+Infrastructure challenger: Vite+ as a unified oxlint+oxfmt orchestrator. Rejected for the foundation — separate oxlint/oxfmt CLIs are simpler for a library; the catalog already uses Vite. Revisit if toolchain commands proliferate.
 
 ### Success criteria
 
-- Новый author проходит flow Bootstrap без ручной настройки хуков.
-- Добавление цвета-роли не требует правок компонентов.
-- Публичный атом нельзя использовать так, чтобы автоматический a11y-сканер и keyboard smoke краснели на default story.
-- Consumer theming не требует fork.
-- История git читаема conventional commits; релиз имеет changeset-changelog.
+- A new author completes the Bootstrap flow without hand-configuring hooks.
+- Adding a role color does not require component edits.
+- A public atom cannot be used so that the automated a11y scanner and keyboard smoke fail on the default story.
+- Consumer theming does not require a fork.
+- Git history is readable conventional commits; a release has a Changeset changelog.
+- No non-English documents or comments land in the repository.
 
 ## Implementation Units (requirements-level)
 
-Планирование кода нарежет это подробнее. Здесь только границы, чтобы `ce-plan` не смешивал фазы.
+Code planning will slice this further. These boundaries exist so `ce-plan` does not mix phases.
 
-1. **U1 — Platform.** Workspace, pnpm, tsdown, oxlint, oxfmt, Lefthook, commitlint, Changesets, Vitest, Storybook skeleton, CI gates. Нулевой UI, кроме smoke-компонента если нужен для проверки pipeline.
-2. **U2 — Tokens.** Primitive / semantic / component token pipeline и CSS variable контракт, light theme (dark — по Q3).
-3. **U3 — Atom contract.** Первый атом (скорее всего Button + Text/Icon) как эталон API, a11y, story, тестов и кастомизации. Все следующие атомы копируют этот эталон, а не изобретают второй.
-4. **U4+.** Molecules → organisms (modal, table) → layout templates. Каждый слой обязан использовать только нижние. Не начинать с table/modal.
+1. **U1 — Platform.** Workspace, pnpm, tsdown, oxlint, oxfmt, Lefthook, commitlint, Changesets, Vitest, Storybook skeleton, CI gates. No UI except a smoke component if the pipeline needs one.
+2. **U2 — Tokens.** Primitive / semantic / component token pipeline and CSS variable contract, light theme (dark per Q3).
+3. **U3 — Atom contract.** The first atom (most likely Button + Text/Icon) as the API, a11y, story, test, and customization template. Later atoms copy this template instead of inventing a second one.
+4. **U4+.** Molecules → organisms (modal, table) → layout templates. Each layer may use only layers below it. Do not start with table/modal.
 
 ## Ready for Planning
 
-Complete: actors, outcome, in/out, a11y floor, customization contract, toolchain constraints, acceptance.  
-Consistent: oxfmt vs oxlint разведены; Stylelint не противоречит «oxc-native» цели.  
-Focused: один продукт — фундамент Ctrl UI.  
-Usable by planning: U1–U3 можно планировать без ответа на Q1–Q4.
+Complete: actors, outcome, in/out, a11y floor, customization contract, toolchain constraints, language rule, acceptance.  
+Consistent: oxfmt vs oxlint are separated; Stylelint does not contradict the oxc-native goal; English-only is standing, not a one-off.  
+Focused: one product — Ctrl UI foundation.  
+Usable by planning: U1–U3 can be planned without answers to Q1–Q4.

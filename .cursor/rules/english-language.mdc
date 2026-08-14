@@ -1,0 +1,12 @@
+---
+description: English-only documents and code comments
+alwaysApply: true
+---
+
+# English language
+
+All project documents, plans, READMEs, Storybook copy, JSDoc, inline comments, commit messages, and pull request text MUST be written in English.
+
+Do not write Russian or any other non-English prose into repository files, comments, or git metadata.
+
+Chat with the user may follow the user's language preference. Committed work is English only.
