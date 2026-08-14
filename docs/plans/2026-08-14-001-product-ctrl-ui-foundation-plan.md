@@ -60,7 +60,7 @@ All documents, plans, READMEs, Storybook docs, JSDoc, inline comments, commit me
 ### In scope
 
 - Infrastructure contract: package manager, library build, docs/catalog, lint/format, git hooks, conventional commits, versioning.
-- Atomic Design with strict **downward** dependencies: tokens → atoms → molecules → organisms → templates.
+- Atomic Design as the primary architecture, followed strictly, with **downward-only** dependencies: tokens → atoms → molecules → organisms → templates.
 - Three-tier tokens: primitive → semantic → component.
 - WCAG 2.2 AA as the floor for every public component.
 - Customization contract (below).
@@ -180,7 +180,7 @@ Consequence for Ctrl UI:
 - **R3.** Staged JS/TS passes oxlint and oxfmt before it enters git; CI repeats the full check.
 - **R4.** The public package does not contain catalog, tests, or toolchain configs as runtime dependencies.
 - **R5.** Tokens are the only source of visual decisions. Primitives do not leak into the component API.
-- **R6.** Atomic Design layers depend only downward. A layer violation is a defect, not a style choice.
+- **R6.** Atomic Design is the primary architecture and is followed strictly. Every public module lives in exactly one layer. Layers depend only downward. A layer violation is a defect and MUST NOT merge.
 - **R7.** Every public component has: a TypeScript prop contract, CSF3 stories for Default, each public variant, and each meaningful public state, plus an a11y check.
 - **R8.** Theme switches without forking components (semantic layer / CSS variables).
 - **R9.** A feature consumer customizes appearance only through channels 1–4 above. Breaking semantics through the public API is impossible or rejected by types.
@@ -222,7 +222,7 @@ Consequence for Ctrl UI:
 ### Key decisions
 
 - **D1.** React + TypeScript. `session-settled: user-stated`
-- **D2.** Atomic Design with sub-atoms = tokens. `session-settled: user-stated`
+- **D2.** Atomic Design is the primary architecture and MUST be followed strictly (tokens → atoms → molecules → organisms → templates; sub-atoms = tokens). `session-settled: user-stated`
 - **D3.** Conventional Commits + git hooks. `session-settled: user-stated`
 - **D4.** ESLint is not used; JS/TS lint = oxlint. `session-settled: user-stated`
 - **D5.** Prettier is not used; format = oxfmt (not oxlint). `session-settled: investigated-from-user-intent`

@@ -6,7 +6,7 @@ Committed work is English only. Follow every file in `.cursor/rules/` (one conce
 | --- | --- |
 | Language | `.cursor/rules/english-language.mdc` |
 | Product shape | `.cursor/rules/product-shape.mdc` |
-| Atomic Design layers | `.cursor/rules/atomic-design-layers.mdc` |
+| Atomic Design (primary architecture, strict) | `.cursor/rules/atomic-design-layers.mdc` |
 | Design tokens | `.cursor/rules/design-tokens.mdc` |
 | Customization | `.cursor/rules/customization.mdc` |
 | Accessibility | `.cursor/rules/accessibility.mdc` |

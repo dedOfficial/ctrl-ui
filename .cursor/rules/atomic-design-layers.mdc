@@ -1,14 +1,24 @@
 ---
-description: Atomic Design layers depend only downward
+description: Atomic Design is the primary architecture and MUST be followed strictly
 alwaysApply: true
 ---
 
-# Atomic Design layers
+# Atomic Design
 
-Dependencies MUST flow downward only:
+Atomic Design is the primary architecture of Ctrl UI. It MUST be followed strictly. It is not a naming hint, a folder preference, or an optional guide.
+
+Every public module MUST live in exactly one layer:
 
 ```
 tokens → atoms → molecules → organisms → templates
 ```
 
-A layer MUST NOT import a layer above it.
+- **tokens** — design decisions only (primitive → semantic → component). No components.
+- **atoms** — smallest UI units. May use tokens only.
+- **molecules** — simple combinations of atoms. May use tokens and atoms only.
+- **organisms** — complex composed UI (tables, modals, forms). May use tokens, atoms, and molecules only.
+- **templates** — layout shells and page-level structure. May use any layer below. Pages of consuming apps are out of this kit.
+
+Dependencies MUST flow downward only. A layer MUST NOT import a layer above it. A new file MUST be placed in its layer before it is written. A layer violation is a defect and MUST NOT merge.
+
+Do not skip layers to “ship faster”. Do not start from organisms or templates. Grow the kit from tokens upward.
