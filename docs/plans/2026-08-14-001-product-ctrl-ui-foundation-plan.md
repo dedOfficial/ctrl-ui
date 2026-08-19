@@ -51,7 +51,16 @@ Implementation planning MUST slice only U1 and U2 for this increment. It MUST NO
 
 Ctrl UI is an **opinionated design-system kit**, not a headless set and not a copy-paste catalog like shadcn. The consumer gets a finished visual language and accessible behavior. Customization goes through tokens, a closed variant set, and composition — not through unbounded style props.
 
-**First target consumer.** Teams building product UI in React who would otherwise compose headless primitives and restyle them. They pick Ctrl UI because WCAG 2.2 AA behavior and a closed visual language ship in the package, and they can retarget color, density, and type through semantic tokens without forking.
+**First target consumer.** This is the **intended first live use** (pilot / design partner), not a team that already installs Ctrl UI — the kit does not exist yet. Name a real team or product you will try the kit on first, plus one reason they would pick it over assembling headless primitives.
+
+Until that name is written here, the placeholder is: product teams building React UI who would otherwise compose headless primitives and restyle them. They would pick Ctrl UI because WCAG 2.2 AA behavior and a closed visual language ship in the package, and they can retarget color, density, and type through semantic tokens without forking.
+
+Fill in:
+
+- **Who:** own product, internal team, or an external pilot (name the team/product).
+- **What they ship:** one sentence (for example internal admin, B2B app).
+- **Why Ctrl UI:** one concrete reason versus Radix + custom CSS, shadcn, or a copy-paste catalog.
+- **Visual reference (Q2):** link, screens, or “none yet — revisable neutral”. Who is not the same as how it looks; Q2 can come from this pilot’s UI, but it is a separate answer.
 
 Adjacent product shapes we are not building:
 
@@ -363,7 +372,7 @@ Consequence for Ctrl UI:
 ### Assumptions
 
 - **A1.** The repository is public MIT; the kit is intended for npm under a name derived from `ctrl-ui`. Exact scope (`ctrl-ui` vs `@ctrl-ui/react`) is confirmed at first publish.
-- **A2.** There is no first consuming app yet — the starting theme is a revisable neutral until Q2, not a specific product brand.
+- **A2.** There is no first consuming app in production yet. The first target consumer is an intended pilot, not a current installer. The starting theme is a revisable neutral until Q2, not a specific product brand.
 - **A3.** Storybook is enough documentation catalog; a marketing docs site is not needed in the foundation.
 - **A4.** A full localization platform is not built now. String overrides and RTL are requirements (D25), not this assumption.
 - **A5.** Visual regression (screenshot tests) is desirable later; foundation is a11y + unit + story states. Coverage 100% is not visual correctness.
@@ -372,7 +381,7 @@ Consequence for Ctrl UI:
 ### Outstanding questions
 
 - **Q1.** Is npm publish part of the first implementation slice, or is a private/workspace package enough? Blocks freezing the first atom as a copy-template and when majors start. Does not block U1–U2.
-- **Q2.** Is there a visual-language reference (existing product, palettes, density)? Blocks treating token values as the identity contract. Does not block U1 or semantic *roles*.
+- **Q2.** Is there a visual-language reference (existing product, palettes, density)? Often taken from the intended first pilot, but it is not the same as naming that team. Blocks treating token values as the identity contract. Does not block U1 or semantic *roles*.
 - **Q3.** Is dark theme in the first token drop, or only the contract for it?
 - **Q4.** Public package name and org scope.
 

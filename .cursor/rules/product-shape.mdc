@@ -9,7 +9,7 @@ Ctrl UI is an opinionated React + TypeScript design-system kit.
 
 It is not a headless library. It is not a copy-paste catalog. React Aria is an implementation dependency for later composite layers, not the product.
 
-First target consumer: teams building product UI in React who would otherwise compose headless primitives and restyle them. They pick Ctrl UI because WCAG 2.2 AA behavior and a closed visual language ship in the package, and they can theme through semantic tokens without forking.
+First target consumer is the intended first live use (pilot / design partner), not a team that already installs the unpublished kit. Until a named pilot is written in the foundation plan, the placeholder is: product teams building React UI who would otherwise compose headless primitives and restyle them, because WCAG 2.2 AA and a closed visual language ship in the package and they can theme through semantic tokens without forking.
 
 The kit MUST work in ordinary React. RSC hosts MUST be able to import it without a Next-specific package. Published modules that use client APIs MUST be marked `"use client"`.
 
