@@ -5,6 +5,19 @@ alwaysApply: true
 
 # Design tokens
 
-Tokens MUST use three tiers: primitive → semantic → component.
+Tokens MUST use three tiers: primitive → semantic → component tokens.
 
-Components and consumers MUST use semantic or component tokens. They MUST NOT use primitive tokens directly. Visual values MUST come from the token pipeline, not literals.
+The third tier is **component tokens** (token context only). UI modules are atoms, molecules, organisms, and templates.
+
+UI modules and consumers MUST use semantic or component tokens. They MUST NOT use primitive tokens directly. Visual values MUST come from the token pipeline, not literals. Primitive tokens stay private.
+
+Foundation semantic inventory (independent of brand):
+
+- Color roles: `surface`, `on-surface`, `action`, `on-action`, `danger`, `on-danger`, `focus`
+- Plus: space, radius, typography, density
+
+Each painted foreground/background pair MUST meet WCAG 2.2 AA contrast.
+
+A visual-language reference blocks treating primitive *values* as the shipped identity contract. Semantic *roles* are not blocked. A temporary neutral theme MAY exist so the pipeline is real; those values MUST NOT be treated as identity until that reference exists.
+
+This increment ships the token pipeline. Per-atom component tokens MAY wait until the first atom.

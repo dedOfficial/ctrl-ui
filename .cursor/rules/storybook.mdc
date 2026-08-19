@@ -7,6 +7,10 @@ alwaysApply: true
 
 The kit MUST be fully Storybooked.
 
-Every public export (token sets, atoms, molecules, organisms, templates) MUST have CSF3 stories. Required stories for a component: Default, each public variant, and each meaningful state the public API exposes (disabled, loading, error, focus where relevant). Tokens MUST have visual stories, not only JSON.
+Story `title` MUST follow Atomic Design (`Atoms/Button`, `Tokens/Color`, `Organisms/Table`). Autodocs and the a11y addon MUST run on stories.
 
-Story `title` MUST follow Atomic Design (`Atoms/Button`, `Tokens/Color`, `Organisms/Table`). Autodocs and the a11y addon MUST run on stories. A public component without stories MUST NOT merge.
+**UI modules** (atoms, molecules, organisms, templates): every public export MUST have CSF3 stories for Default, each public variant, and each required public state (disabled, loading, invalid, focus-visible, hover, pressed where the public API exposes them). A public UI module without those stories MUST NOT merge.
+
+**Token collections:** one gallery story per public token collection (`Tokens/Color`, `Tokens/Space`, `Tokens/Typography`, and peers). A token public export is a collection module, not an individual token constant. Do not invent Default/variant/state stories per constant.
+
+This increment ships token galleries only. Coverage and Storybook gates MUST NOT be used as a reason to create atoms or later layers.

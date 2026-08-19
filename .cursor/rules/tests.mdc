@@ -9,11 +9,13 @@ The published kit source MUST be fully covered by Vitest. CI MUST fail unless co
 
 Configuration MUST use Vitest `coverage.thresholds` with `100: true` and `perFile: true`. Coverage include MUST list kit source so uncovered files count. The RECOMMENDED provider is `istanbul` (stricter branch accounting for a 100% gate). `v8` MAY be used only if it is proven equivalent on this repo.
 
-Coverage MAY exclude Storybook files, generated token dumps, and catalog-app scaffolding that is not published. Those exclusions MUST NOT hide kit source. A file is not "covered" by existing only as a story.
+Kit source for that gate is author-written `.ts` / `.tsx` in the public kit package.
 
-Do not mock components, hooks, or modules unless the dependency is an external boundary (I/O, browser API). Prefer real behavior.
+Coverage MUST exclude `*.stories.*`, type-only files, generated token output, and re-export barrels. Coverage MAY exclude catalog-app scaffolding that is not published. Those exclusions MUST NOT hide kit source. A file is not "covered" by existing only as a story.
 
-Colocate `Component.test.tsx` next to the source file.
+Do not mock UI modules, hooks, or modules unless the dependency is an external boundary (I/O, browser API). Prefer real behavior.
+
+Colocate `<Name>.test.tsx` next to the source file.
 
 ## Titles
 
@@ -37,3 +39,5 @@ describe('Button', () => {
 - Titles MUST describe behavior and condition, not implementation (`calls setState`, `uses clsx`).
 - Each `it` MUST assert one behavior.
 - Test body MUST follow Arrange–Act–Assert.
+
+Interactive atoms (when they exist) MUST have a specification-style test for each required public state: Default, hover, focus-visible, pressed, disabled, loading/busy when waiting, and invalid when form-capable.
