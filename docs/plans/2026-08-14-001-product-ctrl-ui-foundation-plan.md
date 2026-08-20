@@ -51,16 +51,12 @@ Implementation planning MUST slice only U1 and U2 for this increment. It MUST NO
 
 Ctrl UI is an **opinionated design-system kit**, not a headless set and not a copy-paste catalog like shadcn. The consumer gets a finished visual language and accessible behavior. Customization goes through tokens, a closed variant set, and composition — not through unbounded style props.
 
-**First target consumer.** This is a **reference product and hoped-for pilot**, not a signed adoption and not a team that already installs Ctrl UI. A real product the kit author already knows (public site, current UI-kit pain, typical screens) is enough. It is an **example of who might consume the kit**, not a brand to copy. Their palette MUST NOT become Ctrl UI’s default primitives. Using them as an example MUST NOT assume procurement, a rewrite, or that they will switch.
+**First target consumer.** This is a **reference product and hoped-for pilot**, not a signed adoption and not a team that already installs Ctrl UI. It is an **example of who might consume the kit**, not a brand to copy. Do not name the employer or product in this public repository. Their palette MUST NOT become Ctrl UI’s default primitives. Using them as an example MUST NOT assume procurement, a rewrite, or that they will switch.
 
-Until that name is written here, the placeholder is: product teams building React UI who would otherwise compose headless primitives and restyle them. They would pick Ctrl UI because WCAG 2.2 AA behavior and a closed visual language ship in the package, and they can retarget color, density, and type through semantic tokens without forking.
-
-Fill in (English in the plan):
-
-- **Who:** company/product name (public is fine).
-- **What they ship:** one sentence.
-- **Why Ctrl UI:** known problems of their current kit, and one reason they *could* pick Ctrl UI. Do not claim they will.
-- **Example UI (not Q2 default):** site or screenshots for density, contrast, and whether the semantic roles can express that kind of product. Do not copy their palette into the shipped default theme.
+- **Who:** An unnamed B2B trip-booking product the kit author already works on. Hoped-for pilot only. Internal screens stay out of this repo.
+- **What they ship:** Corporate travel booking and trip management: search and book air/hotel/car and related legs, company and user profiles, dense policy admin, dashboards, checkout/payment, agent and traveler on one platform, partner white-label. Typical surfaces: flight search, admin tables and forms, profiles, charts, schematic maps, seat maps, itineraries, checkout, AI chat.
+- **Why Ctrl UI:** The live app mixes two kits (a nearly deprecated one and a newer Material UI–based one). Folder structure is loose, dead code accumulates, and accessibility is layered on top of MUI instead of owned. The UI looks inconsistent. A third iteration is desired: strict Atomic Design, a real token system, light and understandable. Ctrl UI could fit because it is Atomic by contract, a11y is kit-owned, and semantic tokens support white-label theming without forking. This MUST NOT be read as “they will adopt Ctrl UI”.
+- **Example UI (not Q2 default):** A marketing look with a coral-red brand, a separate wine hue, cool greys, and a link blue. Use as a **theme proof** only. Do not copy those brand colors into Ctrl UI’s default theme. Do not add internal product screenshots.
 
 Adjacent product shapes we are not building:
 
@@ -213,6 +209,16 @@ Foundation semantic roles, independent of any example product brand:
 Each painted foreground/background pair MUST meet WCAG 2.2 AA contrast. Primitive tokens stay private. UI modules and consumers use semantic or component tokens only.
 
 Ctrl UI’s default primitive *values* are Ctrl UI’s own look (or a revisable neutral until Q2). An example product’s palette MAY be used later as a **theme proof** (can that product retarget semantic roles without forking). It MUST NOT be copied into the default theme.
+
+### Primitive color scales
+
+Primitive color ramps SHOULD use a stepped scale **50–900** (MUI-like steps: 50, 100, …, 900). Each ramp is one hue family. UI modules MUST NOT consume these steps; semantic roles point at a step.
+
+**Accent steps A100–A700 are not required.** Material Design 3 dropped them. Add an accent scale only if a later increment has a real use (for example data-viz highlights). Do not invent unused A-tokens in U2.
+
+A white-label product whose brand is already a red needs **several ramps**, not one 50–900 object that mixes unrelated hues. Coral-red, wine (a different hue, not red.900), cool grey, and link blue are four families. Brand-red as `action` also collides with `danger`; a theme proof MUST map those to distinct ramps.
+
+Ctrl UI MUST NOT ship a named employer theme with their brand colors. Theme proof is a mapping exercise, not a published skin.
 
 ### Test descriptions
 
@@ -368,6 +374,7 @@ Consequence for Ctrl UI:
 - **D25.** Consumers can override kit strings; layout supports RTL. This increment may ship direction/typography tokens only. `session-settled: user-stated`
 - **D26.** Ordinary React is the host. No Next-specific package. Client modules are marked `"use client"` when they use client APIs. `session-settled: user-stated`
 - **D27.** A feature consumer can install the package without cloning this repository. Import of a public atom is a standing requirement when atoms exist. `session-settled: user-stated`
+- **D28.** Primitive color ramps use stepped 50–900 scales. Accent A100–A700 are not required in U2. Public API stays semantic. An example brand is a theme proof, not the default ramp. `session-settled: user-stated`
 
 ### Assumptions
 
@@ -384,6 +391,7 @@ Consequence for Ctrl UI:
 - **Q2.** What is Ctrl UI’s own visual language (palette, density, type)? Not “copy the example product.” Example screenshots MAY inform density and contrast checks. Blocks freezing default token values as identity. Does not block U1, semantic *roles*, or a revisable neutral default.
 - **Q3.** Is dark theme in the first token drop, or only the contract for it?
 - **Q4.** Public package name and org scope.
+- **Q5.** Do U2 semantic colors also include `success`, `warning`, and `info` (and on-* pairs)? A travel booking/policy UI needs status beyond `danger`. Not in the locked foundation inventory yet.
 
 U1 MAY be planned with A1–A3. U2 MAY implement roles, pipeline, and a revisable neutral default without Q2. It MUST NOT copy an example product’s palette into that default. It MUST NOT freeze default values as identity until Q2 (Ctrl UI’s own look).
 

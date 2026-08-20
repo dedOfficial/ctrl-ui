@@ -20,6 +20,8 @@ Each painted foreground/background pair MUST meet WCAG 2.2 AA contrast.
 
 A visual-language **for Ctrl UI** (Q2) blocks freezing default primitive *values* as identity. Semantic *roles* are not blocked. A revisable neutral default MAY exist so the pipeline is real.
 
-An example product’s palette MUST NOT be copied into the default theme. It MAY be used as a theme proof: can semantic roles express that kind of product without forking.
+Primitive color ramps SHOULD use stepped scales 50–900 (one hue family per ramp). Semantic roles MUST point at a step. Accent A100–A700 MUST NOT be required in this increment.
+
+An example product’s palette MUST NOT be copied into the default theme. It MAY be used as a theme proof: can semantic roles express that kind of product without forking. Distinct ramps are REQUIRED when brand and danger would otherwise share one red.
 
 This increment ships the token pipeline. Per-atom component tokens MAY wait until the first atom.
