@@ -18,6 +18,7 @@ alwaysApply: true
 | Versioning | Changesets + semver |
 | Node | 22 |
 | Module | ESM-only; React is a peer |
+| Package name | `ctrl-ui` (workspace until first atoms; then npm) |
 
 This increment implements the toolchain and the token pipeline only. Do not scaffold public atoms, molecules, organisms, or templates to satisfy coverage or Storybook gates.
 

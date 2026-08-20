@@ -18,7 +18,7 @@ doc_review: 2026-08-19
 
 **This increment.** Toolchain and the token pipeline only. Atoms and every layer above them are the same product, delivered in later increments.
 
-**Open blockers.** Nothing blocks `ce-plan` for **U1 Platform**. Ctrl UI’s own visual language (**Q2**) blocks treating default token *values* as a frozen identity. Semantic *roles* are not blocked. A reference product’s palette is an example for theming, not the default theme.
+**Open blockers.** None for `ce-plan` of **U1** and **U2**. Ctrl UI identity comes from the CTRL marks (monochrome ink on cool paper). An unnamed reference product remains a theme proof, not the default theme.
 
 ## How This Work Fits Together
 
@@ -80,13 +80,13 @@ All documents, plans, READMEs, Storybook docs, JSDoc, inline comments, commit me
 **This increment (U1–U2):**
 
 - Infrastructure contract: package manager, library build, docs/catalog, lint/format, git hooks, conventional commits, versioning.
-- Token pipeline: primitive → semantic → component tokens, CSS custom properties, locked semantic inventory, WCAG 2.2 AA contrast on painted pairs.
+- Token pipeline: primitive → semantic → component tokens, CSS custom properties, locked semantic inventory (including success/warning/info), light and dark schemes, WCAG 2.2 AA contrast on painted pairs.
 - Atomic Design as the primary architecture (folders, dependency direction, and rules), even while later layers have no public UI modules yet.
 - Storybook gallery stories for each public token collection.
 - Vitest with a strict 100% coverage gate on kit source (domain below).
 - English-only committed prose.
 - RFC 2119 keyword language in every future implementation plan.
-- Public (or workspace) package that a consumer can install without cloning this repository; semantic tokens apply after install.
+- Workspace package `ctrl-ui` that a consumer can install without cloning this repository; semantic tokens apply after install. npm publish waits for the first atom batch.
 - Token/CSS modules that ordinary React and RSC hosts can import without a Next-specific package.
 - Direction and typography tokens that can support RTL layout.
 
@@ -201,14 +201,25 @@ These decisions are product constraints because this brainstorm is about stack. 
 
 ### Semantic token inventory
 
-Foundation semantic roles, independent of any example product brand:
+Foundation semantic roles:
 
-- Color: `surface`, `on-surface`, `action`, `on-action`, `danger`, `on-danger`, `focus`
+- Color: `surface`, `on-surface`, `action`, `on-action`, `danger`, `on-danger`, `success`, `on-success`, `warning`, `on-warning`, `info`, `on-info`, `focus`
 - Plus: space, radius, typography, density
+- Schemes: **light and dark** in the first token drop
 
 Each painted foreground/background pair MUST meet WCAG 2.2 AA contrast. Primitive tokens stay private. UI modules and consumers use semantic or component tokens only.
 
-Ctrl UI’s default primitive *values* are Ctrl UI’s own look (or a revisable neutral until Q2). An example product’s palette MAY be used later as a **theme proof** (can that product retarget semantic roles without forking). It MUST NOT be copied into the default theme.
+### Ctrl UI visual language (Q2)
+
+Source: the CTRL wordmark and two-circle lockup (black disk, white glint, satellite dot) on cool paper. This is Ctrl UI’s identity, not the unnamed reference product.
+
+- **Ink:** `#000000`. **Paper:** cool off-white near `#F2F2F2`. **Glint:** `#FFFFFF`.
+- **Action** on light is ink; **on-action** is paper or white. Dark scheme inverts: surfaces near ink, action is paper/white, on-action is ink.
+- **Radius** is generous (the mark is circular). The CTRL lockup is brand, not UI body type. UI type is a geometric sans.
+- **Status hues** (`success`, `warning`, `info`, `danger`) are muted professional ramps, distinct from action (action is ink, not a chromatic brand red). U2 generates 50–900 steps from those families. Exact status hex MAY be tuned in U2 as long as AA holds and the ramps stay distinct.
+- **Focus** is a visible ring that meets 2.4.12; it MUST NOT rely on color alone.
+
+An unnamed reference product’s palette MAY be used later as a **theme proof**. It MUST NOT be copied into the default theme.
 
 ### Primitive color scales
 
@@ -264,7 +275,7 @@ Interactive atoms, when they exist, expose:
 
 Hover and pressed are required public states, not CSS-only extras. Each required state MUST have a CSF3 story and a specification-style test.
 
-The first atom’s public prop-and-token contract stays revisable until **Q1** (publish vs private/workspace package) is answered. Semver majors apply from the first npm publish. If Q1 is public publish, the visual-identity bet (Q2) MUST be settled before that atom is treated as the copy-template for later atoms.
+The first atom’s public prop-and-token contract stays revisable until the first npm publish. This increment (U1–U2) is a **workspace / private package**. npm publish waits until the first batch of atoms is ready. Semver majors apply from that first npm publish. Identity (Q2) is already settled.
 
 ### Implementation-plan language
 
@@ -366,19 +377,21 @@ Consequence for Ctrl UI:
 - **D17.** Future implementation plans use RFC 2119 requirement keywords. `session-settled: user-stated`
 - **D18.** Standing agent rules are single-responsibility files in `.cursor/rules/` (product shape, layers, tokens, customization, accessibility, toolchain, tests, Storybook, implementation plans, English). `session-settled: user-stated`
 - **D19.** This increment is toolchain + tokens only. Atoms and later layers are the same product, later slices. D14/D15 gate exports that exist; they do not create later layers. `session-settled: user-stated`
-- **D20.** Ctrl UI’s own visual language (Q2) blocks freezing default token values as identity. An example product is a consumer/persona reference, not a palette to copy. Semantic roles are independent of that brand. `session-settled: user-stated`
-- **D21.** Foundation semantic inventory: surface, on-surface, action, on-action, danger, on-danger, focus; plus space, radius, typography, density. Painted pairs meet AA. Primitives stay private. `session-settled: user-stated`
+- **D20.** Ctrl UI identity is the CTRL monochrome lockup (ink `#000000` on cool paper near `#F2F2F2`, white glint). An unnamed reference product is a theme proof, not a palette to copy. `session-settled: user-stated`
+- **D21.** Foundation semantic inventory: surface, on-surface, action, on-action, danger, on-danger, success, on-success, warning, on-warning, info, on-info, focus; plus space, radius, typography, density. Light and dark schemes in U2. Painted pairs meet AA. Primitives stay private. `session-settled: user-stated`
 - **D22.** This foundation validates kit-author catalog composition. A consumer-shaped screen is out of validation until a consuming app exists. `session-settled: user-stated`
-- **D23.** First atom public API stays revisable until Q1. Semver majors start at first npm publish. Public publish requires Q2 before that atom is the copy-template. `session-settled: user-stated`
+- **D23.** First atom public API stays revisable until first npm publish. U1–U2 ship as a workspace package. npm publish waits for the first atom batch. Semver majors start at that publish. `session-settled: user-stated`
 - **D24.** Third token tier is **component tokens**. UI modules are atoms, molecules, organisms, and templates — not “components” in token context. `session-settled: user-stated`
 - **D25.** Consumers can override kit strings; layout supports RTL. This increment may ship direction/typography tokens only. `session-settled: user-stated`
 - **D26.** Ordinary React is the host. No Next-specific package. Client modules are marked `"use client"` when they use client APIs. `session-settled: user-stated`
 - **D27.** A feature consumer can install the package without cloning this repository. Import of a public atom is a standing requirement when atoms exist. `session-settled: user-stated`
 - **D28.** Primitive color ramps use stepped 50–900 scales. Accent A100–A700 are not required in U2. Public API stays semantic. An example brand is a theme proof, not the default ramp. `session-settled: user-stated`
+- **D29.** Public package name is `ctrl-ui` (unscoped). `session-settled: user-stated`
+- **D30.** Light and dark schemes ship in the U2 token drop. `session-settled: user-stated`
 
 ### Assumptions
 
-- **A1.** The repository is public MIT; the kit is intended for npm under a name derived from `ctrl-ui`. Exact scope (`ctrl-ui` vs `@ctrl-ui/react`) is confirmed at first publish.
+- **A1.** The repository is public MIT. The public package name is `ctrl-ui`. First npm publish waits for the first atom batch; U1–U2 are workspace-only.
 - **A2.** There is no first consuming app in production yet. The first target consumer is a reference product / hoped-for pilot, not a current installer, not a committed rewrite, and not a brand whose palette is copied into Ctrl UI.
 - **A3.** Storybook is enough documentation catalog; a marketing docs site is not needed in the foundation.
 - **A4.** A full localization platform is not built now. String overrides and RTL are requirements (D25), not this assumption.
@@ -387,13 +400,13 @@ Consequence for Ctrl UI:
 
 ### Outstanding questions
 
-- **Q1.** Is npm publish part of the first implementation slice, or is a private/workspace package enough? Blocks freezing the first atom as a copy-template and when majors start. Does not block U1–U2.
-- **Q2.** What is Ctrl UI’s own visual language (palette, density, type)? Not “copy the example product.” Example screenshots MAY inform density and contrast checks. Blocks freezing default token values as identity. Does not block U1, semantic *roles*, or a revisable neutral default.
-- **Q3.** Is dark theme in the first token drop, or only the contract for it?
-- **Q4.** Public package name and org scope.
-- **Q5.** Do U2 semantic colors also include `success`, `warning`, and `info` (and on-* pairs)? A travel booking/policy UI needs status beyond `danger`. Not in the locked foundation inventory yet.
+- **Q1.** Answered: workspace package until the first atom batch; then npm as `ctrl-ui`. See D23, D29.
+- **Q2.** Answered: CTRL monochrome lockup. See D20.
+- **Q3.** Answered: light and dark in U2. See D30.
+- **Q4.** Answered: `ctrl-ui`. See D29.
+- **Q5.** Answered: `success`, `warning`, `info` (and on-* pairs) are in the inventory. See D21.
 
-U1 MAY be planned with A1–A3. U2 MAY implement roles, pipeline, and a revisable neutral default without Q2. It MUST NOT copy an example product’s palette into that default. It MUST NOT freeze default values as identity until Q2 (Ctrl UI’s own look).
+U1 and U2 MAY be planned now. U2 MUST ship Ctrl identity (ink/paper) plus light and dark. It MUST NOT copy the unnamed reference product’s palette into the default theme.
 
 ### Approaches considered
 
@@ -426,7 +439,7 @@ Infrastructure challenger: Vite+ as a unified oxlint+oxfmt orchestrator. Rejecte
 **Standing (later increments)**
 
 - A public atom cannot be used so that the automated a11y scanner and keyboard smoke fail on the default story.
-- A feature consumer can theme Ctrl UI to a reference-like palette without forking (example product as proof, not as default). Recognizing a frozen shipped identity requires Q2 (Ctrl UI’s own look).
+- A feature consumer can theme Ctrl UI to a reference-like palette without forking (unnamed product as proof, not as default). The shipped default is the CTRL monochrome identity.
 - Interactive atoms expose the locked state matrix with stories and tests.
 
 ## Implementation Units (requirements-level)
@@ -434,8 +447,8 @@ Infrastructure challenger: Vite+ as a unified oxlint+oxfmt orchestrator. Rejecte
 This increment plans **U1** and **U2** only. Later units stay on the product trajectory.
 
 1. **U1 — Platform.** Workspace, pnpm, tsdown, oxlint, oxfmt, Lefthook, commitlint, Changesets, Vitest with 100% coverage thresholds (per file, coverage domain in R14), Storybook skeleton with a11y addon, CI gates. No public UI module. A pipeline smoke export, if needed, MUST have a test and a story so the gates are real, and MUST NOT be treated as the first atom or as a public atom template.
-2. **U2 — Tokens.** Primitive / semantic / component-token pipeline and CSS variable contract; locked semantic inventory; light theme (dark per Q3); gallery stories per collection; revisable neutral default values until Q2. MUST NOT copy the example product’s palette into the default theme.
-3. **U3 — Atom contract (later).** The first atom (most likely Button + Text/Icon) as the API, a11y, story, test, and customization template. Later atoms copy this template instead of inventing a second one. Contract stays revisable until Q1; if public publish, Q2 first.
+2. **U2 — Tokens.** Primitive / semantic / component-token pipeline and CSS variable contract; locked semantic inventory including status roles; light and dark schemes; gallery stories per collection; Ctrl ink/paper identity. MUST NOT copy the unnamed reference product’s palette into the default theme.
+3. **U3 — Atom contract (later).** The first atom (most likely Button + Text/Icon) as the API, a11y, story, test, and customization template. Later atoms copy this template instead of inventing a second one. Contract stays revisable until first npm publish (after this atom batch).
 4. **U4+ (later).** Molecules → organisms (modal, table, via React Aria) → layout templates. Each layer may use only layers below it. Do not start with table/modal. Do not add React Aria before the first composite.
 
 ## Ready for Planning
@@ -443,6 +456,6 @@ This increment plans **U1** and **U2** only. Later units stay on the product tra
 Complete: actors, outcome, in/out (permanent vs deferred), a11y hybrid, customization contract, toolchain constraints, language rule, coverage domain, Storybook split, i18n, RSC, RFC 2119, acceptance.  
 Consistent: oxfmt vs oxlint are separated; Stylelint does not contradict the oxc-native goal; English-only, 100% coverage, and full Storybook are standing; this increment is toolchain + tokens.  
 Focused: one product — Ctrl UI; this slice is U1–U2.  
-Usable by planning: U1–U2 can be planned without answers to Q1 and Q4. Q2 blocks freezing Ctrl UI’s default identity, not U1 and not a revisable neutral. Implementation plans MUST use RFC 2119.
+Usable by planning: U1–U2 can be planned; Q1–Q5 are answered. Implementation plans MUST use RFC 2119.
 
 `ce-doc-review` walk-through (2026-08-19): findings 1–3, 5–8, 10–15 applied; findings 4 and 9 withdrawn into D12 (hybrid a11y).
