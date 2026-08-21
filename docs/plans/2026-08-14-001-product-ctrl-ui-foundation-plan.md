@@ -232,9 +232,10 @@ Source: the CTRL wordmark and two-circle lockup (black disk, white glint, satell
 
 - **Ink:** `#000000`. **Paper:** cool off-white near `#F2F2F2`. **Glint:** `#FFFFFF`.
 - **Action** on light is ink; **on-action** is paper or white. Dark scheme inverts: surfaces near ink, action is paper/white, on-action is ink.
-- **Radius** is generous (the mark is circular). The CTRL lockup is brand, not UI body type. UI type is a geometric sans.
+- **Radius** is generous (the mark is circular). Semantic steps in U2: `sm`, `md`, `lg`, `full` (directional defaults 8 / 12 / 16 CSS px and a pill). Exact px MAY be tuned in U2 if the family stays distinct and circular-generous. The CTRL lockup is brand, not UI body type. UI type is a geometric sans (family is Q7).
+- **Density** steps in U2: `compact`, `comfortable`, `spacious` (directional space multipliers 0.75 / 1 / 1.25). Exact multipliers MAY be tuned in U2.
 - **Status hues** (`success`, `warning`, `info`, `danger`) are muted professional ramps, distinct from action (action is ink, not a chromatic brand red). U2 generates 50–900 steps from those families. Exact status hex MAY be tuned in U2 as long as AA holds and the ramps stay distinct.
-- **Focus** is a visible ring that meets 2.4.12; it MUST NOT rely on color alone.
+- **Focus** is a visible ring that meets 2.4.12; it MUST NOT rely on color alone. U2 ships ring width 2 CSS px and offset 2 CSS px using the `focus` color as outline, not fill. Exact width/offset MAY be tuned if 2.4.12 still holds on `surface` and `action` in both schemes.
 
 An unnamed reference product’s palette MAY be used later as a **theme proof**. It MUST NOT be copied into the default theme.
 
@@ -349,11 +350,12 @@ Consequence for Ctrl UI:
 2. **Add a token.** Author adds a primitive and a semantic mapping → CSS variables update → no UI module is edited by hand to change a color role.
 3. **Add an atom (later increment).** Author builds the atom on tokens → story + a11y test → changeset → conventional commit. The consumer sees closed variants and theme, not internal primitives.
 4. **Theme in the catalog (this increment’s consumer-shaped check).** Author (or a workspace consumer) installs the package, sets semantic tokens (or picks a shipped theme), and confirms roles update in token gallery stories. A full product screen is out of validation until a consuming app exists.
-5. **Release.** Changeset on the PR → CI green → version bump + changelog → publish the ESM package.
+5. **Release (this increment).** Changeset on the PR → CI green → private version bump + changelog. Do not publish.
+6. **Release (later, after the first atom batch and Q6).** Publish the ESM package to npm.
 
 ### Acceptance examples
 
-- A consumer changes `--color-action-primary` (or the equivalent semantic token) — all primary actions and matching states follow it. Source of public UI modules is untouched.
+- A consumer changes `--color-action` (and matching `--color-on-action`) — all primary actions and matching states follow it. Source of public UI modules is untouched.
 - An icon-only `Button` without an accessible name fails the a11y test and/or a type-level ban (later increment).
 - `className` on the root changes the outer wrapper but does not remove `role`, the focus-ring contract, or the keyboard handler (later increment).
 - Commit `fixed button` is rejected; `fix(button): restore focus ring on dark theme` is accepted.
@@ -423,6 +425,11 @@ Consequence for Ctrl UI:
 - **Q4.** Answered: `ctrl-ui`. See D29.
 - **Q5.** Answered: `success`, `warning`, `info` (and on-* pairs) are in the inventory. See D21.
 - Q6. Deferred: unscoped npm name `ctrl-ui` is already taken on the registry (`ctrl-ui@0.0.8`, Brent Jackson, 2018). This increment MUST keep the workspace name per D29. First npm publish MUST NOT proceed until the name is renamed, scoped, or the registry name is obtained. This does not block U1–U2.
+- Q7. Deferred: which geometric sans family and weights should typography tokens name (system stack vs shipped files)?
+- Q8. Deferred: token gallery information architecture (grouping, painted-pair layout) beyond “one gallery per collection”.
+- Q9. Deferred: React peer range for the kit (Storybook 10 accepts 16.8–19).
+- Q10. Deferred: if RTL work starts before a UI module, does a direction token land in a U2 follow-up or with the first RTL atom?
+- Q11. Deferred: do token galleries show side-by-side light and dark values, or only the active scheme from the catalog toolbar?
 
 U1, U5, and U2 MAY be planned now. U2 MUST ship Ctrl identity (ink/paper) plus light and dark. It MUST NOT copy the unnamed reference product’s palette into the default theme.
 
@@ -467,7 +474,7 @@ Infrastructure challenger: Vite+ as a unified oxlint+oxfmt orchestrator. Rejecte
 ### Key Technical Decisions
 
 - KTD1. The repo is a pnpm workspace with two surfaces: the public kit package and a private catalog app. Catalog MUST depend on the kit via `workspace:*`. Catalog MUST NOT ship in the kit tarball. Chosen over a single-package repo because R4 forbids catalog and toolchain as runtime kit contents. Instantiates D9. Governs R4, R18.
-- KTD2. Pin **pnpm 11** via Corepack `packageManager`. Do not pin pnpm 12 (RC as of this plan). Put pnpm policy in `pnpm-workspace.yaml`. Lefthook MUST be allowed to run install scripts with `allowBuilds: { lefthook: true }`. Do not use removed `onlyBuiltDependencies`. Instantiates D9. Governs R1.
+- KTD2. Pin **pnpm 11** via Corepack `packageManager`. Do not pin pnpm 12 (RC as of this plan). Put pnpm policy in `pnpm-workspace.yaml`. `allowBuilds` MUST start with `{ lefthook: true }`. U1/U5 MUST commit the full map required for a strict pnpm 11 CI install after first install (any toolchain package whose lifecycle script is required; commonly `esbuild` when Vite/Storybook is present). `{ lefthook: true }` is the starting entry, not the complete set. Do not use removed `onlyBuiltDependencies`. Instantiates D9. Governs R1.
 - KTD3. Kit and workspace `engines.node` MUST be `>=22.18.0`. Node 22 is Maintenance LTS. 22.18 is the floor for tsdown and oxlint TypeScript config. Instantiates D10. Governs R1.
 - KTD4. Bundle the kit with **tsdown** (ESM-first, dts). Vite is catalog-only. Do not use Vite or tsup as the library bundler. Instantiates D9. Governs R4, R18, R19.
 - KTD5. Kit `package.json` `name` remains `ctrl-ui`. This increment sets `"private": true`. Do not run `changeset publish` or `npm publish`. Conflict call-out: the npm registry already publishes `ctrl-ui@0.0.8` (Brent Jackson, 2018, a JSX visual editor). Workspace installs still work. First later publish will fail until Q6 is resolved. (session-settled: user-directed — chosen over a scoped rename now: the user locked unscoped `ctrl-ui` as package identity; publish is out of this increment.) Instantiates D23, D29. Governs R11, R18.
@@ -475,9 +482,10 @@ Infrastructure challenger: Vite+ as a unified oxlint+oxfmt orchestrator. Rejecte
 - KTD7. Catalog is Storybook **10** on Vite, CSF3, `@storybook/addon-a11y`, Autodocs via `tags: ['autodocs']`. Token public exports get one gallery story per collection. Instantiates D15. Governs R15.
 - KTD8. oxlint `plugins` **replaces** default plugins. The config MUST re-list `eslint`, `typescript`, `unicorn`, and `oxc`, then add `react`, `jsx-a11y`, `vitest`, and `import`. Do not add ESLint. Instantiates D4. Governs R3.
 - KTD9. Format with **oxfmt** (0.x beta). Changesets v3 MUST set `"format": "oxfmt"` (no `prettier` key). Because the kit is private, Changesets MUST set `privatePackages.version: true`. Do not publish. Instantiates D5. Governs R3, R11.
-- KTD10. Token source of truth is TypeScript modules that emit a small CSS custom-property dump. Do not add Style Dictionary. Do not use the experimental tsdown CSS plugin as the dump path. Generated CSS MUST be a kit export and MUST be excluded from coverage. Instantiates D6. Governs R5, R8, R19.
-- KTD11. CI is GitHub Actions. It MUST run install, oxlint, oxfmt check, typecheck, Vitest with coverage, and Storybook build. Conventional commit messages MUST fail in CI as well as locally. Instantiates D3. Governs R1, R2, R3, R14, R15.
+- KTD10. Token source of truth is TypeScript modules. A Node generator in `packages/ctrl-ui/src/tokens/css.ts` MUST write `packages/ctrl-ui/src/tokens/generated/variables.css`. Tests MUST fail if the dump is stale. tsdown MUST copy that CSS file into dist (not the experimental `@tsdown/css` plugin). Kit `exports` MUST expose the CSS file so the catalog and consumers import it directly. Do not add Style Dictionary. Instantiates D6. Governs R5, R8, R19.
+- KTD11. CI is GitHub Actions. It MUST run install, oxlint, oxfmt check, typecheck, Vitest with coverage, Storybook build, and commitlint on the pushed commit range (`commitlint --from origin/main --to HEAD` with sufficient fetch-depth). Instantiates D3. Governs R1, R2, R3, R14, R15.
 - KTD12. U1 public kit surface MAY be an empty re-export barrel until U2. Do not add a fake atom or a public smoke component to satisfy gates. Coverage 100% becomes real when U2 lands author-written token modules. Land U1, U5, and U2 in one delivery so CI is never shipped green on an empty include. Governs R7 (deferred), R14, R15, D19.
+- KTD13. Public CSS custom properties follow one prefix scheme from the D21 inventory: `--color-<role>` (`--color-action`, `--color-on-action`, and the same pattern for every color role), plus `--space-*`, `--radius-*`, `--font-*`, `--density-*`, `--focus-ring-width`, `--focus-ring-offset`. Scheme switch retargets the same names. Do not use `--color-action-primary`. Governs R5, R8.
 
 ### High-Level Technical Design
 
@@ -519,6 +527,11 @@ Inferred layout (see Assumptions). Names MAY move if Corepack or Storybook 10 re
 │   └── src/
 │       ├── index.ts
 │       └── tokens/
+│           ├── primitive/
+│           ├── semantic/
+│           ├── component/
+│           ├── css.ts
+│           └── generated/
 ├── apps/catalog/
 │   ├── package.json
 │   └── .storybook/
@@ -534,7 +547,7 @@ Un-validated agent bets from a skipped scoping confirm. Reviewers MAY redirect t
 - PA1. Workspace packages live at `packages/ctrl-ui` (kit) and `apps/catalog` (Storybook host).
 - PA3. Exact oxfmt 0.x patch is chosen at install time; the plan pins the tool family, not a patch.
 - PA4. Root scripts are named `lint`, `fmt:check`, `typecheck`, `test`, and `catalog` (or `catalog:build` for CI). Exact names MAY follow Storybook 10 defaults if those names collide.
-- PA5. Component-token tier in U2 MAY be a thin typed mapping file with no UI-module consumers yet, so the three-tier pipeline exists without inventing unused component skins.
+- PA5. Component-token tier in U2 is one private passthrough module that maps semantic roles. It MUST NOT be a public collection export and MUST NOT invent named component skins until U3 names a consumer.
 
 ### Risks
 
@@ -585,7 +598,7 @@ U3 (first atoms) and U4+ (molecules and up) stay deferred. Do not reuse those ID
   1. Enable Corepack and pin pnpm 11 (KTD2).
   2. Declare workspace globs `packages/*` and `apps/*`. The catalog package MAY be added in U5; U1 MUST leave the glob ready.
   3. Kit `name` is `ctrl-ui`, `"private": true`, `"type": "module"`, `engines.node` `>=22.18.0` (KTD3, KTD5).
-  4. tsdown emits ESM plus dts. `exports` MUST expose the public entry. Token CSS export MAY wait for U2.
+  4. tsdown emits ESM plus dts. `exports` MUST expose the public entry. Token CSS export lands in U2 (KTD10).
   5. Public `src/index.ts` is a barrel until U2 (KTD12). Do not add atoms.
   6. README states workspace install only. Do not document npm publish.
 - **Execution note:** Smoke-first. Prove install and the tsdown build before adding quality tooling.
@@ -615,11 +628,13 @@ U3 (first atoms) and U4+ (molecules and up) stay deferred. Do not reuse those ID
   3. Vitest + Testing Library + axe wired in the kit. Coverage per KTD6. Until U2, included source MAY be empty; do not add a fake module (KTD12).
   4. Changesets: `format` oxfmt; `privatePackages.version: true`; no publish (KTD9).
   5. Private Storybook 10 catalog, `workspace:*` on `ctrl-ui`, a11y addon, Autodocs tags (KTD7). No token galleries yet.
-  6. GitHub Actions: Node `>=22.18.0`, Corepack pnpm 11, then lint, fmt check, typecheck, test with coverage, Storybook build (KTD11).
+  6. In `apps/catalog/.storybook/preview.ts`, define `globalTypes.scheme` (`light` | `dark`, default `light`) and a decorator that sets `data-scheme` on the story root. Import kit CSS variables when U2 lands. Until U2, the toolbar MAY exist with no token CSS.
+  7. GitHub Actions: Node `>=22.18.0`, Corepack pnpm 11, then lint, fmt check, typecheck, test with coverage, Storybook build, and commitlint on the pushed range (KTD11).
+  8. After first install, commit the complete `allowBuilds` map (KTD2).
 - **Execution note:** This is mostly packaging and config. Prefer install and gate smoke over unit coverage of config files.
 - **Patterns to follow:** `.cursor/rules/tests.mdc`; `.cursor/rules/storybook.mdc`; `.cursor/rules/toolchain.mdc`.
 - **Test scenarios:** Test expectation: none for YAML, Lefthook, commitlint, and CI config. Those gates are verified by running them. No public kit export is added here, so no colocated `*.test.tsx` is required until U2.
-- **Verification:** A non-conventional commit message is rejected by commitlint. oxlint and oxfmt check pass on the scaffold. Vitest starts with KTD6 thresholds configured. Storybook builds an empty catalog with the a11y addon. CI runs the same gates. No ESLint, Prettier, Stylelint, or React Aria dependency exists.
+- **Verification:** A non-conventional commit message is rejected by commitlint locally and in CI. oxlint and oxfmt check pass on the scaffold. Vitest starts with KTD6 thresholds configured. Storybook builds a catalog with the a11y addon and a scheme toolbar. CI runs the same gates. No ESLint, Prettier, Stylelint, or React Aria dependency exists.
 
 ### U2. Token pipeline, schemes, and galleries
 
@@ -636,9 +651,9 @@ U3 (first atoms) and U4+ (molecules and up) stay deferred. Do not reuse those ID
   - `packages/ctrl-ui/src/tokens/semantic/radius.ts`
   - `packages/ctrl-ui/src/tokens/semantic/typography.ts`
   - `packages/ctrl-ui/src/tokens/semantic/density.ts`
-  - `packages/ctrl-ui/src/tokens/component/` (thin typed tier; PA5)
-  - `packages/ctrl-ui/src/tokens/css.ts` or a small generator that writes generated CSS
-  - generated CSS under `packages/ctrl-ui/src/tokens/generated/` (excluded from coverage)
+  - `packages/ctrl-ui/src/tokens/component/index.ts` (private passthrough; PA5)
+  - `packages/ctrl-ui/src/tokens/css.ts` (Node generator)
+  - `packages/ctrl-ui/src/tokens/generated/variables.css` (committed dump; excluded from coverage)
   - `packages/ctrl-ui/src/tokens/color.test.ts`
   - `packages/ctrl-ui/src/tokens/contrast.test.ts`
   - `packages/ctrl-ui/src/tokens/space.test.ts`
@@ -653,12 +668,13 @@ U3 (first atoms) and U4+ (molecules and up) stay deferred. Do not reuse those ID
 - **Approach:**
   1. Primitive color ramps 50–900. No A100–A700 (D28). Primitives stay private.
   2. Semantic roles per D21. Light: action is ink `#000000`, on-action is paper or white, surface is cool paper near `#F2F2F2`. Dark inverts surfaces and action as specified in Ctrl visual language. Status hues are muted and distinct from action. Exact status hex MAY be tuned if AA holds (D21).
-  3. Space, radius, typography, density, focus ring, minimum 24×24 target, and `prefers-reduced-motion` live in tokens. No ARIA library.
-  4. Generate CSS custom properties from TypeScript (KTD10). Scheme switch is CSS variables, not forked modules (R8).
-  5. Public API exports collection modules only. Consumers MUST NOT import primitive steps.
-  6. One gallery story per collection. Titles `Tokens/Color`, `Tokens/Space`, `Tokens/Typography`, `Tokens/Radius`, `Tokens/Density`. Autodocs and a11y addon on. Do not invent Default/variant/state stories per constant.
-  7. Tests follow specification-style titles (R16). Contrast tests cover painted pairs at AA.
+  3. Space, radius, typography, density, focus ring, minimum 24×24 target, and `prefers-reduced-motion` live in tokens. No ARIA library. Radius steps: `sm` / `md` / `lg` / `full` (defaults 8 / 12 / 16 CSS px and pill). Density steps: `compact` / `comfortable` / `spacious` (defaults 0.75 / 1 / 1.25 space multipliers). Focus ring: width 2 CSS px, offset 2 CSS px, outline using `--color-focus`, not fill. Exact values MAY be tuned as in the visual-language section.
+  4. Generate CSS custom properties from TypeScript into `generated/variables.css` (KTD10). Names follow KTD13. Scheme switch is CSS variables via `data-scheme`, not forked modules (R8).
+  5. Public API exports collection modules only. Consumers MUST NOT import primitive steps. Component-token tier is one private passthrough module (PA5). Do not export it as a collection. Do not invent named component skins.
+  6. One gallery story per collection. Titles `Tokens/Color`, `Tokens/Space`, `Tokens/Typography`, `Tokens/Radius`, `Tokens/Density`. Autodocs and a11y addon on. Do not invent Default/variant/state stories per constant. Each token row MUST show a visible token name and an accessible name. Painted pairs MUST label foreground and background. Gallery stories MUST pass axe with no color-only information violations.
+  7. Tests follow specification-style titles (R16). Contrast tests cover painted pairs at AA. Focus-ring contrast MUST meet 2.4.12 on `surface` and `action` in both schemes.
   8. Do not copy the unnamed reference product palette into the default theme (D20).
+  9. U2 verification includes toggling the catalog scheme toolbar and confirming all five galleries re-resolve semantic roles without editing token TypeScript.
 - **Execution note:** Implement token resolution and contrast tests first, then the CSS dump, then galleries.
 - **Patterns to follow:** `.cursor/rules/design-tokens.mdc`; `.cursor/rules/atomic-design-layers.mdc`; token inventory and identity sections in this file.
 - **Test scenarios:**
@@ -668,14 +684,21 @@ U3 (first atoms) and U4+ (molecules and up) stay deferred. Do not reuse those ID
   - Primitive ramps expose steps 50 through 900 and are not part of the public export surface.
   - Public exports omit accent A100–A700 steps.
   - Semantic `success`, `warning`, `info`, and `danger` (and on-* pairs) exist and are distinct from `action`.
-  - A focus token exists and is not implemented as color-alone contrast.
+  - A focus token exists and is not implemented as color-alone contrast. Ring width is 2 CSS px and offset is 2 CSS px unless tuned under the visual-language MAY.
+  - Focus-ring contrast meets WCAG 2.4.12 on `surface` and `action` backgrounds in both schemes.
   - A minimum target-size token is 24 CSS px.
   - A reduced-motion token or media contract exists for `prefers-reduced-motion`.
-  - The CSS dump contains custom properties for every semantic color role in both schemes.
-  - Switching the catalog scheme updates CSS variables without editing token TypeScript by hand.
+  - Semantic radius steps `sm`, `md`, `lg`, and `full` exist. Density steps `compact`, `comfortable`, and `spacious` exist.
+  - The CSS dump contains custom properties named per KTD13 for every semantic color role in both schemes.
+  - Switching the catalog scheme toolbar updates CSS variables without editing token TypeScript by hand. All five galleries re-resolve roles.
   - Coverage include lists author-written token modules and excludes generated CSS, stories, and the barrel.
   - Gallery stories exist for Color, Space, Typography, Radius, and Density under Atomic Design titles.
-- **Verification:** Token galleries render in Storybook. Theme switch changes semantic roles. Coverage is 100% on included kit files. Generated CSS is importable by ordinary React and is RSC-safe. No atom, React Aria, or employer-named theme exists.
+  - The `Tokens/Color` gallery renders every D21 semantic color role (`surface`, `on-surface`, `action`, `on-action`, `danger`, `on-danger`, `success`, `on-success`, `warning`, `on-warning`, `info`, `on-info`, `focus`) with token name, swatch, and resolved value for the active scheme.
+  - Radius and Density galleries list every step with name and resolved value.
+  - Each gallery token row exposes a visible token name and an accessible name. Painted pairs show foreground and background labels. Gallery stories pass axe with zero color-only information violations.
+  - The component-token module is private, passthrough-only, and absent from public collection exports.
+  - A stale `generated/variables.css` fails the generator test.
+- **Verification:** Token galleries render in Storybook. The scheme toolbar changes semantic roles in all five galleries. Coverage is 100% on included kit files. Generated CSS is importable by ordinary React and is RSC-safe. Public exports omit primitives and the component-token passthrough. No atom, React Aria, or employer-named theme exists.
 
 ---
 
@@ -691,7 +714,7 @@ Commands below exist only after U1 and U5 land. Do not invent extra orchestrator
 | Types | `pnpm typecheck` | U1, U5, U2 |
 | Unit + coverage | `pnpm test` | U2 (gate configured in U5; 100% real in U2) |
 | Catalog | `pnpm catalog` or `pnpm catalog:build` | U5 skeleton; U2 galleries |
-| Commit message | commitlint via Lefthook | U5, U2 |
+| Commit message | commitlint via Lefthook and CI (`--from origin/main --to HEAD`) | U5, U2 |
 | CI | GitHub Actions workflow | same gates as local |
 
 U1 is done when install and tsdown build succeed. U5 is done when the table runs on the scaffold. U2 is done when `pnpm test` reports 100% statements, branches, functions, and lines per included file and galleries build.
@@ -715,5 +738,20 @@ There is no `release:validate` and no npm publish in this increment.
 | Unit | Done when |
 | --- | --- |
 | U1 | pnpm 11 workspace installs; tsdown ESM + dts build exists; kit name is `ctrl-ui`; no public atom |
-| U5 | oxlint, oxfmt, commitlint, Vitest thresholds, Changesets, Storybook 10 skeleton, and CI all run; no ESLint/Prettier/Stylelint |
-| U2 | Semantic inventory + light/dark Ctrl identity; AA contrast tests; CSS dump; five token galleries; 100% coverage on included kit source |
+| U5 | oxlint, oxfmt, commitlint (local and CI), Vitest thresholds, Changesets, Storybook 10 skeleton with scheme toolbar, and CI all run; no ESLint/Prettier/Stylelint |
+| U2 | Semantic inventory + light/dark Ctrl identity; AA contrast tests; CSS dump with KTD13 names; five token galleries including Color inventory coverage; 100% coverage on included kit source |
+
+---
+
+## Deferred / Open Questions
+
+### From 2026-08-21 review
+
+- **Token gallery layout and grouping unspecified** — Implementation Unit U2 (P2, design-lens, confidence 75)
+
+  Without gallery information-architecture rules, authors will invent inconsistent layouts. A flat grid, missing painted-pair context, or hidden component-tier mappings makes the catalog unreliable for hierarchy and white-label review. One gallery per collection is not enough layout guidance. See Q8.
+
+- **Typography font family and scale unresolved** — Ctrl UI visual language / U2 (P2, design-lens, confidence 75)
+
+  Typography tokens and the Typography gallery cannot be implemented consistently while the typeface remains a qualitative geometric-sans label with no family, weights, or step scale. See Q7.
+
