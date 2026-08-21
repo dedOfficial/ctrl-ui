@@ -6,7 +6,7 @@ execution: code
 type: feat
 title: Ctrl UI Foundation - Plan
 date: 2026-08-14
-doc_review: 2026-08-19
+doc_review: 2026-08-21
 ---
 
 # Ctrl UI Foundation - Plan
@@ -23,7 +23,7 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "S
 
 **Stop conditions.** Do not add atoms, molecules, organisms, templates, React Aria, Stylelint, ESLint, Prettier, or npm publish.
 
-**Execution profile.** Greenfield. Smoke-first for U1/U5 (install, lint, test, catalog). Token units are feature-bearing with specification-style tests.
+**Execution profile.** Greenfield. Smoke-first: U1 is install plus the tsdown build; U5 is lint, format, test wiring, and the catalog skeleton. Token units are feature-bearing with specification-style tests.
 
 **Open blockers.** None for this increment. Unscoped npm name `ctrl-ui` collides with an existing registry package; that blocks later publish, not U1–U2.
 
@@ -221,7 +221,7 @@ These decisions are product constraints. Concrete files and versions are in the 
 Foundation semantic roles:
 
 - Color: `surface`, `on-surface`, `action`, `on-action`, `danger`, `on-danger`, `success`, `on-success`, `warning`, `on-warning`, `info`, `on-info`, `focus`
-- Plus: space, radius, typography, density
+- Plus: space, radius, typography, density, minimum 24×24 target size, prefers-reduced-motion
 - Schemes: **light and dark** in the first token drop
 
 Each painted foreground/background pair MUST meet WCAG 2.2 AA contrast. Primitive tokens stay private. UI modules and consumers use semantic or component tokens only.
@@ -395,7 +395,7 @@ Consequence for Ctrl UI:
 - **D18.** Standing agent rules are single-responsibility files in `.cursor/rules/` (product shape, layers, tokens, customization, accessibility, toolchain, tests, Storybook, implementation plans, English). `session-settled: user-stated`
 - **D19.** This increment is toolchain + tokens only. Atoms and later layers are the same product, later slices. D14/D15 gate exports that exist; they do not create later layers. `session-settled: user-stated`
 - **D20.** Ctrl UI identity is the CTRL monochrome lockup (ink `#000000` on cool paper near `#F2F2F2`, white glint). An unnamed reference product is a theme proof, not a palette to copy. `session-settled: user-stated`
-- **D21.** Foundation semantic inventory: surface, on-surface, action, on-action, danger, on-danger, success, on-success, warning, on-warning, info, on-info, focus; plus space, radius, typography, density. Light and dark schemes in U2. Painted pairs meet AA. Primitives stay private. `session-settled: user-stated`
+- **D21.** Foundation semantic inventory: surface, on-surface, action, on-action, danger, on-danger, success, on-success, warning, on-warning, info, on-info, focus; plus space, radius, typography, density, minimum 24×24 target size, and prefers-reduced-motion. Light and dark schemes in U2. Painted pairs meet AA. Primitives stay private. `session-settled: user-stated`
 - **D22.** This foundation validates kit-author catalog composition. A consumer-shaped screen is out of validation until a consuming app exists. `session-settled: user-stated`
 - **D23.** First atom public API stays revisable until first npm publish. U1–U2 ship as a workspace package. npm publish waits for the first atom batch. Semver majors start at that publish. `session-settled: user-stated`
 - **D24.** Third token tier is **component tokens**. UI modules are atoms, molecules, organisms, and templates — not “components” in token context. `session-settled: user-stated`
