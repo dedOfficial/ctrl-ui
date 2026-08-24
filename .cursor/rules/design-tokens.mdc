@@ -14,8 +14,9 @@ UI modules and consumers MUST use semantic or component tokens. They MUST NOT us
 Foundation semantic inventory:
 
 - Color roles: `surface`, `on-surface`, `action`, `on-action`, `danger`, `on-danger`, `success`, `on-success`, `warning`, `on-warning`, `info`, `on-info`, `focus`
-- Plus: space, radius, typography, density
+- Plus: space, radius, typography (Inter), density, direction (`ltr` | `rtl`)
 - Schemes: light and dark in the first token drop
+- Token galleries MUST show light and dark side by side
 
 Each painted foreground/background pair MUST meet WCAG 2.2 AA contrast.
 
@@ -26,3 +27,7 @@ Primitive color ramps SHOULD use stepped scales 50–900 (one hue family per ram
 An unnamed reference product’s palette MUST NOT be copied into the default theme. It MAY be used as a theme proof. Distinct ramps are REQUIRED when a consumer brand and `danger` would otherwise share one red.
 
 This increment ships the token pipeline. Per-atom component tokens MAY wait until the first atom.
+
+UI typeface is Inter. Tokens MUST name family Inter. Catalog MUST load Inter via `@fontsource/inter` for weights 400, 500, 600, and 700. Do not assume Inter is installed on the OS.
+
+This increment MUST ship direction tokens, a `dir` contract (`ltr` | `rtl`), and logical CSS for directional inset and space.

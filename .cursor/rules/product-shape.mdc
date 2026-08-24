@@ -15,6 +15,6 @@ The kit MUST work in ordinary React. RSC hosts MUST be able to import it without
 
 A feature consumer MUST be able to install the public (or workspace) package and apply semantic tokens without cloning this repository.
 
-The public package name is `ctrl-ui`. U1–U2 ship as a workspace package. npm publish waits until the first atom batch.
+The public package name is `@ctrl/ui`. Workspace directory is `packages/ctrl-ui`. U1–U2 ship as a workspace package. npm publish waits until the first atom batch.
 
 This foundation increment is toolchain + tokens. A consumer-shaped screen is out of validation until a consuming app exists.

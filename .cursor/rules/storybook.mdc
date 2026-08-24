@@ -11,6 +11,6 @@ Story `title` MUST follow Atomic Design (`Atoms/Button`, `Tokens/Color`, `Organi
 
 **UI modules** (atoms, molecules, organisms, templates): every public export MUST have CSF3 stories for Default, each public variant, and each required public state (disabled, loading, invalid, focus-visible, hover, pressed where the public API exposes them). A public UI module without those stories MUST NOT merge.
 
-**Token collections:** one gallery story per public token collection (`Tokens/Color`, `Tokens/Space`, `Tokens/Typography`, and peers). A token public export is a collection module, not an individual token constant. Do not invent Default/variant/state stories per constant.
+**Token collections:** one gallery story per public token collection (`Tokens/Color`, `Tokens/Space`, `Tokens/Typography`, `Tokens/Radius`, `Tokens/Density`, `Tokens/Direction`, and peers). A token public export is a collection module, not an individual token constant. Do not invent Default/variant/state stories per constant. Each token gallery MUST show light and dark values side by side.
 
 This increment ships token galleries only. Coverage and Storybook gates MUST NOT be used as a reason to create atoms or later layers.
