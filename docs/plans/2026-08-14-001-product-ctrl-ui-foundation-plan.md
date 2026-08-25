@@ -25,7 +25,7 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "S
 
 **Execution profile.** Greenfield. Smoke-first: U1 is install plus the tsdown build; U5 is lint, format, test wiring, and the catalog skeleton. Token units are feature-bearing with specification-style tests.
 
-**Open blockers.** None for this increment. Package identity is scoped `@ctrl/ui` (Q6). Unscoped `ctrl-ui` stays a third-party registry collision and MUST NOT be the kit name. First npm publish still waits for the first atom batch and for npm-org access to the `@ctrl` scope.
+**Open blockers.** None for this increment. Package identity is unscoped `ctrlds` (Q6). Unscoped `ctrl-ui`, unscoped `ctrlkit`, and scoped `@ctrl/ui` MUST NOT be the kit name. First npm publish still waits for the first atom batch. Registry GET for `ctrlds` returned HTTP 404 at plan time.
 
 **Product Contract preservation.** Restructured, no scope change: origin Platform is U1 + U5; origin U3 atoms and U4+ layers stay deferred.
 
@@ -57,7 +57,7 @@ This increment executes U1, U5, and U2. It MUST NOT change layer, a11y, or custo
 
 ### Summary
 
-Ctrl UI is an opinionated React + TypeScript kit. This slice delivers the pnpm workspace, kit package `@ctrl/ui`, catalog Storybook, quality gates, and the token pipeline with light and dark CTRL identity. It does not deliver atoms.
+Ctrl UI is an opinionated React + TypeScript kit. This slice delivers the pnpm workspace, kit package `ctrlds`, catalog Storybook, quality gates, and the token pipeline with light and dark CTRL identity. It does not deliver atoms.
 
 ### Primary actors
 
@@ -103,7 +103,7 @@ All documents, plans, READMEs, Storybook docs, JSDoc, inline comments, commit me
 - Vitest with a strict 100% coverage gate on kit source (domain below).
 - English-only committed prose.
 - RFC 2119 keyword language in every future implementation plan.
-- Workspace package `@ctrl/ui` that a consumer can install without cloning this repository; semantic tokens apply after install. npm publish waits for the first atom batch.
+- Workspace package `ctrlds` that a consumer can install without cloning this repository; semantic tokens apply after install. npm publish waits for the first atom batch.
 - Token/CSS modules that ordinary React and RSC hosts can import without a Next-specific package.
 - Direction tokens, a `dir` contract, and logical CSS so RTL layout is encoded in this increment. Typography tokens name Inter.
 
@@ -330,7 +330,7 @@ Consequence for Ctrl UI:
 - **R15.** Every public export MUST have Storybook stories. Token collections MUST have one gallery story per collection module. A public UI module without the required story matrix MUST NOT merge.
 - **R16.** Test titles MUST follow the specification-style convention in `.cursor/rules/tests.mdc` (`describe` + `it`, no “should” prefix, behavior not implementation).
 - **R17.** Every implementation plan MUST use RFC 2119 keywords and include the RFC 2119 key-words sentence.
-- **R18.** A feature consumer can install the public (or workspace) package `@ctrl/ui`, satisfy the React 18–19 peer, and apply semantic tokens without cloning this repository.
+- **R18.** A feature consumer can install the public (or workspace) package `ctrlds`, satisfy the React 18–19 peer, and apply semantic tokens without cloning this repository.
 - **R19.** The kit works in ordinary React 18 and React 19. RSC hosts can import it without a Next-specific package. Token/CSS modules in this increment are RSC-safe.
 
 **Standing (when the relevant layer exists)**
@@ -352,7 +352,7 @@ Consequence for Ctrl UI:
 3. **Add an atom (later increment).** Author builds the atom on tokens → story + a11y test → changeset → conventional commit. The consumer sees closed variants and theme, not internal primitives.
 4. **Theme in the catalog (this increment’s consumer-shaped check).** Author (or a workspace consumer) installs the package, sets semantic tokens (or picks a shipped theme), and confirms roles update in token gallery stories. A full product screen is out of validation until a consuming app exists.
 5. **Release (this increment).** Changeset on the PR → CI green → private version bump + changelog. Do not publish.
-6. **Release (later, after the first atom batch).** Publish `@ctrl/ui` to npm. First publish requires access to the npm `@ctrl` organization.
+6. **Release (later, after the first atom batch).** Publish `ctrlds` to npm.
 
 ### Acceptance examples
 
@@ -406,13 +406,13 @@ Consequence for Ctrl UI:
 - **D26.** Ordinary React 18 and React 19 are the hosts. No Next-specific package. Client modules are marked `"use client"` when they use client APIs. `session-settled: user-stated`
 - **D27.** A feature consumer can install the package without cloning this repository. Import of a public atom is a standing requirement when atoms exist. `session-settled: user-stated`
 - **D28.** Primitive color ramps use stepped 50–900 scales. Accent A100–A700 are not required in U2. Public API stays semantic. An example brand is a theme proof, not the default ramp. `session-settled: user-stated`
-- **D29.** Public package name is `@ctrl/ui`. Workspace directory remains `packages/ctrl-ui`. Unscoped `ctrl-ui` is a third-party registry package and MUST NOT be the kit name. `session-settled: user-stated` (overrides the earlier unscoped `ctrl-ui` lock; chosen over keeping that name or waiting to obtain it)
+- **D29.** Public package name is `ctrlds`. Workspace directory remains `packages/ctrl-ui`. Unscoped `ctrl-ui`, unscoped `ctrlkit`, and scoped `@ctrl/ui` MUST NOT be the kit name. `session-settled: user-stated` (overrides earlier `ctrl-ui`, `@ctrl/ui`, and `ctrlkit` locks; chosen because those names collide or sit under an occupied npm org, and `ctrlds` was unpublished at plan time)
 - **D30.** Light and dark schemes ship in the U2 token drop. Token galleries MUST show both schemes side by side. `session-settled: user-stated`
 - **D31.** UI typeface is Inter. Tokens MUST name family Inter. Catalog MUST load Inter via `@fontsource/inter` for weights 400, 500, 600, and 700. Kit `--font-family` MUST be `Inter, system-ui, sans-serif`. Do not assume OS-installed Inter. Semantic type sizes MAY be tuned in U2; directional defaults: `sm` 14 / `md` 16 / `lg` 20 / `xl` 24 CSS px. `session-settled: user-stated` (family); weights and size steps are recommended defaults so U2 is implementable.
 
 ### Assumptions
 
-- **A1.** The repository is public MIT. The public package name is `@ctrl/ui`. First npm publish waits for the first atom batch; U1–U2 are workspace-only. The npm organization `@ctrl` already publishes unrelated packages (for example `@ctrl/tinycolor`). Package `@ctrl/ui` was unpublished (HTTP 404) at plan time. First npm publish MUST use an org the author controls for `@ctrl`, or publish will fail. That does not block U1–U2 (`private: true`).
+- **A1.** The repository is public MIT. The public package name is `ctrlds`. First npm publish waits for the first atom batch; U1–U2 are workspace-only. Registry GET for `ctrlds` returned HTTP 404 at plan time. Unscoped `ctrl-ui@0.0.8`, unscoped `ctrlkit@0.0.2`, and the occupied `@ctrl` npm org MUST NOT be used as the kit name. That does not block U1–U2 (`private: true`).
 - **A2.** There is no first consuming app in production yet. The first target consumer is a reference product / hoped-for pilot, not a current installer, not a committed rewrite, and not a brand whose palette is copied into Ctrl UI.
 - **A3.** Storybook is enough documentation catalog; a marketing docs site is not needed in the foundation.
 - **A4.** A full localization platform is not built now. String overrides and RTL are requirements (D25), not this assumption.
@@ -421,12 +421,12 @@ Consequence for Ctrl UI:
 
 ### Outstanding questions
 
-- **Q1.** Answered: workspace package until the first atom batch; then npm as `@ctrl/ui`. See D23, D29.
+- **Q1.** Answered: workspace package until the first atom batch; then npm as `ctrlds`. See D23, D29.
 - **Q2.** Answered: CTRL monochrome lockup. See D20.
 - **Q3.** Answered: light and dark in U2. See D30.
-- **Q4.** Answered: `@ctrl/ui`. See D29.
+- **Q4.** Answered: `ctrlds`. See D29.
 - **Q5.** Answered: `success`, `warning`, `info` (and on-* pairs) are in the inventory. See D21.
-- **Q6.** Answered: scoped npm name `@ctrl/ui`. Unscoped `ctrl-ui@0.0.8` is unrelated and MUST NOT be the kit name. See D29, KTD5.
+- **Q6.** Answered: unscoped npm name `ctrlds`. Unscoped `ctrl-ui@0.0.8`, unscoped `ctrlkit@0.0.2`, and scoped `@ctrl/ui` MUST NOT be the kit name. See D29, KTD5.
 - **Q7.** Answered: Inter, shipped via `@fontsource/inter` (weights 400, 500, 600, 700). See D31.
 - Q8. Deferred: token gallery information architecture (grouping, painted-pair layout) beyond “one gallery per collection” and the locked side-by-side light/dark rule.
 - **Q9.** Answered: React peer range is `^18.0.0 || ^19.0.0`. See D10, D26.
@@ -479,7 +479,7 @@ Infrastructure challenger: Vite+ as a unified oxlint+oxfmt orchestrator. Rejecte
 - KTD2. Pin **pnpm 11** via Corepack `packageManager`. Do not pin pnpm 12 (RC as of this plan). Put pnpm policy in `pnpm-workspace.yaml`. `allowBuilds` MUST start with `{ lefthook: true }`. U1/U5 MUST commit the full map required for a strict pnpm 11 CI install after first install (any toolchain package whose lifecycle script is required; commonly `esbuild` when Vite/Storybook is present). `{ lefthook: true }` is the starting entry, not the complete set. Do not use removed `onlyBuiltDependencies`. Instantiates D9. Governs R1.
 - KTD3. Kit and workspace `engines.node` MUST be `>=22.18.0`. Node 22 is Maintenance LTS. 22.18 is the floor for tsdown and oxlint TypeScript config. Instantiates D10. Governs R1.
 - KTD4. Bundle the kit with **tsdown** (ESM-first, dts). Vite is catalog-only. Do not use Vite or tsup as the library bundler. Instantiates D9. Governs R4, R18, R19.
-- KTD5. Kit `package.json` `name` is `@ctrl/ui`. Workspace folder remains `packages/ctrl-ui`. This increment sets `"private": true`. Do not run `changeset publish` or `npm publish`. Unscoped `ctrl-ui@0.0.8` (Brent Jackson, 2018) is unrelated and MUST NOT be the kit name. Package `@ctrl/ui` was HTTP 404 at plan time. The npm org `@ctrl` already publishes unrelated packages (for example `@ctrl/tinycolor`). First later publish requires org access the author controls. (session-settled: user-directed — chosen over keeping unscoped `ctrl-ui` or waiting to obtain that registry name.) Instantiates D23, D29. Governs R11, R18.
+- KTD5. Kit `package.json` `name` is `ctrlds`. Workspace folder remains `packages/ctrl-ui`. This increment sets `"private": true`. Do not run `changeset publish` or `npm publish`. Registry GET for `ctrlds` returned HTTP 404 at plan time. Unscoped `ctrl-ui@0.0.8`, unscoped `ctrlkit@0.0.2`, and scoped `@ctrl/ui` MUST NOT be the kit name. (session-settled: user-directed — chosen over those rejected names because they collide or sit under an occupied npm org.) Instantiates D23, D29. Governs R11, R18.
 - KTD6. Vitest 4 with provider **istanbul**. `coverage.include` MUST list author-written kit `.ts` / `.tsx`. `coverage.all` is gone in Vitest 4. Thresholds MUST use `100: true` and `perFile: true`. Exclude `*.stories.*`, type-only files, generated token CSS, and re-export barrels. Instantiates D14. Governs R14, R16.
 - KTD7. Catalog is Storybook **10** on Vite, CSF3, `@storybook/addon-a11y`, Autodocs via `tags: ['autodocs']`. Token public exports get one gallery story per collection. Each gallery MUST render light and dark side by side. Catalog MUST load Inter via `@fontsource/inter` (weights 400, 500, 600, 700). Catalog MUST set `dir` from a direction toolbar (`ltr` | `rtl`) on the story root. Instantiates D15, D25, D31. Governs R15, R20.
 - KTD8. oxlint `plugins` **replaces** default plugins. The config MUST re-list `eslint`, `typescript`, `unicorn`, and `oxc`, then add `react`, `jsx-a11y`, `vitest`, and `import`. Do not add ESLint. Instantiates D4. Governs R3.
@@ -556,7 +556,7 @@ Un-validated agent bets from a skipped scoping confirm. Reviewers MAY redirect t
 
 - oxfmt is 0.x. A patch MAY change CLI flags. Mitigation: pin the installed version in the lockfile; do not add Prettier if oxfmt breaks — wait or pin an earlier 0.x.
 - pnpm 11 defaults `minimumReleaseAge` to one day. A just-published toolchain package MAY fail to resolve. Mitigation: only lower `minimumReleaseAge` if install is blocked, and document the exception in `pnpm-workspace.yaml`.
-- npm org `@ctrl` is occupied by unrelated packages. Mitigation: stay private this increment; first publish needs org access. Workspace name `@ctrl/ui` is valid without that access.
+- Rejected npm names collide (`ctrl-ui@0.0.8`, `ctrlkit@0.0.2`, occupied `@ctrl` org). Mitigation: kit name is `ctrlds`; stay private this increment.
 - Empty coverage include between U1 and U2 can make CI lie. Mitigation: KTD12 — ship U1, U5, and U2 together.
 
 ### Sequencing
@@ -571,7 +571,9 @@ U3 (first atoms) and U4+ (molecules and up) stay deferred. Do not reuse those ID
 
 - Repo at plan time is docs-only: no `package.json`, no kit source, no CI. There is no local pattern to copy.
 - npm `ctrl-ui@0.0.8` (unrelated): https://registry.npmjs.org/ctrl-ui
+- npm `ctrlkit@0.0.2` (unrelated): https://registry.npmjs.org/ctrlkit
 - npm `@ctrl/ui` was HTTP 404 at plan time; `@ctrl/tinycolor` exists under the same scope.
+- npm `ctrlds` was HTTP 404 at plan time: https://registry.npmjs.org/ctrlds
 - pnpm 11 (2026-04-28): policy in `pnpm-workspace.yaml`; `allowBuilds` replaces `onlyBuiltDependencies`. https://pnpm.io/blog/releases/11.0
 - Vitest 4: `coverage.include` is required; `coverage.all` removed.
 - oxlint: a `plugins` array replaces defaults; omitted core plugins stay off.
@@ -581,9 +583,9 @@ U3 (first atoms) and U4+ (molecules and up) stay deferred. Do not reuse those ID
 
 ## Implementation Units
 
-### U1. Workspace and tsdown package `@ctrl/ui`
+### U1. Workspace and tsdown package `ctrlds`
 
-- **Goal:** A cloneable pnpm workspace that builds an ESM kit package named `@ctrl/ui` with React 18–19 as a peer.
+- **Goal:** A cloneable pnpm workspace that builds an ESM kit package named `ctrlds` with React 18–19 as a peer.
 - **Requirements:** R1, R4, R13, R18, R19
 - **Dependencies:** none
 - **Files:**
@@ -601,14 +603,14 @@ U3 (first atoms) and U4+ (molecules and up) stay deferred. Do not reuse those ID
 - **Approach:**
   1. Enable Corepack and pin pnpm 11 (KTD2).
   2. Declare workspace globs `packages/*` and `apps/*`. The catalog package MAY be added in U5; U1 MUST leave the glob ready.
-  3. Kit `name` is `@ctrl/ui`, `"private": true`, `"type": "module"`, `engines.node` `>=22.18.0`, `peerDependencies.react` and `react-dom` `^18.0.0 || ^19.0.0` (KTD3, KTD5, KTD14).
+  3. Kit `name` is `ctrlds`, `"private": true`, `"type": "module"`, `engines.node` `>=22.18.0`, `peerDependencies.react` and `react-dom` `^18.0.0 || ^19.0.0` (KTD3, KTD5, KTD14).
   4. tsdown emits ESM plus dts. `exports` MUST expose the public entry. Token CSS export lands in U2 (KTD10).
   5. Public `src/index.ts` is a barrel until U2 (KTD12). Do not add atoms.
   6. README states workspace install only. Do not document npm publish.
 - **Execution note:** Smoke-first. Prove install and the tsdown build before adding quality tooling.
 - **Patterns to follow:** `.cursor/rules/toolchain.mdc`; product toolchain table in this file.
 - **Test scenarios:** Test expectation: none — packaging and build config. Prove by a successful install and tsdown build, not by kit unit tests.
-- **Verification:** Corepack uses pnpm 11. Install completes. tsdown produces an ESM build with types. The kit package name is `@ctrl/ui` and private. React peers are `^18.0.0 || ^19.0.0`. No catalog files are kit runtime dependencies. No public atom exists.
+- **Verification:** Corepack uses pnpm 11. Install completes. tsdown produces an ESM build with types. The kit package name is `ctrlds` and private. React peers are `^18.0.0 || ^19.0.0`. No catalog files are kit runtime dependencies. No public atom exists.
 
 ### U5. Quality gates, catalog, and CI
 
@@ -631,7 +633,7 @@ U3 (first atoms) and U4+ (molecules and up) stay deferred. Do not reuse those ID
   2. Lefthook: staged oxlint and oxfmt; commit-msg via commitlint Conventional Commits.
   3. Vitest + Testing Library + axe wired in the kit. Coverage per KTD6. Until U2, included source MAY be empty; do not add a fake module (KTD12).
   4. Changesets: `format` oxfmt; `privatePackages.version: true`; no publish (KTD9).
-  5. Private Storybook 10 catalog, `workspace:*` on `@ctrl/ui`, a11y addon, Autodocs tags (KTD7). No token galleries yet.
+  5. Private Storybook 10 catalog, `workspace:*` on `ctrlds`, a11y addon, Autodocs tags (KTD7). No token galleries yet.
   6. In `apps/catalog/.storybook/preview.ts`, define `globalTypes.scheme` (`light` | `dark`, default `light`) and `globalTypes.direction` (`ltr` | `rtl`, default `ltr`). A decorator MUST set `data-scheme` and `dir` on the story root. Import kit CSS variables when U2 lands. Until U2, the toolbars MAY exist with no token CSS. Import `@fontsource/inter` weight files when U2 lands.
   7. GitHub Actions: Node `>=22.18.0`, Corepack pnpm 11, then lint, fmt check, typecheck, test with coverage, Storybook build, and commitlint on the pushed range (KTD11).
   8. After first install, commit the complete `allowBuilds` map (KTD2).
@@ -741,13 +743,13 @@ There is no `release:validate` and no npm publish in this increment.
 - Product stop conditions hold: no atoms, molecules, organisms, templates, React Aria, Stylelint, ESLint, Prettier, or npm publish.
 - R13 English-only holds for every committed file in the diff.
 - Abandoned-attempt files (failed config experiments, unused generators) are deleted from the diff.
-- Workspace package `@ctrl/ui` is private. First npm publish waits for the first atom batch and for `@ctrl` org access.
+- Workspace package `ctrlds` is private. First npm publish waits for the first atom batch.
 
 ### Per unit
 
 | Unit | Done when |
 | --- | --- |
-| U1 | pnpm 11 workspace installs; tsdown ESM + dts build exists; kit name is `@ctrl/ui`; React peers are `^18.0.0 || ^19.0.0`; no public atom |
+| U1 | pnpm 11 workspace installs; tsdown ESM + dts build exists; kit name is `ctrlds`; React peers are `^18.0.0 || ^19.0.0`; no public atom |
 | U5 | oxlint, oxfmt, commitlint (local and CI), Vitest thresholds, Changesets, Storybook 10 skeleton with scheme and direction toolbars, and CI all run; no ESLint/Prettier/Stylelint |
 | U2 | Semantic inventory + light/dark Ctrl identity + Inter + direction tokens; AA contrast tests; CSS dump with KTD13 names and logical properties; six token galleries with side-by-side light/dark including Color inventory coverage; 100% coverage on included kit source |
 
