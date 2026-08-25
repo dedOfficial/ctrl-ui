@@ -1,0 +1,30 @@
+{
+  "name": "ctrl-ui",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "pnpm --filter ctrlds build",
+    "lint": "oxlint .",
+    "fmt": "oxfmt .",
+    "fmt:check": "oxfmt --check .",
+    "typecheck": "pnpm --filter ctrlds build && pnpm -r typecheck",
+    "test": "pnpm --filter ctrlds test",
+    "catalog": "pnpm --filter ctrlds build && pnpm --filter catalog storybook",
+    "catalog:build": "pnpm --filter ctrlds build && pnpm --filter catalog build-storybook",
+    "tokens:generate": "pnpm --filter ctrlds tokens:generate",
+    "prepare": "lefthook install --force"
+  },
+  "devDependencies": {
+    "@changesets/cli": "^3.0.1",
+    "@commitlint/cli": "^21.2.2",
+    "@commitlint/config-conventional": "^21.2.2",
+    "lefthook": "^2.1.10",
+    "oxfmt": "^0.65.0",
+    "oxlint": "^1.80.0",
+    "typescript": "~5.9.3"
+  },
+  "engines": {
+    "node": ">=22.18.0"
+  },
+  "packageManager": "pnpm@11.24.0"
+}
