@@ -6,7 +6,7 @@ execution: code
 type: feat
 title: Ctrl UI Foundation - Plan
 date: 2026-08-14
-doc_review: 2026-08-21
+doc_review: 2026-08-25
 ---
 
 # Ctrl UI Foundation - Plan
@@ -94,7 +94,7 @@ All documents, plans, READMEs, Storybook docs, JSDoc, inline comments, commit me
 
 ### In scope
 
-**This increment (U1–U2):**
+**This increment (U1, U5, and U2):**
 
 - Infrastructure contract: package manager, library build, docs/catalog, lint/format, git hooks, conventional commits, versioning.
 - Token pipeline: primitive → semantic → component tokens, CSS custom properties, locked semantic inventory (including success/warning/info), light and dark schemes, WCAG 2.2 AA contrast on painted pairs.
@@ -182,7 +182,7 @@ A consumer may **add** ARIA, but cannot strip the contract the kit owns.
 
 Consumers MUST be able to override kit strings. Layout MUST support RTL.
 
-This increment MUST ship direction tokens, a document `dir` contract (`ltr` | `rtl`), and logical CSS properties for any directional inset or space. String overrides land with the first atom that ships copy. A full localization platform is out of scope. Public UI modules (later) MUST honor `dir` without a fork.
+This increment MUST ship direction tokens, a document `dir` contract (`ltr` | `rtl`), and logical CSS custom-property names for any directional inset or space. Writing direction is switched only by `dir="ltr"` or `dir="rtl"` on a root element. Generated CSS MUST honor that attribute. `--direction` MAY mirror the active value for inspection. It MUST NOT be specified as a theme override that flips layout. Catalog and consumer recipes MUST set `dir`, not only the custom property. String overrides land with the first atom that ships copy. A full localization platform is out of scope. Public UI modules (later) MUST honor `dir` without a fork.
 
 R13/D13 (English-only) apply to repository prose, not to runtime UI copy.
 
@@ -233,10 +233,11 @@ Source: the CTRL wordmark and two-circle lockup (black disk, white glint, satell
 
 - **Ink:** `#000000`. **Paper:** cool off-white near `#F2F2F2`. **Glint:** `#FFFFFF`.
 - **Action** on light is ink; **on-action** is paper or white. Dark scheme inverts: surfaces near ink, action is paper/white, on-action is ink.
-- **Radius** is generous (the mark is circular). Semantic steps in U2: `sm`, `md`, `lg`, `full` (directional defaults 8 / 12 / 16 CSS px and a pill). Exact px MAY be tuned in U2 if the family stays distinct and circular-generous. The CTRL lockup is brand, not UI body type. UI type is **Inter**. Tokens MUST name family Inter. Catalog MUST load Inter via `@fontsource/inter` for weights 400, 500, 600, and 700. Kit `--font-family` MUST be `Inter, system-ui, sans-serif`. Do not assume Inter is installed on the OS. Semantic type sizes MAY be tuned in U2; directional defaults: `sm` 14 / `md` 16 / `lg` 20 / `xl` 24 CSS px.
+- **Radius** is generous (the mark is circular). Semantic steps in U2: `sm`, `md`, `lg`, `full` (directional defaults 8 / 12 / 16 CSS px and a pill). Exact px MAY be tuned in U2 if the family stays distinct and circular-generous. The CTRL lockup is brand, not UI body type. UI type is **Inter**. Tokens MUST name family Inter. Catalog MUST load Inter via `@fontsource/inter` for weights 400, 500, 600, and 700. `@fontsource/inter` is not a kit runtime dependency. Kit `--font-family` MUST be `Inter, system-ui, sans-serif`. Do not assume Inter is installed on the OS. Semantic type sizes MAY be tuned in U2; directional defaults: `sm` 14 / `md` 16 / `lg` 20 / `xl` 24 CSS px.
 - **Density** steps in U2: `compact`, `comfortable`, `spacious` (directional space multipliers 0.75 / 1 / 1.25). Exact multipliers MAY be tuned in U2.
+- **Space** steps in U2: `xs`, `sm`, `md`, `lg`, `xl`, `xxl` (directional defaults 4 / 8 / 12 / 16 / 24 / 32 CSS px on a 4 CSS px base grid). Exact px MAY be tuned in U2 if the scale stays internally consistent with the density multipliers.
 - **Status hues** (`success`, `warning`, `info`, `danger`) are muted professional ramps, distinct from action (action is ink, not a chromatic brand red). U2 generates 50–900 steps from those families. Exact status hex MAY be tuned in U2 as long as AA holds and the ramps stay distinct.
-- **Focus** is a visible ring that meets 2.4.12; it MUST NOT rely on color alone. U2 ships ring width 2 CSS px and offset 2 CSS px using the `focus` color as outline, not fill. Exact width/offset MAY be tuned if 2.4.12 still holds on `surface` and `action` in both schemes.
+- **Focus** is a visible ring that meets WCAG 1.4.11 Non-text Contrast (minimum 3:1) against `surface` and `action` in both schemes. It MUST NOT rely on color alone. U2 ships ring width 2 CSS px and offset 2 CSS px using the `focus` color as outline, not fill. Exact width/offset MAY be tuned if 1.4.11 still holds on `surface` and `action` in both schemes. WCAG 2.4.12 (Focus Not Obscured) is overlay and composite Definition of Done when UI modules exist, using 2.4.11 Minimum (AA) under D11. Do not treat 2.4.12 as a ring-to-background contrast ratio.
 
 An unnamed reference product’s palette MAY be used later as a **theme proof**. It MUST NOT be copied into the default theme.
 
@@ -278,7 +279,7 @@ Every public export is catalogued. Story titles follow Atomic Design (`Atoms/But
 
 **UI modules** (atoms and up, when they exist): Default, each public variant, and each required public state. A public UI module without those stories MUST NOT merge.
 
-**Token collections:** one gallery story per public token collection (`Tokens/Color`, `Tokens/Space`, `Tokens/Typography`, `Tokens/Radius`, `Tokens/Density`, `Tokens/Direction`, and peers). A token public export is a **collection module**, not an individual token constant. Do not invent Default/variant/state stories per constant. Each gallery MUST show light and dark values side by side in the same story. The catalog scheme toolbar MAY remain as an extra control; it MUST NOT be the only way to compare schemes.
+**Token collections:** one gallery story per public token collection (`Tokens/Color`, `Tokens/Space`, `Tokens/Typography`, `Tokens/Radius`, `Tokens/Density`, `Tokens/Direction`, and peers). A token public export is a **collection module**, not an individual token constant. Do not invent Default/variant/state stories per constant. Each gallery MUST show light and dark values side by side in the same story via per-column `data-scheme` nodes. The catalog scheme toolbar MAY remain as an extra control on a root-inheriting sample; it MUST NOT be the only way to compare schemes, and it MUST NOT be required to restyle those columns.
 
 ### Public state contract (atoms, later increment)
 
@@ -294,7 +295,7 @@ Interactive atoms, when they exist, expose:
 
 Hover and pressed are required public states, not CSS-only extras. Each required state MUST have a CSF3 story and a specification-style test.
 
-The first atom’s public prop-and-token contract stays revisable until the first npm publish. This increment (U1–U2) is a **workspace / private package**. npm publish waits until the first batch of atoms is ready. Semver majors apply from that first npm publish. Identity (Q2) is already settled.
+The first atom’s public prop-and-token contract stays revisable until the first npm publish. This increment (U1, U5, and U2) is a **workspace / private package**. npm publish waits until the first batch of atoms is ready. Semver majors apply from that first npm publish. Identity (Q2) is already settled.
 
 ### Implementation-plan language
 
@@ -325,22 +326,23 @@ Consequence for Ctrl UI:
 - **R5.** Tokens are the only source of visual decisions. Primitives do not leak into the public API. Semantic inventory and AA contrast on painted pairs are as specified above.
 - **R6.** Atomic Design is the primary architecture and is followed strictly. Every public module lives in exactly one layer. Layers depend only downward. A layer violation is a defect and MUST NOT merge.
 - **R8.** Theme switches without forking UI modules (semantic layer / CSS variables).
+- **R11.** Package version and changelog are driven by Changesets. This increment versions the private package and MUST NOT publish. A public API breaking change is a major from the first npm publish.
 - **R13.** All committed documents, plans, READMEs, Storybook docs, JSDoc, inline comments, commit messages, and pull request text are English.
 - **R14.** Author-written `.ts` / `.tsx` in the public kit package MUST meet Vitest coverage of 100% statements, branches, functions, and lines, globally and per file. Exclude `*.stories.*`, type-only files, generated token output, and re-export barrels. CI MUST fail otherwise.
 - **R15.** Every public export MUST have Storybook stories. Token collections MUST have one gallery story per collection module. A public UI module without the required story matrix MUST NOT merge.
 - **R16.** Test titles MUST follow the specification-style convention in `.cursor/rules/tests.mdc` (`describe` + `it`, no “should” prefix, behavior not implementation).
 - **R17.** Every implementation plan MUST use RFC 2119 keywords and include the RFC 2119 key-words sentence.
-- **R18.** A feature consumer can install the public (or workspace) package `ctrlds`, satisfy the React 18–19 peer, and apply semantic tokens without cloning this repository.
+- **R18.** A feature consumer can install the public (or workspace) package `ctrlds`, satisfy the React 18–19 peer, and apply semantic tokens without cloning this repository. This increment proves that clone-free clause by `pnpm pack` of `ctrlds` and installing that tarball into a throwaway app outside this repository. Catalog `workspace:*` MUST NOT satisfy R18. npm publish remains deferred per D23.
 - **R19.** The kit works in ordinary React 18 and React 19. RSC hosts can import it without a Next-specific package. Token/CSS modules in this increment are RSC-safe.
+- **R20 (RTL).** Layout supports RTL via direction tokens, a `dir` contract, and logical CSS.
 
 **Standing (when the relevant layer exists)**
 
 - **R7.** Every public UI module has: a TypeScript prop contract, CSF3 stories for Default, each public variant, and each required public state, plus an a11y check.
 - **R9.** A feature consumer customizes appearance only through channels 1–4 above. Breaking semantics through the public API is impossible or rejected by types. `className` MUST NOT strip `role`, `:focus-visible`, or keyboard behavior.
 - **R10.** Overlay and composite widgets (when they exist) ship their own focus management and keyboard behavior via React Aria; Ctrl UI owns the visual layer.
-- **R11.** Package version and changelog are driven by Changesets; a public API breaking change is a major from the first npm publish.
 - **R12.** Public UI-module docs describe: purpose, variants, tokens, and what must not be overridden.
-- **R20.** Consumers can override kit strings. Layout supports RTL.
+- **R20 (strings).** Consumers can override kit strings. The RTL half of R20 lands in this increment.
 - **R21.** Published modules that use client APIs are marked `"use client"`.
 - **R22.** A feature consumer can import a public atom from the installed package (not only from this repo).
 - **R23.** Interactive atoms expose the public state matrix (Default, hover, focus-visible, pressed, disabled, loading/busy when waiting, invalid when form-capable), each with a story and a specification-style test.
@@ -350,9 +352,10 @@ Consequence for Ctrl UI:
 1. **Bootstrap.** Author installs dependencies → hooks are active → `lint` / `fmt:check` / `typecheck` / `test` / `catalog` work on the empty skeleton.
 2. **Add a token.** Author adds a primitive and a semantic mapping → CSS variables update → no UI module is edited by hand to change a color role.
 3. **Add an atom (later increment).** Author builds the atom on tokens → story + a11y test → changeset → conventional commit. The consumer sees closed variants and theme, not internal primitives.
-4. **Theme in the catalog (this increment’s consumer-shaped check).** Author (or a workspace consumer) installs the package, sets semantic tokens (or picks a shipped theme), and confirms roles update in token gallery stories. A full product screen is out of validation until a consuming app exists.
-5. **Release (this increment).** Changeset on the PR → CI green → private version bump + changelog. Do not publish.
-6. **Release (later, after the first atom batch).** Publish `ctrlds` to npm.
+4. **Theme in the catalog (this increment’s catalog check).** Author (or a workspace consumer) installs the package via `workspace:*`, sets semantic tokens (or picks a shipped theme), and confirms roles update in token gallery stories. Flow 4 does not close R18’s clone-free clause. A full product screen is out of validation until a consuming app exists.
+5. **Clone-free install (this increment’s R18 proof).** Pack `ctrlds` with `pnpm pack` and install that tarball into a throwaway app outside this git workspace. Import token CSS/variables and confirm they apply. Catalog `workspace:*` MUST NOT satisfy this flow.
+6. **Release (this increment).** Changeset on the PR → CI green → private version bump + changelog. Do not publish.
+7. **Release (later, after the first atom batch).** Publish `ctrlds` to npm.
 
 ### Acceptance examples
 
@@ -365,7 +368,8 @@ Consequence for Ctrl UI:
 - CI fails if any included kit source file is below 100% statements, branches, functions, or lines.
 - A new public `Button` variant without a story and without an `it('…')` for that state cannot merge (later increment).
 - Token collections appear in Storybook as galleries (`Tokens/Color`, and peers), not as one story file per constant.
-- A workspace or published install can import token CSS/variables without cloning this repository.
+- A workspace install can import token CSS/variables inside this repository. That MUST NOT be treated as R18.
+- Packing `ctrlds` with `pnpm pack` and installing that tarball in an app outside this git workspace applies semantic token CSS/variables.
 - This increment can be declared done without a consumer-assembled screen.
 
 ### Non-goals
@@ -400,19 +404,19 @@ Consequence for Ctrl UI:
 - **D20.** Ctrl UI identity is the CTRL monochrome lockup (ink `#000000` on cool paper near `#F2F2F2`, white glint). An unnamed reference product is a theme proof, not a palette to copy. `session-settled: user-stated`
 - **D21.** Foundation semantic inventory: surface, on-surface, action, on-action, danger, on-danger, success, on-success, warning, on-warning, info, on-info, focus; plus space, radius, typography (Inter), density, direction (`ltr` | `rtl`), minimum 24×24 target size, and prefers-reduced-motion. Light and dark schemes in U2. Painted pairs meet AA. Primitives stay private. `session-settled: user-stated`
 - **D22.** This foundation validates kit-author catalog composition. A consumer-shaped screen is out of validation until a consuming app exists. `session-settled: user-stated`
-- **D23.** First atom public API stays revisable until first npm publish. U1–U2 ship as a workspace package. npm publish waits for the first atom batch. Semver majors start at that publish. `session-settled: user-stated`
+- **D23.** First atom public API stays revisable until first npm publish. U1, U5, and U2 ship as a workspace package. npm publish waits for the first atom batch. Semver majors start at that publish. `session-settled: user-stated`
 - **D24.** Third token tier is **component tokens**. UI modules are atoms, molecules, organisms, and templates — not “components” in token context. `session-settled: user-stated`
-- **D25.** Consumers can override kit strings; layout supports RTL. This increment MUST ship direction tokens, a `dir` contract, and logical CSS. String-override API waits for the first atom that ships copy. `session-settled: user-stated`
+- **D25.** Consumers can override kit strings; layout supports RTL. This increment MUST ship direction tokens, a `dir` contract, and logical CSS. Writing direction is switched only by `dir`. String-override API waits for the first atom that ships copy. `session-settled: user-stated`
 - **D26.** Ordinary React 18 and React 19 are the hosts. No Next-specific package. Client modules are marked `"use client"` when they use client APIs. `session-settled: user-stated`
 - **D27.** A feature consumer can install the package without cloning this repository. Import of a public atom is a standing requirement when atoms exist. `session-settled: user-stated`
 - **D28.** Primitive color ramps use stepped 50–900 scales. Accent A100–A700 are not required in U2. Public API stays semantic. An example brand is a theme proof, not the default ramp. `session-settled: user-stated`
 - **D29.** Public package name is `ctrlds`. Workspace directory remains `packages/ctrl-ui`. Unscoped `ctrl-ui`, unscoped `ctrlkit`, and scoped `@ctrl/ui` MUST NOT be the kit name. `session-settled: user-stated` (overrides earlier `ctrl-ui`, `@ctrl/ui`, and `ctrlkit` locks; chosen because those names collide or sit under an occupied npm org, and `ctrlds` was unpublished at plan time)
 - **D30.** Light and dark schemes ship in the U2 token drop. Token galleries MUST show both schemes side by side. `session-settled: user-stated`
-- **D31.** UI typeface is Inter. Tokens MUST name family Inter. Catalog MUST load Inter via `@fontsource/inter` for weights 400, 500, 600, and 700. Kit `--font-family` MUST be `Inter, system-ui, sans-serif`. Do not assume OS-installed Inter. Semantic type sizes MAY be tuned in U2; directional defaults: `sm` 14 / `md` 16 / `lg` 20 / `xl` 24 CSS px. `session-settled: user-stated` (family); weights and size steps are recommended defaults so U2 is implementable.
+- **D31.** UI typeface is Inter. Tokens MUST name family Inter. Catalog MUST load Inter via `@fontsource/inter` for weights 400, 500, 600, and 700. Kit `--font-family` MUST be `Inter, system-ui, sans-serif`. `@fontsource/inter` is not a kit runtime dependency. Consumers and the catalog MUST install and import those weights themselves if they want Inter rather than system-ui. Do not assume OS-installed Inter. Semantic type sizes MAY be tuned in U2; directional defaults: `sm` 14 / `md` 16 / `lg` 20 / `xl` 24 CSS px. `session-settled: user-stated` (family); weights and size steps are recommended defaults so U2 is implementable.
 
 ### Assumptions
 
-- **A1.** The repository is public MIT. The public package name is `ctrlds`. First npm publish waits for the first atom batch; U1–U2 are workspace-only. Registry GET for `ctrlds` returned HTTP 404 at plan time. Unscoped `ctrl-ui@0.0.8`, unscoped `ctrlkit@0.0.2`, and the occupied `@ctrl` npm org MUST NOT be used as the kit name. That does not block U1–U2 (`private: true`).
+- **A1.** The repository is public MIT. The public package name is `ctrlds`. First npm publish waits for the first atom batch; U1, U5, and U2 are workspace-only. Registry GET for `ctrlds` returned HTTP 404 at plan time. Unscoped `ctrl-ui@0.0.8`, unscoped `ctrlkit@0.0.2`, and the occupied `@ctrl` npm org MUST NOT be used as the kit name. That does not block U1, U5, and U2 (`private: true`).
 - **A2.** There is no first consuming app in production yet. The first target consumer is a reference product / hoped-for pilot, not a current installer, not a committed rewrite, and not a brand whose palette is copied into Ctrl UI.
 - **A3.** Storybook is enough documentation catalog; a marketing docs site is not needed in the foundation.
 - **A4.** A full localization platform is not built now. String overrides and RTL are requirements (D25), not this assumption.
@@ -427,7 +431,7 @@ Consequence for Ctrl UI:
 - **Q4.** Answered: `ctrlds`. See D29.
 - **Q5.** Answered: `success`, `warning`, `info` (and on-* pairs) are in the inventory. See D21.
 - **Q6.** Answered: unscoped npm name `ctrlds`. Unscoped `ctrl-ui@0.0.8`, unscoped `ctrlkit@0.0.2`, and scoped `@ctrl/ui` MUST NOT be the kit name. See D29, KTD5.
-- **Q7.** Answered: Inter, shipped via `@fontsource/inter` (weights 400, 500, 600, 700). See D31.
+- **Q7.** Answered: Inter, shipped via `@fontsource/inter` (weights 400, 500, 600, 700) in the catalog and by consumers. The kit does not depend on `@fontsource/inter`. See D31.
 - Q8. Deferred: token gallery information architecture (grouping, painted-pair layout) beyond “one gallery per collection” and the locked side-by-side light/dark rule.
 - **Q9.** Answered: React peer range is `^18.0.0 || ^19.0.0`. See D10, D26.
 - **Q10.** Answered: U2 MUST ship direction tokens, a `dir` contract, and logical CSS now. String overrides still wait for the first atom with copy. See D25.
@@ -457,6 +461,7 @@ Infrastructure challenger: Vite+ as a unified oxlint+oxfmt orchestrator. Rejecte
 - A new author completes the Bootstrap flow without hand-configuring hooks.
 - Adding a role color does not require UI-module edits.
 - Token galleries in Storybook show the locked semantic inventory, with light and dark side by side, Inter loaded, and a direction (`ltr` | `rtl`) control.
+- Clone-free install is proven by packing `ctrlds` and installing that tarball outside this repository. Catalog `workspace:*` does not satisfy this criterion.
 - Consumer theming of semantic roles does not require a fork or a repo clone.
 - Git history is readable conventional commits; a release has a Changeset changelog when publishing is in scope.
 - No non-English documents, comments, commit messages, or pull request text land in the repository.
@@ -481,13 +486,13 @@ Infrastructure challenger: Vite+ as a unified oxlint+oxfmt orchestrator. Rejecte
 - KTD4. Bundle the kit with **tsdown** (ESM-first, dts). Vite is catalog-only. Do not use Vite or tsup as the library bundler. Instantiates D9. Governs R4, R18, R19.
 - KTD5. Kit `package.json` `name` is `ctrlds`. Workspace folder remains `packages/ctrl-ui`. This increment sets `"private": true`. Do not run `changeset publish` or `npm publish`. Registry GET for `ctrlds` returned HTTP 404 at plan time. Unscoped `ctrl-ui@0.0.8`, unscoped `ctrlkit@0.0.2`, and scoped `@ctrl/ui` MUST NOT be the kit name. (session-settled: user-directed — chosen over those rejected names because they collide or sit under an occupied npm org.) Instantiates D23, D29. Governs R11, R18.
 - KTD6. Vitest 4 with provider **istanbul**. `coverage.include` MUST list author-written kit `.ts` / `.tsx`. `coverage.all` is gone in Vitest 4. Thresholds MUST use `100: true` and `perFile: true`. Exclude `*.stories.*`, type-only files, generated token CSS, and re-export barrels. Instantiates D14. Governs R14, R16.
-- KTD7. Catalog is Storybook **10** on Vite, CSF3, `@storybook/addon-a11y`, Autodocs via `tags: ['autodocs']`. Token public exports get one gallery story per collection. Each gallery MUST render light and dark side by side. Catalog MUST load Inter via `@fontsource/inter` (weights 400, 500, 600, 700). Catalog MUST set `dir` from a direction toolbar (`ltr` | `rtl`) on the story root. Instantiates D15, D25, D31. Governs R15, R20.
+- KTD7. Catalog is Storybook **10** on Vite, CSF3, `@storybook/addon-a11y`, Autodocs via `tags: ['autodocs']`. Token public exports get one gallery story per collection. Each gallery MUST render light and dark side by side via per-column `data-scheme` nodes. Catalog MUST load Inter via `@fontsource/inter` (weights 400, 500, 600, 700). Catalog MUST set `dir` from a direction toolbar (`ltr` | `rtl`) on the story root. Instantiates D15, D25, D31. Governs R15, R20.
 - KTD8. oxlint `plugins` **replaces** default plugins. The config MUST re-list `eslint`, `typescript`, `unicorn`, and `oxc`, then add `react`, `jsx-a11y`, `vitest`, and `import`. Do not add ESLint. Instantiates D4. Governs R3.
 - KTD9. Format with **oxfmt** (0.x beta). Changesets v3 MUST set `"format": "oxfmt"` (no `prettier` key). Because the kit is private, Changesets MUST set `privatePackages.version: true`. Do not publish. Instantiates D5. Governs R3, R11.
-- KTD10. Token source of truth is TypeScript modules. A Node generator in `packages/ctrl-ui/src/tokens/css.ts` MUST write `packages/ctrl-ui/src/tokens/generated/variables.css`. Tests MUST fail if the dump is stale. tsdown MUST copy that CSS file into dist (not the experimental `@tsdown/css` plugin). Kit `exports` MUST expose the CSS file so the catalog and consumers import it directly. Do not add Style Dictionary. Instantiates D6. Governs R5, R8, R19.
+- KTD10. Token source of truth is TypeScript modules. A Node generator in `packages/ctrl-ui/src/tokens/css.ts` MUST write `packages/ctrl-ui/src/tokens/generated/variables.css`. That generator MUST remain a non-exported Node module (absent from `src/index.ts` and from `package.json` `exports`), MUST write via `node:fs`, and `css.test.ts` MUST run in the Vitest Node environment (`// @vitest-environment node` or a separate Vitest project) even if the kit-wide config uses jsdom for Testing Library. Tests MUST fail if the dump is stale. tsdown MUST copy that CSS file into dist (not the experimental `@tsdown/css` plugin). Keep CSS out of the kit JavaScript import graph. Kit `exports` MUST expose `"."` as the ESM+dts collections entry and `"./variables.css"` mapping to the copied dump. Catalog and consumer docs MUST import `ctrlds/variables.css`. Do not add Style Dictionary. Instantiates D6. Governs R5, R8, R19.
 - KTD11. CI is GitHub Actions. It MUST run install, oxlint, oxfmt check, typecheck, Vitest with coverage, Storybook build, and commitlint on the pushed commit range (`commitlint --from origin/main --to HEAD` with sufficient fetch-depth). Instantiates D3. Governs R1, R2, R3, R14, R15.
 - KTD12. U1 public kit surface MAY be an empty re-export barrel until U2. Do not add a fake atom or a public smoke component to satisfy gates. Coverage 100% becomes real when U2 lands author-written token modules. Land U1, U5, and U2 in one delivery so CI is never shipped green on an empty include. Governs R7 (deferred), R14, R15, D19.
-- KTD13. Public CSS custom properties follow one prefix scheme from the D21 inventory: `--color-<role>` (`--color-action`, `--color-on-action`, and the same pattern for every color role), plus `--space-*`, `--radius-*`, `--font-*` (including `--font-family` naming Inter), `--density-*`, `--direction`, `--focus-ring-width`, `--focus-ring-offset`. Scheme switch retargets the same names. Directional inset and space in generated CSS MUST use logical properties (`margin-inline`, `padding-inline`, `inset-inline`, not `left`/`right`). Do not use `--color-action-primary`. Governs R5, R8, R20.
+- KTD13. Public CSS custom properties follow one prefix scheme from the D21 inventory: `--color-<role>` (`--color-action`, `--color-on-action`, and the same pattern for every color role), plus `--space-*` (including `--space-inline-*` and `--target-min-size: 24px`), `--radius-*`, `--font-*` (including `--font-family` naming Inter), `--density-*`, `--direction`, `--focus-ring-width`, `--focus-ring-offset`, `--inset-inline-*`, and `--inset-block-*`. Generated CSS MUST set light values on `:root, [data-scheme="light"]` and dark values on `[data-scheme="dark"]` (any element, not html-only). Generated CSS MUST set `--direction` on `:root` (default `ltr`), `[dir="ltr"]`, and `[dir="rtl"]` as a mirror for inspection. `--direction` MUST NOT flip layout. Writing direction is switched only by `dir="ltr"` or `dir="rtl"` on a root element. `--focus-ring-width` and `--focus-ring-offset` are private fields (not `src/index.ts` exports), sourced from `packages/ctrl-ui/src/tokens/semantic/focus.ts`. `--target-min-size` lives on `semantic/space.ts`. Do not add public collections or galleries beyond Color, Space, Typography, Radius, Density, and Direction. Encode reduced motion as a `@media (prefers-reduced-motion: reduce)` block in the dump that sets `--motion-duration: 0s`. Directional inset and space MUST use those logical custom-property names and MUST NOT emit physical `left` / `right` / `margin-left` / `padding-left` or `margin-inline` utility rules in the dump. Do not use `--color-action-primary`. Governs R5, R8, R20.
 - KTD14. Kit `peerDependencies` for `react` and `react-dom` MUST be `^18.0.0 || ^19.0.0`. Matching `@types/react` MUST cover that range. Do not declare React 16 or 17. Instantiates D10, D26. Governs R18, R19.
 
 ### High-Level Technical Design
@@ -511,7 +516,7 @@ flowchart TB
 
 Token resolution is one direction: primitive steps feed semantic roles; semantic roles feed component tokens and the CSS dump. UI modules (later) consume semantic or component tokens only.
 
-Theme switch is a scheme class or data attribute on a catalog root that swaps semantic CSS variables. No UI module fork. Writing direction is a `dir` attribute (`ltr` | `rtl`) on that root; generated CSS MUST honor it through logical properties.
+Theme switch is a `data-scheme` attribute that swaps semantic CSS variables on `:root` or any `[data-scheme]` element. No UI module fork. Writing direction is a `dir` attribute (`ltr` | `rtl`) on a root; generated CSS MUST honor it through logical custom-property names. `--direction` MAY mirror that value and MUST NOT be the switch.
 
 ### Output Structure
 
@@ -604,13 +609,13 @@ U3 (first atoms) and U4+ (molecules and up) stay deferred. Do not reuse those ID
   1. Enable Corepack and pin pnpm 11 (KTD2).
   2. Declare workspace globs `packages/*` and `apps/*`. The catalog package MAY be added in U5; U1 MUST leave the glob ready.
   3. Kit `name` is `ctrlds`, `"private": true`, `"type": "module"`, `engines.node` `>=22.18.0`, `peerDependencies.react` and `react-dom` `^18.0.0 || ^19.0.0` (KTD3, KTD5, KTD14).
-  4. tsdown emits ESM plus dts. `exports` MUST expose the public entry. Token CSS export lands in U2 (KTD10).
+  4. tsdown emits ESM plus dts. Kit `exports` MUST expose `"."` as the ESM+dts collections entry. Token CSS export `"./variables.css"` lands in U2 (KTD10).
   5. Public `src/index.ts` is a barrel until U2 (KTD12). Do not add atoms.
-  6. README states workspace install only. Do not document npm publish.
+  6. README states workspace install and `pnpm pack` tarball install for clone-free proof. Do not document npm publish. README MUST state that `@fontsource/inter` is not a kit runtime dependency.
 - **Execution note:** Smoke-first. Prove install and the tsdown build before adding quality tooling.
 - **Patterns to follow:** `.cursor/rules/toolchain.mdc`; product toolchain table in this file.
 - **Test scenarios:** Test expectation: none — packaging and build config. Prove by a successful install and tsdown build, not by kit unit tests.
-- **Verification:** Corepack uses pnpm 11. Install completes. tsdown produces an ESM build with types. The kit package name is `ctrlds` and private. React peers are `^18.0.0 || ^19.0.0`. No catalog files are kit runtime dependencies. No public atom exists.
+- **Verification:** Corepack uses pnpm 11. Install completes. tsdown produces an ESM build with types. The kit package name is `ctrlds` and private. React peers are `^18.0.0 || ^19.0.0`. `exports` exposes `"."`. No catalog files are kit runtime dependencies. No public atom exists.
 
 ### U5. Quality gates, catalog, and CI
 
@@ -634,7 +639,7 @@ U3 (first atoms) and U4+ (molecules and up) stay deferred. Do not reuse those ID
   3. Vitest + Testing Library + axe wired in the kit. Coverage per KTD6. Until U2, included source MAY be empty; do not add a fake module (KTD12).
   4. Changesets: `format` oxfmt; `privatePackages.version: true`; no publish (KTD9).
   5. Private Storybook 10 catalog, `workspace:*` on `ctrlds`, a11y addon, Autodocs tags (KTD7). No token galleries yet.
-  6. In `apps/catalog/.storybook/preview.ts`, define `globalTypes.scheme` (`light` | `dark`, default `light`) and `globalTypes.direction` (`ltr` | `rtl`, default `ltr`). A decorator MUST set `data-scheme` and `dir` on the story root. Import kit CSS variables when U2 lands. Until U2, the toolbars MAY exist with no token CSS. Import `@fontsource/inter` weight files when U2 lands.
+  6. In `apps/catalog/.storybook/preview.ts`, define `globalTypes.scheme` (`light` | `dark`, default `light`) and `globalTypes.direction` (`ltr` | `rtl`, default `ltr`). A decorator MUST set `data-scheme` and `dir` on the story root. Import kit CSS variables when U2 lands. Until U2, the toolbars MAY exist with no token CSS. Import `@fontsource/inter` weight files when U2 lands. Do not add `@fontsource/inter` as a kit runtime dependency.
   7. GitHub Actions: Node `>=22.18.0`, Corepack pnpm 11, then lint, fmt check, typecheck, test with coverage, Storybook build, and commitlint on the pushed range (KTD11).
   8. After first install, commit the complete `allowBuilds` map (KTD2).
 - **Execution note:** This is mostly packaging and config. Prefer install and gate smoke over unit coverage of config files.
@@ -645,7 +650,7 @@ U3 (first atoms) and U4+ (molecules and up) stay deferred. Do not reuse those ID
 ### U2. Token pipeline, schemes, and galleries
 
 - **Goal:** Primitive → semantic → component-token pipeline with Ctrl ink/paper identity, Inter typography, light and dark schemes, direction tokens for RTL, and one gallery per public token collection.
-- **Requirements:** R5, R6, R8, R13, R14, R15, R16, R18, R19, R20
+- **Requirements:** R5, R6, R8, R13, R14, R15, R16, R18, R19, R20 (direction-token portion only — string-override API stays Deferred until the first atom ships copy per D25)
 - **Dependencies:** U1, U5
 - **Files:**
   - `packages/ctrl-ui/src/tokens/primitive/color.ts`
@@ -658,13 +663,16 @@ U3 (first atoms) and U4+ (molecules and up) stay deferred. Do not reuse those ID
   - `packages/ctrl-ui/src/tokens/semantic/typography.ts`
   - `packages/ctrl-ui/src/tokens/semantic/density.ts`
   - `packages/ctrl-ui/src/tokens/semantic/direction.ts`
+  - `packages/ctrl-ui/src/tokens/semantic/focus.ts` (private focus-ring fields; not a public collection)
   - `packages/ctrl-ui/src/tokens/component/index.ts` (private passthrough; PA5)
-  - `packages/ctrl-ui/src/tokens/css.ts` (Node generator)
+  - `packages/ctrl-ui/src/tokens/css.ts` (non-exported Node generator)
   - `packages/ctrl-ui/src/tokens/generated/variables.css` (committed dump; excluded from coverage)
   - `packages/ctrl-ui/src/tokens/color.test.ts`
   - `packages/ctrl-ui/src/tokens/contrast.test.ts`
   - `packages/ctrl-ui/src/tokens/space.test.ts`
   - `packages/ctrl-ui/src/tokens/typography.test.ts`
+  - `packages/ctrl-ui/src/tokens/radius.test.ts`
+  - `packages/ctrl-ui/src/tokens/density.test.ts`
   - `packages/ctrl-ui/src/tokens/direction.test.ts`
   - `packages/ctrl-ui/src/tokens/css.test.ts`
   - `apps/catalog/src/stories/tokens/Color.stories.tsx`
@@ -677,13 +685,13 @@ U3 (first atoms) and U4+ (molecules and up) stay deferred. Do not reuse those ID
 - **Approach:**
   1. Primitive color ramps 50–900. No A100–A700 (D28). Primitives stay private.
   2. Semantic roles per D21. Light: action is ink `#000000`, on-action is paper or white, surface is cool paper near `#F2F2F2`. Dark inverts surfaces and action as specified in Ctrl visual language. Status hues are muted and distinct from action. Exact status hex MAY be tuned if AA holds (D21).
-  3. Space, radius, typography, density, direction, focus ring, minimum 24×24 target, and `prefers-reduced-motion` live in tokens. No ARIA library. Typography MUST name Inter (D31). Direction tokens MUST encode `ltr` and `rtl` and a `dir` contract (D25). Radius steps: `sm` / `md` / `lg` / `full` (defaults 8 / 12 / 16 CSS px and pill). Density steps: `compact` / `comfortable` / `spacious` (defaults 0.75 / 1 / 1.25 space multipliers). Focus ring: width 2 CSS px, offset 2 CSS px, outline using `--color-focus`, not fill. Exact values MAY be tuned as in the visual-language section.
-  4. Generate CSS custom properties from TypeScript into `generated/variables.css` (KTD10). Names follow KTD13. Scheme switch is CSS variables via `data-scheme`, not forked modules (R8). Directional inset and space MUST use logical properties. Catalog MUST import `@fontsource/inter` for weights 400, 500, 600, and 700.
-  5. Public API exports collection modules only. Consumers MUST NOT import primitive steps. Component-token tier is one private passthrough module (PA5). Do not export it as a collection. Do not invent named component skins.
-  6. One gallery story per collection. Titles `Tokens/Color`, `Tokens/Space`, `Tokens/Typography`, `Tokens/Radius`, `Tokens/Density`, `Tokens/Direction`. Autodocs and a11y addon on. Do not invent Default/variant/state stories per constant. Each token row MUST show a visible token name and an accessible name. Painted pairs MUST label foreground and background. Each gallery MUST show light and dark side by side in the same story. Gallery stories MUST pass axe with no color-only information violations.
-  7. Tests follow specification-style titles (R16). Contrast tests cover painted pairs at AA. Focus-ring contrast MUST meet 2.4.12 on `surface` and `action` in both schemes. Direction tests MUST cover `ltr` and `rtl` token values and logical CSS in the dump.
+  3. Space, radius, typography, density, direction, focus ring, minimum 24×24 target, and `prefers-reduced-motion` live in tokens. No ARIA library. Typography MUST name Inter (D31). Direction tokens MUST encode `ltr` and `rtl` and a `dir` contract (D25). Space steps: `xs` / `sm` / `md` / `lg` / `xl` / `xxl` (defaults 4 / 8 / 12 / 16 / 24 / 32 CSS px). Radius steps: `sm` / `md` / `lg` / `full` (defaults 8 / 12 / 16 CSS px and pill). Density steps: `compact` / `comfortable` / `spacious` (defaults 0.75 / 1 / 1.25 space multipliers). Focus ring: width 2 CSS px, offset 2 CSS px, outline using `--color-focus`, not fill. Exact values MAY be tuned as in the visual-language section.
+  4. Generate CSS custom properties from TypeScript into `generated/variables.css` (KTD10). Names follow KTD13. Scheme switch is CSS variables via `data-scheme` on `:root` or any `[data-scheme]` element, not forked modules (R8). Directional inset and space MUST use logical custom-property names. Do not emit `margin-inline` utility rules in the dump. Catalog MUST import `@fontsource/inter` for weights 400, 500, 600, and 700. The kit MUST NOT depend on `@fontsource/inter`.
+  5. Public API exports collection modules only. Consumers MUST NOT import primitive steps. Component-token tier is one private passthrough module (PA5). Do not export it as a collection. Do not invent named component skins. Do not export `semantic/focus.ts` as a collection.
+  6. One gallery story per collection. Titles `Tokens/Color`, `Tokens/Space`, `Tokens/Typography`, `Tokens/Radius`, `Tokens/Density`, `Tokens/Direction`. Autodocs and a11y addon on. Do not invent Default/variant/state stories per constant. Each token row MUST show a visible token name and an accessible name. Painted pairs MUST label foreground and background. Each gallery MUST wrap side-by-side columns in their own `data-scheme="light"` and `data-scheme="dark"` nodes so both schemes render regardless of the toolbar. Do not require those columns to change when the toolbar toggles. The U5 decorator MUST still set `data-scheme` on the story root; prove that wiring with a root-inheriting sample outside those columns. Gallery stories MUST pass axe with no color-only information violations. Each Radius row MUST render a box or chip with that corner radius. Each Density row MUST render a spacing bar or padded box scaled by that multiplier. Each Space row MUST render a visual bar or box demonstrating the spacing. The `focus` role in the Color gallery MUST show a sample control with the 2 CSS px / 2 CSS px outline ring on `surface` and `action` backgrounds, not a flat color swatch.
+  7. Tests follow specification-style titles (R16). Contrast tests cover painted pairs at AA. Focus-ring contrast MUST meet WCAG 1.4.11 (minimum 3:1) on `surface` and `action` in both schemes. Do not treat 2.4.12 as a contrast ratio. Direction tests MUST cover `ltr` and `rtl` token values and logical custom-property names in the dump. `css.test.ts` MUST run in the Vitest Node environment.
   8. Do not copy the unnamed reference product palette into the default theme (D20).
-  9. U2 verification includes confirming side-by-side light/dark galleries, toggling the catalog scheme toolbar, toggling the direction toolbar (`dir` on the story root), and confirming all six galleries re-resolve semantic roles without editing token TypeScript.
+  9. U2 verification includes confirming side-by-side light/dark galleries without the scheme toolbar, toggling the catalog scheme toolbar on a root-inheriting sample outside those columns, toggling the direction toolbar (`dir` on the story root; logical-CSS layout, not a semantic-role value change), packing `ctrlds` and installing the tarball outside this repository, and confirming all six galleries re-resolve semantic roles on scheme change without editing token TypeScript.
 - **Execution note:** Implement token resolution and contrast tests first, then the CSS dump, then galleries.
 - **Patterns to follow:** `.cursor/rules/design-tokens.mdc`; `.cursor/rules/atomic-design-layers.mdc`; token inventory and identity sections in this file.
 - **Test scenarios:**
@@ -694,23 +702,27 @@ U3 (first atoms) and U4+ (molecules and up) stay deferred. Do not reuse those ID
   - Public exports omit accent A100–A700 steps.
   - Semantic `success`, `warning`, `info`, and `danger` (and on-* pairs) exist and are distinct from `action`.
   - A focus token exists and is not implemented as color-alone contrast. Ring width is 2 CSS px and offset is 2 CSS px unless tuned under the visual-language MAY.
-  - Focus-ring contrast meets WCAG 2.4.12 on `surface` and `action` backgrounds in both schemes.
-  - A minimum target-size token is 24 CSS px.
-  - A reduced-motion token or media contract exists for `prefers-reduced-motion`.
-  - Semantic radius steps `sm`, `md`, `lg`, and `full` exist. Density steps `compact`, `comfortable`, and `spacious` exist.
-  - The CSS dump contains custom properties named per KTD13 for every semantic color role in both schemes.
-  - Switching the catalog scheme toolbar updates CSS variables without editing token TypeScript by hand. All six galleries re-resolve roles.
-  - Each gallery story shows light and dark values side by side without requiring the scheme toolbar.
+  - Focus-ring contrast meets WCAG 1.4.11 (minimum 3:1) on `surface` and `action` backgrounds in both schemes. Tests MUST NOT treat 2.4.12 as a contrast ratio.
+  - A minimum target-size token is 24 CSS px (`--target-min-size`).
+  - A `@media (prefers-reduced-motion: reduce)` block in the dump sets `--motion-duration: 0s`.
+  - Semantic space steps `xs`, `sm`, `md`, `lg`, `xl`, and `xxl` exist. Semantic radius steps `sm`, `md`, `lg`, and `full` exist. Density steps `compact`, `comfortable`, and `spacious` exist.
+  - The CSS dump contains custom properties named per KTD13 for every semantic color role in both schemes. Light values apply on `:root, [data-scheme="light"]`. Dark values apply on `[data-scheme="dark"]` at any element.
+  - The dump MUST NOT contain `margin-inline` utility rules or physical `left` / `right` inset properties. It MUST contain logical custom-property names (`--space-inline-*`, `--inset-inline-*`, `--inset-block-*`).
+  - Switching the catalog scheme toolbar updates CSS variables on a root-inheriting sample without editing token TypeScript by hand. Side-by-side gallery columns MUST NOT change when the toolbar toggles.
+  - Each gallery story shows light and dark values side by side without requiring the scheme toolbar, via per-column `data-scheme` nodes.
   - Coverage include lists author-written token modules and excludes generated CSS, stories, and the barrel.
-  - Gallery stories exist for Color, Space, Typography, Radius, Density, and Direction under Atomic Design titles.
-  - The `Tokens/Color` gallery renders every D21 semantic color role (`surface`, `on-surface`, `action`, `on-action`, `danger`, `on-danger`, `success`, `on-success`, `warning`, `on-warning`, `info`, `on-info`, `focus`) with token name, swatch, and resolved value for light and dark side by side.
-  - Typography tokens name family Inter. The Typography gallery loads Inter via `@fontsource/inter` for weights 400, 500, 600, and 700.
-  - Direction tokens expose `ltr` and `rtl`. Generated CSS uses logical properties for directional inset and space. Switching the catalog direction toolbar sets `dir` on the story root.
-  - Radius and Density galleries list every step with name and resolved value.
+  - Gallery stories exist for Color, Space, Typography, Radius, Density, and Direction under Atomic Design titles. No seventh public collection exists.
+  - The `Tokens/Color` gallery renders every D21 semantic color role (`surface`, `on-surface`, `action`, `on-action`, `danger`, `on-danger`, `success`, `on-success`, `warning`, `on-warning`, `info`, `on-info`, `focus`) with token name, swatch, and resolved value for light and dark side by side. The `focus` row also renders a sample control showing the outline ring on `surface` and `action` backgrounds.
+  - Typography tokens name family Inter. The Typography gallery loads Inter via `@fontsource/inter` for weights 400, 500, 600, and 700. The kit package does not depend on `@fontsource/inter`.
+  - Direction tokens expose `ltr` and `rtl`. Generated CSS uses logical custom-property names for directional inset and space. Switching the catalog direction toolbar sets `dir` on the story root and exercises logical-CSS layout. It MUST NOT be specified as a semantic-role value change.
+  - The Space gallery lists every step with name, resolved value, and a visual bar or box demonstrating the spacing.
+  - Radius and Density galleries list every step with name, resolved value, and a rendered visual demo (corner radius box or chip; spacing bar or padded box).
+  - Direction gallery story markup uses `padding-inline`, `margin-inline`, and `inset-inline`.
   - Each gallery token row exposes a visible token name and an accessible name. Painted pairs show foreground and background labels. Gallery stories pass axe with zero color-only information violations.
-  - The component-token module is private, passthrough-only, and absent from public collection exports.
-  - A stale `generated/variables.css` fails the generator test.
-- **Verification:** Token galleries render in Storybook with light and dark side by side. Scheme and direction toolbars update `data-scheme` and `dir` on the story root. All six galleries re-resolve roles. Typography uses Inter via `@fontsource/inter`. Coverage is 100% on included kit files. Generated CSS is importable by ordinary React and is RSC-safe. Public exports omit primitives and the component-token passthrough. No atom, React Aria, or employer-named theme exists.
+  - The component-token module is private, passthrough-only, and absent from public collection exports. The focus-ring module is private and absent from public collection exports.
+  - A stale `generated/variables.css` fails the generator test. `css.test.ts` runs in the Vitest Node environment.
+  - Packing `ctrlds` and installing the tarball outside this git workspace imports `ctrlds/variables.css` and applies semantic roles.
+- **Verification:** Token galleries render in Storybook with light and dark side by side via per-column `data-scheme` nodes. The scheme toolbar updates a root-inheriting sample. The direction toolbar sets `dir` on the story root. Packing `ctrlds` and installing the tarball outside this repository applies `ctrlds/variables.css`. Typography uses Inter via catalog `@fontsource/inter`; the kit does not depend on that package. Coverage is 100% on included kit files. Generated CSS is importable by ordinary React and is RSC-safe. Public exports omit primitives, the component-token passthrough, and the private focus-ring module. No atom, React Aria, or employer-named theme exists.
 
 ---
 
@@ -751,7 +763,7 @@ There is no `release:validate` and no npm publish in this increment.
 | --- | --- |
 | U1 | pnpm 11 workspace installs; tsdown ESM + dts build exists; kit name is `ctrlds`; React peers are `^18.0.0 || ^19.0.0`; no public atom |
 | U5 | oxlint, oxfmt, commitlint (local and CI), Vitest thresholds, Changesets, Storybook 10 skeleton with scheme and direction toolbars, and CI all run; no ESLint/Prettier/Stylelint |
-| U2 | Semantic inventory + light/dark Ctrl identity + Inter + direction tokens; AA contrast tests; CSS dump with KTD13 names and logical properties; six token galleries with side-by-side light/dark including Color inventory coverage; 100% coverage on included kit source |
+| U2 | Semantic inventory + light/dark Ctrl identity + Inter + direction tokens; AA and 1.4.11 ring contrast tests; CSS dump with KTD13 names and logical custom properties; six token galleries with per-column side-by-side light/dark including Color inventory and visual demos; pack-tarball R18 proof; 100% coverage on included kit source |
 
 ---
 
