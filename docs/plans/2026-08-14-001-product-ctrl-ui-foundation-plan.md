@@ -94,7 +94,7 @@ All documents, plans, READMEs, Storybook docs, JSDoc, inline comments, commit me
 
 ### In scope
 
-**This increment (U1–U2):**
+**This increment (U1, U5, and U2):**
 
 - Infrastructure contract: package manager, library build, docs/catalog, lint/format, git hooks, conventional commits, versioning.
 - Token pipeline: primitive → semantic → component tokens, CSS custom properties, locked semantic inventory (including success/warning/info), light and dark schemes, WCAG 2.2 AA contrast on painted pairs.
@@ -294,7 +294,7 @@ Interactive atoms, when they exist, expose:
 
 Hover and pressed are required public states, not CSS-only extras. Each required state MUST have a CSF3 story and a specification-style test.
 
-The first atom’s public prop-and-token contract stays revisable until the first npm publish. This increment (U1–U2) is a **workspace / private package**. npm publish waits until the first batch of atoms is ready. Semver majors apply from that first npm publish. Identity (Q2) is already settled.
+The first atom’s public prop-and-token contract stays revisable until the first npm publish. This increment (U1, U5, and U2) is a **workspace / private package**. npm publish waits until the first batch of atoms is ready. Semver majors apply from that first npm publish. Identity (Q2) is already settled.
 
 ### Implementation-plan language
 
@@ -400,7 +400,7 @@ Consequence for Ctrl UI:
 - **D20.** Ctrl UI identity is the CTRL monochrome lockup (ink `#000000` on cool paper near `#F2F2F2`, white glint). An unnamed reference product is a theme proof, not a palette to copy. `session-settled: user-stated`
 - **D21.** Foundation semantic inventory: surface, on-surface, action, on-action, danger, on-danger, success, on-success, warning, on-warning, info, on-info, focus; plus space, radius, typography (Inter), density, direction (`ltr` | `rtl`), minimum 24×24 target size, and prefers-reduced-motion. Light and dark schemes in U2. Painted pairs meet AA. Primitives stay private. `session-settled: user-stated`
 - **D22.** This foundation validates kit-author catalog composition. A consumer-shaped screen is out of validation until a consuming app exists. `session-settled: user-stated`
-- **D23.** First atom public API stays revisable until first npm publish. U1–U2 ship as a workspace package. npm publish waits for the first atom batch. Semver majors start at that publish. `session-settled: user-stated`
+- **D23.** First atom public API stays revisable until first npm publish. U1, U5, and U2 ship as a workspace package. npm publish waits for the first atom batch. Semver majors start at that publish. `session-settled: user-stated`
 - **D24.** Third token tier is **component tokens**. UI modules are atoms, molecules, organisms, and templates — not “components” in token context. `session-settled: user-stated`
 - **D25.** Consumers can override kit strings; layout supports RTL. This increment MUST ship direction tokens, a `dir` contract, and logical CSS. String-override API waits for the first atom that ships copy. `session-settled: user-stated`
 - **D26.** Ordinary React 18 and React 19 are the hosts. No Next-specific package. Client modules are marked `"use client"` when they use client APIs. `session-settled: user-stated`
@@ -412,7 +412,7 @@ Consequence for Ctrl UI:
 
 ### Assumptions
 
-- **A1.** The repository is public MIT. The public package name is `ctrlds`. First npm publish waits for the first atom batch; U1–U2 are workspace-only. Registry GET for `ctrlds` returned HTTP 404 at plan time. Unscoped `ctrl-ui@0.0.8`, unscoped `ctrlkit@0.0.2`, and the occupied `@ctrl` npm org MUST NOT be used as the kit name. That does not block U1–U2 (`private: true`).
+- **A1.** The repository is public MIT. The public package name is `ctrlds`. First npm publish waits for the first atom batch; U1, U5, and U2 are workspace-only. Registry GET for `ctrlds` returned HTTP 404 at plan time. Unscoped `ctrl-ui@0.0.8`, unscoped `ctrlkit@0.0.2`, and the occupied `@ctrl` npm org MUST NOT be used as the kit name. That does not block U1, U5, and U2 (`private: true`).
 - **A2.** There is no first consuming app in production yet. The first target consumer is a reference product / hoped-for pilot, not a current installer, not a committed rewrite, and not a brand whose palette is copied into Ctrl UI.
 - **A3.** Storybook is enough documentation catalog; a marketing docs site is not needed in the foundation.
 - **A4.** A full localization platform is not built now. String overrides and RTL are requirements (D25), not this assumption.
@@ -665,6 +665,8 @@ U3 (first atoms) and U4+ (molecules and up) stay deferred. Do not reuse those ID
   - `packages/ctrl-ui/src/tokens/contrast.test.ts`
   - `packages/ctrl-ui/src/tokens/space.test.ts`
   - `packages/ctrl-ui/src/tokens/typography.test.ts`
+  - `packages/ctrl-ui/src/tokens/radius.test.ts`
+  - `packages/ctrl-ui/src/tokens/density.test.ts`
   - `packages/ctrl-ui/src/tokens/direction.test.ts`
   - `packages/ctrl-ui/src/tokens/css.test.ts`
   - `apps/catalog/src/stories/tokens/Color.stories.tsx`
