@@ -1,0 +1,17 @@
+---
+description: Public customization channels and forbidden style APIs
+alwaysApply: true
+---
+
+# Customization
+
+Public customization MUST use only these channels, in this order:
+
+1. Semantic tokens / theme
+2. Closed variant props (`intent`, `size`, `appearance` as finite enums)
+3. Composition (compound modules and documented slots)
+4. `className` / slot class on documented nodes (last resort)
+
+Channel 4 is a documented last-resort appearance hatch. It MUST NOT strip `role`, the `:focus-visible` contract, or keyboard behavior. It is not a promise that visual hierarchy is unbreakable. Hierarchy is enforced through tokens, variants, and composition.
+
+Public API MUST NOT expose `sx`, `backgroundColor`, or an arbitrary CSS-in-JS theme object as the primary styling path. Public API MUST NOT allow stripping semantics or keyboard behavior to make styling easier.

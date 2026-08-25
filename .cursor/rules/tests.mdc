@@ -1,0 +1,43 @@
+---
+description: Vitest 100% coverage and specification-style test titles
+alwaysApply: true
+---
+
+# Tests
+
+The published kit source MUST be fully covered by Vitest. CI MUST fail unless coverage is **100% in every category**: statements, branches, functions, and lines.
+
+Configuration MUST use Vitest `coverage.thresholds` with `100: true` and `perFile: true`. Coverage include MUST list kit source so uncovered files count. The RECOMMENDED provider is `istanbul` (stricter branch accounting for a 100% gate). `v8` MAY be used only if it is proven equivalent on this repo.
+
+Kit source for that gate is author-written `.ts` / `.tsx` in the public kit package.
+
+Coverage MUST exclude `*.stories.*`, type-only files, generated token output, and re-export barrels. Coverage MAY exclude catalog-app scaffolding that is not published. Those exclusions MUST NOT hide kit source. A file is not "covered" by existing only as a story.
+
+Do not mock UI modules, hooks, or modules unless the dependency is an external boundary (I/O, browser API). Prefer real behavior.
+
+Colocate `<Name>.test.tsx` next to the source file.
+
+## Titles
+
+Use specification-style titles. Names describe behavior; output reads as a spec. Group with BDD `describe`. Do not use the `should` prefix.
+
+```ts
+describe('Button', () => {
+  describe('when loading is true', () => {
+    it('exposes a busy state and ignores press', () => {
+      // Arrange / Act / Assert
+    });
+  });
+});
+```
+
+- MUST use `describe` + `it` (not `test`) so titles read as sentences.
+- `describe` MUST name the unit (`Button`, `resolveColorToken`).
+- Nested `describe('when <condition>')` SHOULD group states and variants.
+- `it('<observable outcome>')` MUST be third-person present tense.
+- Titles MUST NOT start with "should", "test that", or "works".
+- Titles MUST describe behavior and condition, not implementation (`calls setState`, `uses clsx`).
+- Each `it` MUST assert one behavior.
+- Test body MUST follow Arrange–Act–Assert.
+
+Interactive atoms (when they exist) MUST have a specification-style test for each required public state: Default, hover, focus-visible, pressed, disabled, loading/busy when waiting, and invalid when form-capable.

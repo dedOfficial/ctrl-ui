@@ -1,0 +1,18 @@
+---
+description: WCAG 2.2 AA floor for every public UI module
+alwaysApply: true
+---
+
+# Accessibility
+
+Every public UI module MUST meet WCAG 2.2 AA, including Target Size 2.5.8 (24×24 CSS px minimum) and Focus Not Obscured 2.4.12.
+
+Hybrid contract:
+
+- **Tokens (this increment):** encode contrast, focus ring, 24×24 targets, `prefers-reduced-motion`, direction (`ltr` | `rtl`), and logical CSS for RTL. No ARIA library.
+- **Atoms (later):** native HTML (`button`, `a`, `input`, and peers) plus APG. Do not wrap those primitives in a headless layer to ship Button and peers.
+- **Molecules and organisms (later):** React Aria (not Radix, not a from-scratch composite). Ctrl UI owns visuals and tokens. Do not add React Aria until the first composite lands.
+
+Overlay and composite widgets MUST ship focus management and keyboard behavior. Consumers MAY add ARIA. They MUST NOT remove the kit-owned contract.
+
+Layout MUST support RTL. Consumers MUST be able to override kit strings (string API lands with the first atom that ships copy). English-only rules apply to repository prose, not runtime UI copy.

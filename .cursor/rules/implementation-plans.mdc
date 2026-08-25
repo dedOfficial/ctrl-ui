@@ -1,0 +1,14 @@
+---
+description: Implementation plans MUST use RFC 2119 keywords
+alwaysApply: true
+---
+
+# Implementation plans
+
+Any future implementation plan MUST use RFC 2119 keywords for requirements.
+
+The plan MUST include this sentence near the top:
+
+> The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in RFC 2119.
+
+Use those keywords sparingly and only for real requirements or prohibitions. Body text that is not a requirement MUST NOT be capitalized as a keyword. Implementation plans MUST be English.

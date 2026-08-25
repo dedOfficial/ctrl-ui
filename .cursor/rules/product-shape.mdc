@@ -1,0 +1,20 @@
+---
+description: Ctrl UI is an opinionated design-system kit
+alwaysApply: true
+---
+
+# Product shape
+
+Ctrl UI is an opinionated React + TypeScript design-system kit.
+
+It is not a headless library. It is not a copy-paste catalog. React Aria is an implementation dependency for later composite layers, not the product.
+
+First target consumer is an unnamed reference product and hoped-for pilot (B2B trip-booking), not a team that already installs the unpublished kit, not a committed adoption, and not a brand whose palette is copied into Ctrl UI. Do not name the employer or product in this repository. They would pick a kit like this because the live app mixes two kits (including a Material UI layer with bolted-on a11y), looks inconsistent, and a third Atomic Design iteration is desired — plus white-label theming without forking.
+
+The kit MUST work in ordinary React. RSC hosts MUST be able to import it without a Next-specific package. Published modules that use client APIs MUST be marked `"use client"`.
+
+A feature consumer MUST be able to install the public (or workspace) package and apply semantic tokens without cloning this repository.
+
+The public package name is `ctrlds`. Workspace directory is `packages/ctrl-ui`. U1–U2 ship as a workspace package. npm publish waits until the first atom batch.
+
+This foundation increment is toolchain + tokens. A consumer-shaped screen is out of validation until a consuming app exists.
