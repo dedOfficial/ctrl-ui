@@ -29,35 +29,28 @@ function customPropertyBlock({
   return `${selector} {\n${declarationLines(declarations)}\n}`;
 }
 
+function tokenDeclarations({
+  prefix,
+  tokens,
+}: {
+  prefix: string;
+  tokens: Record<string, string | number>;
+}): Array<readonly [string, string]> {
+  return Object.entries(tokens).map(
+    ([name, value]) => [`--${prefix}-${name}`, String(value)] as const,
+  );
+}
+
 function sharedDeclarations(): Array<readonly [string, string]> {
   return [
-    ["--space-xs", space.xs],
-    ["--space-sm", space.sm],
-    ["--space-md", space.md],
-    ["--space-lg", space.lg],
-    ["--space-xl", space.xl],
-    ["--space-2xl", space["2xl"]],
+    ...tokenDeclarations({ prefix: "space", tokens: space }),
     ["--target-min-size", targetMinSize],
-    ["--radius-sm", radius.sm],
-    ["--radius-md", radius.md],
-    ["--radius-lg", radius.lg],
-    ["--radius-full", radius.full],
+    ...tokenDeclarations({ prefix: "radius", tokens: radius }),
     ["--font-family", typography.family],
-    ["--font-size-sm", typography.size.sm],
-    ["--font-size-md", typography.size.md],
-    ["--font-size-lg", typography.size.lg],
-    ["--font-size-xl", typography.size.xl],
-    ["--font-weight-regular", typography.weight.regular],
-    ["--font-weight-medium", typography.weight.medium],
-    ["--font-weight-semibold", typography.weight.semibold],
-    ["--font-weight-bold", typography.weight.bold],
-    ["--font-line-height-sm", typography.lineHeight.sm],
-    ["--font-line-height-md", typography.lineHeight.md],
-    ["--font-line-height-lg", typography.lineHeight.lg],
-    ["--font-line-height-xl", typography.lineHeight.xl],
-    ["--density-compact", String(density.compact)],
-    ["--density-comfortable", String(density.comfortable)],
-    ["--density-spacious", String(density.spacious)],
+    ...tokenDeclarations({ prefix: "font-size", tokens: typography.size }),
+    ...tokenDeclarations({ prefix: "font-weight", tokens: typography.weight }),
+    ...tokenDeclarations({ prefix: "font-line-height", tokens: typography.lineHeight }),
+    ...tokenDeclarations({ prefix: "density", tokens: density }),
     ["--focus-ring-width", focusRing.width],
     ["--focus-ring-offset", focusRing.offset],
     ["--motion-duration", motion.duration],

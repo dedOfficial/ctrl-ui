@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { color as primitiveColor, rampSteps } from "./primitive/color.ts";
-import { color, colorRoles } from "./semantic/color.ts";
+import { color, colorRoles, colorSchemes } from "./semantic/color.ts";
 
 describe("color", () => {
   describe("when reading primitive ramps", () => {
@@ -47,19 +47,20 @@ describe("color", () => {
 
   describe("when reading status roles", () => {
     it("exposes success, warning, info, and danger pairs distinct from action", () => {
-      for (const scheme of ["light", "dark"] as const) {
-        expect(colorRoles).toEqual(
-          expect.arrayContaining([
-            "danger",
-            "on-danger",
-            "success",
-            "on-success",
-            "warning",
-            "on-warning",
-            "info",
-            "on-info",
-          ]),
-        );
+      expect(colorRoles).toEqual(
+        expect.arrayContaining([
+          "danger",
+          "on-danger",
+          "success",
+          "on-success",
+          "warning",
+          "on-warning",
+          "info",
+          "on-info",
+        ]),
+      );
+
+      for (const scheme of colorSchemes) {
         expect(color[scheme].danger).not.toBe(color[scheme].action);
         expect(color[scheme].success).not.toBe(color[scheme].action);
         expect(color[scheme].warning).not.toBe(color[scheme].action);

@@ -3,14 +3,17 @@ import { color } from "ctrlds";
 
 import { SchemePair, TokenRow } from "./TokenGallery.tsx";
 
-const paintedPairs = [
-  ["surface", "on-surface"],
-  ["action", "on-action"],
-  ["danger", "on-danger"],
-  ["success", "on-success"],
-  ["warning", "on-warning"],
-  ["info", "on-info"],
-] as const;
+const onRolePrefix = "on-";
+
+type ColorRoleName = keyof typeof color.light;
+
+const paintedPairs = (Object.keys(color.light) as ColorRoleName[]).flatMap((role) => {
+  if (!role.startsWith(onRolePrefix)) {
+    return [];
+  }
+
+  return [[role.slice(onRolePrefix.length) as ColorRoleName, role] as const];
+});
 
 const meta = {
   title: "Tokens/Color",

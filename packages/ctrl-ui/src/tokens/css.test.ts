@@ -43,7 +43,7 @@ describe("generateCss", () => {
   });
 
   describe("when emitting shared contract tokens", () => {
-    it("includes KTD13 names for space, radius, font, density, direction, and focus ring", () => {
+    it("emits CSS custom property names for space, radius, font, density, direction, and focus ring", () => {
       const css = generateCss();
 
       expect(css).toContain("--space-md:");

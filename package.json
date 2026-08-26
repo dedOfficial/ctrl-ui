@@ -7,10 +7,10 @@
     "lint": "oxlint .",
     "fmt": "oxfmt .",
     "fmt:check": "oxfmt --check .",
-    "typecheck": "pnpm --filter ctrlds build && pnpm -r typecheck",
+    "typecheck": "pnpm -r typecheck",
     "test": "pnpm --filter ctrlds test",
-    "catalog": "pnpm --filter ctrlds build && pnpm --filter catalog storybook",
-    "catalog:build": "pnpm --filter ctrlds build && pnpm --filter catalog build-storybook",
+    "catalog": "pnpm --filter catalog storybook",
+    "catalog:build": "pnpm --filter catalog build-storybook",
     "tokens:generate": "pnpm --filter ctrlds tokens:generate",
     "prepare": "lefthook install --force"
   },

@@ -1,4 +1,5 @@
 import type { Decorator, Preview } from "@storybook/react-vite";
+import { color, direction } from "ctrlds";
 
 import "@fontsource/inter/400.css";
 import "@fontsource/inter/500.css";
@@ -6,12 +7,15 @@ import "@fontsource/inter/600.css";
 import "@fontsource/inter/700.css";
 import "ctrlds/tokens.css";
 
+type Scheme = keyof typeof color;
+type Direction = (typeof direction)[keyof typeof direction];
+
 const withSchemeAndDirection: Decorator = (Story, context) => {
-  const scheme = context.globals.scheme as "light" | "dark";
-  const direction = context.globals.direction as "ltr" | "rtl";
+  const scheme = context.globals.scheme as Scheme;
+  const writingDirection = context.globals.direction as Direction;
 
   return (
-    <div data-scheme={scheme} dir={direction}>
+    <div data-scheme={scheme} dir={writingDirection}>
       <Story />
     </div>
   );

@@ -15,26 +15,24 @@ type Story = StoryObj<typeof meta>;
 export const Gallery: Story = {
   render: () => (
     <SchemePair>
-      {() => (
-        <>
-          {Object.entries(direction).map(([name, value]) => (
-            <div key={name} dir={value}>
-              <TokenRow name={name} value={value} />
-              <p
-                data-ctrl-logical-space
-                aria-label={`${value} logical inset`}
-                style={{
-                  background: "var(--color-action)",
-                  color: "var(--color-on-action)",
-                  fontFamily: "var(--font-family)",
-                }}
-              >
-                {`${value} logical inset`}
-              </p>
-            </div>
-          ))}
-        </>
-      )}
+      {() =>
+        Object.entries(direction).map(([name, value]) => (
+          <div key={name} dir={value}>
+            <TokenRow name={name} value={value} />
+            <p
+              data-ctrl-logical-space
+              aria-label={`${value} logical inset`}
+              style={{
+                background: "var(--color-action)",
+                color: "var(--color-on-action)",
+                fontFamily: "var(--font-family)",
+              }}
+            >
+              {`${value} logical inset`}
+            </p>
+          </div>
+        ))
+      }
     </SchemePair>
   ),
 };

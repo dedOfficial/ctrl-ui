@@ -15,22 +15,20 @@ type Story = StoryObj<typeof meta>;
 export const Gallery: Story = {
   render: () => (
     <SchemePair>
-      {() => (
-        <>
-          {Object.entries(space).map(([name, value]) => (
-            <TokenRow
-              key={name}
-              name={name}
-              value={value}
-              swatch={{
-                width: value,
-                height: "var(--space-sm)",
-                background: "var(--color-action)",
-              }}
-            />
-          ))}
-        </>
-      )}
+      {() =>
+        Object.entries(space).map(([name, value]) => (
+          <TokenRow
+            key={name}
+            name={name}
+            value={value}
+            swatch={{
+              width: value,
+              height: "var(--space-sm)",
+              background: "var(--color-action)",
+            }}
+          />
+        ))
+      }
     </SchemePair>
   ),
 };

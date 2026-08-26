@@ -1,13 +1,13 @@
 import { describe, expect, it } from "vitest";
 
-import { color, colorRoles, colorSchemes } from "./semantic/color.ts";
+import { color, colorRoles, colorSchemes, paintedColorPairs } from "./semantic/color.ts";
 import { focusRing } from "./semantic/focus.ts";
 
 const AA_CONTRAST = 4.5;
 const NON_TEXT_CONTRAST = 3;
 
 function hexToRgb(hex: string): readonly [number, number, number] {
-  const value = hex.replace("#", "");
+  const value = hex.replaceAll("#", "");
   return [
     Number.parseInt(value.slice(0, 2), 16),
     Number.parseInt(value.slice(2, 4), 16),
@@ -36,20 +36,11 @@ function contrastRatio(first: string, second: string): number {
   return (lighter + 0.05) / (darker + 0.05);
 }
 
-const paintedPairs = [
-  ["surface", "on-surface"],
-  ["action", "on-action"],
-  ["danger", "on-danger"],
-  ["success", "on-success"],
-  ["warning", "on-warning"],
-  ["info", "on-info"],
-] as const;
-
 describe("contrast", () => {
   describe("when a semantic pair is painted", () => {
     it("meets WCAG 2.2 AA contrast on every foreground and background pair", () => {
       for (const scheme of colorSchemes) {
-        for (const [backgroundRole, foregroundRole] of paintedPairs) {
+        for (const [backgroundRole, foregroundRole] of paintedColorPairs) {
           const ratio = contrastRatio(color[scheme][backgroundRole], color[scheme][foregroundRole]);
           expect(ratio, `${scheme} ${foregroundRole} on ${backgroundRole}`).toBeGreaterThanOrEqual(
             AA_CONTRAST,

@@ -15,13 +15,11 @@ type Story = StoryObj<typeof meta>;
 export const Gallery: Story = {
   render: () => (
     <SchemePair>
-      {() => (
-        <>
-          {Object.entries(density).map(([name, value]) => (
-            <TokenRow key={name} name={name} value={String(value)} />
-          ))}
-        </>
-      )}
+      {() =>
+        Object.entries(density).map(([name, value]) => (
+          <TokenRow key={name} name={name} value={String(value)} />
+        ))
+      }
     </SchemePair>
   ),
 };

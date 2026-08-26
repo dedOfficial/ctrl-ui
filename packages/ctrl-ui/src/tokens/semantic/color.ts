@@ -24,6 +24,16 @@ export type ColorRole = (typeof colorRoles)[number];
 
 export type SemanticColor = Record<ColorRole, string>;
 
+const onRolePrefix = "on-";
+
+export const paintedColorPairs = colorRoles.flatMap((foreground) => {
+  if (!foreground.startsWith(onRolePrefix)) {
+    return [];
+  }
+
+  return [[foreground.slice(onRolePrefix.length) as ColorRole, foreground] as const];
+});
+
 export const color = {
   light: {
     surface: primitiveColor.neutral[100],

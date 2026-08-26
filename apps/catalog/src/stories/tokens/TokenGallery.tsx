@@ -1,10 +1,9 @@
 import type { CSSProperties, ReactNode } from "react";
+import { color } from "ctrlds";
 
-export function SchemePair({
-  children,
-}: {
-  children: (scheme: "light" | "dark") => ReactNode;
-}): ReactNode {
+export type Scheme = keyof typeof color;
+
+export function SchemePair({ children }: { children: (scheme: Scheme) => ReactNode }): ReactNode {
   return (
     <div
       style={{
@@ -13,7 +12,7 @@ export function SchemePair({
         gap: "var(--space-lg)",
       }}
     >
-      {(["light", "dark"] as const).map((scheme) => (
+      {(Object.keys(color) as Scheme[]).map((scheme) => (
         <section
           key={scheme}
           data-scheme={scheme}

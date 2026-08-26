@@ -7,7 +7,7 @@ const config: StorybookConfig = {
   stories: ["../src/**/*.stories.tsx"],
   addons: ["@storybook/addon-a11y"],
   framework: "@storybook/react-vite",
-  async viteFinal(viteConfig) {
+  viteFinal(viteConfig) {
     return mergeConfig(viteConfig, {
       resolve: {
         alias: {
