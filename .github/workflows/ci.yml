@@ -1,0 +1,57 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Format
+        run: pnpm fmt:check
+
+      - name: Build
+        run: pnpm build
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Test
+        run: pnpm test
+
+      - name: Pack install
+        run: pnpm pack:proof
+
+      - name: Catalog
+        run: pnpm catalog:build
+
+      - name: Commitlint
+        if: github.event_name == 'pull_request'
+        run: |
+          git fetch origin ${{ github.base_ref }}
+          pnpm exec commitlint --from origin/${{ github.base_ref }} --to HEAD
+
+      - name: Commitlint (push)
+        if: github.event_name == 'push'
+        run: git log -1 --format=%B ${{ github.sha }} | pnpm exec commitlint

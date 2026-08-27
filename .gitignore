@@ -1,1 +1,10 @@
 .compound-engineering/*.local.yaml
+node_modules
+dist
+coverage
+storybook-static
+*.log
+.DS_Store
+.vite
+.turbo
+*.tgz

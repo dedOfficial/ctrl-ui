@@ -1,0 +1,49 @@
+{
+  "name": "ctrlds",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Ctrl UI design-system kit. Workspace package until the first atom batch.",
+  "license": "MIT",
+  "files": [
+    "dist"
+  ],
+  "type": "module",
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.mts",
+      "import": "./dist/index.mjs"
+    },
+    "./variables.css": "./dist/tokens/generated/variables.css"
+  },
+  "scripts": {
+    "build": "tsdown",
+    "tokens:generate": "node --input-type=module -e \"import { writeGeneratedCss, generatedCssPath } from './src/tokens/css.ts'; writeGeneratedCss({ outputPath: generatedCssPath })\"",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run --coverage"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^7.0.1",
+    "@testing-library/react": "^16.3.2",
+    "@types/node": "^24.3.0",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.3",
+    "@vitest/coverage-istanbul": "^4.1.11",
+    "axe-core": "^4.13.0",
+    "jsdom": "^30.0.1",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "tsdown": "^0.22.14",
+    "typescript": "~5.9.3",
+    "vitest": "^4.1.11"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0"
+  },
+  "engines": {
+    "node": ">=22.18.0"
+  }
+}

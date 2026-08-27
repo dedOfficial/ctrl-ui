@@ -1,0 +1,10 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "ignorePatterns": [
+    "docs/**",
+    "AGENTS.md",
+    "LICENSE",
+    "pnpm-lock.yaml",
+    "packages/ctrl-ui/src/tokens/generated/variables.css"
+  ]
+}
