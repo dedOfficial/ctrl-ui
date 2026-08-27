@@ -15,13 +15,14 @@ describe("direction", () => {
     it("sets a dir contract and uses logical inset and space properties", () => {
       const css = generateCss();
 
-      expect(css).toContain("[dir='ltr']");
+      expect(css).toContain(":root, [dir='ltr']");
       expect(css).toContain("[dir='rtl']");
       expect(css).toContain("--direction: ltr;");
       expect(css).toContain("--direction: rtl;");
-      expect(css).toContain("margin-inline:");
-      expect(css).toContain("padding-inline:");
-      expect(css).toContain("inset-inline:");
+      expect(css).toContain("--space-inline-sm:");
+      expect(css).toContain("--inset-inline-md:");
+      expect(css).toContain("--inset-block-md:");
+      expect(css).not.toContain("margin-inline:");
     });
   });
 });

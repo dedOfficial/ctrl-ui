@@ -17,12 +17,15 @@ export const Gallery: Story = {
     <SchemePair>
       {() =>
         Object.entries(direction).map(([name, value]) => (
-          <div key={name} dir={value}>
+          <div key={name} dir={value} style={{ position: "relative" }}>
             <TokenRow name={name} value={value} />
             <p
-              data-ctrl-logical-space
               aria-label={`${value} logical inset`}
               style={{
+                position: "relative",
+                marginInline: "var(--space-inline-sm)",
+                paddingInline: "var(--space-inline-md)",
+                insetInline: "var(--inset-inline-xs)",
                 background: "var(--color-action)",
                 color: "var(--color-on-action)",
                 fontFamily: "var(--font-family)",

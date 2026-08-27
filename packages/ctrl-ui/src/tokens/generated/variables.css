@@ -1,6 +1,6 @@
 /* Generated from packages/ctrl-ui/src/tokens/css.ts. Do not edit by hand. */
 
-[data-scheme='light'] {
+:root, [data-scheme='light'] {
   --color-surface: #F2F2F2;
   --color-on-surface: #000000;
   --color-action: #000000;
@@ -31,13 +31,19 @@
   --color-focus: #757575;
 }
 
-[data-scheme] {
+:root, [data-scheme] {
   --space-xs: 4px;
   --space-sm: 8px;
   --space-md: 16px;
   --space-lg: 24px;
   --space-xl: 32px;
-  --space-2xl: 48px;
+  --space-xxl: 48px;
+  --space-inline-xs: 4px;
+  --space-inline-sm: 8px;
+  --space-inline-md: 16px;
+  --space-inline-lg: 24px;
+  --space-inline-xl: 32px;
+  --space-inline-xxl: 48px;
   --target-min-size: 24px;
   --radius-sm: 8px;
   --radius-md: 12px;
@@ -62,23 +68,29 @@
   --focus-ring-width: 2px;
   --focus-ring-offset: 2px;
   --motion-duration: 150ms;
+  --inset-inline-xs: 4px;
+  --inset-inline-sm: 8px;
+  --inset-inline-md: 16px;
+  --inset-inline-lg: 24px;
+  --inset-inline-xl: 32px;
+  --inset-inline-xxl: 48px;
+  --inset-block-xs: 4px;
+  --inset-block-sm: 8px;
+  --inset-block-md: 16px;
+  --inset-block-lg: 24px;
+  --inset-block-xl: 32px;
+  --inset-block-xxl: 48px;
 }
 
-[dir='ltr'] {
+:root, [dir='ltr'] {
   --direction: ltr;
 }
 [dir='rtl'] {
   --direction: rtl;
 }
 
-[data-ctrl-logical-space] {
-  margin-inline: var(--space-sm);
-  padding-inline: var(--space-md);
-  inset-inline: auto;
-}
-
 @media (prefers-reduced-motion: reduce) {
-:root {
-  --motion-duration: 0ms;
+:root, [data-scheme] {
+  --motion-duration: 0s;
 }
 }

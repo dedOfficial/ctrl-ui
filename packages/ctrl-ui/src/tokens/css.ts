@@ -2,7 +2,7 @@ import { mkdirSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { color, colorRoles, colorSchemes } from "./semantic/color.ts";
+import { color, colorRoles } from "./semantic/color.ts";
 import { density } from "./semantic/density.ts";
 import { direction } from "./semantic/direction.ts";
 import { focusRing } from "./semantic/focus.ts";
@@ -44,6 +44,7 @@ function tokenDeclarations({
 function sharedDeclarations(): Array<readonly [string, string]> {
   return [
     ...tokenDeclarations({ prefix: "space", tokens: space }),
+    ...tokenDeclarations({ prefix: "space-inline", tokens: space }),
     ["--target-min-size", targetMinSize],
     ...tokenDeclarations({ prefix: "radius", tokens: radius }),
     ["--font-family", typography.family],
@@ -54,60 +55,57 @@ function sharedDeclarations(): Array<readonly [string, string]> {
     ["--focus-ring-width", focusRing.width],
     ["--focus-ring-offset", focusRing.offset],
     ["--motion-duration", motion.duration],
+    ...tokenDeclarations({ prefix: "inset-inline", tokens: space }),
+    ...tokenDeclarations({ prefix: "inset-block", tokens: space }),
   ];
 }
 
-function colorDeclarations(
-  scheme: (typeof colorSchemes)[number],
-): Array<readonly [string, string]> {
+function colorDeclarations(scheme: "light" | "dark"): Array<readonly [string, string]> {
   const roles = color[scheme];
   return colorRoles.map((role) => [`--color-${role}`, roles[role]] as const);
 }
 
 export function generateCss(): string {
-  const schemeBlocks = colorSchemes.map((scheme) =>
-    customPropertyBlock({
-      selector: `[data-scheme='${scheme}']`,
-      declarations: colorDeclarations(scheme),
-    }),
-  );
+  const lightBlock = customPropertyBlock({
+    selector: ":root, [data-scheme='light']",
+    declarations: colorDeclarations("light"),
+  });
+
+  const darkBlock = customPropertyBlock({
+    selector: "[data-scheme='dark']",
+    declarations: colorDeclarations("dark"),
+  });
 
   const sharedBlock = customPropertyBlock({
-    selector: "[data-scheme]",
+    selector: ":root, [data-scheme]",
     declarations: sharedDeclarations(),
   });
 
-  const directionBlocks = Object.values(direction).map((value) =>
-    customPropertyBlock({
-      selector: `[dir='${value}']`,
-      declarations: [["--direction", value]],
-    }),
-  );
+  const ltrBlock = customPropertyBlock({
+    selector: ":root, [dir='ltr']",
+    declarations: [["--direction", direction.ltr]],
+  });
 
-  const logicalSpaceBlock = customPropertyBlock({
-    selector: "[data-ctrl-logical-space]",
-    declarations: [
-      ["margin-inline", "var(--space-sm)"],
-      ["padding-inline", "var(--space-md)"],
-      ["inset-inline", "auto"],
-    ],
+  const rtlBlock = customPropertyBlock({
+    selector: "[dir='rtl']",
+    declarations: [["--direction", direction.rtl]],
   });
 
   const reducedMotionBlock = `@media ${motion.reducedMotionQuery} {\n${customPropertyBlock({
-    selector: ":root",
+    selector: ":root, [data-scheme]",
     declarations: [["--motion-duration", motion.reducedDuration]],
   })}\n}`;
 
   return [
     "/* Generated from packages/ctrl-ui/src/tokens/css.ts. Do not edit by hand. */",
     "",
-    ...schemeBlocks,
+    lightBlock,
+    darkBlock,
     "",
     sharedBlock,
     "",
-    ...directionBlocks,
-    "",
-    logicalSpaceBlock,
+    ltrBlock,
+    rtlBlock,
     "",
     reducedMotionBlock,
     "",

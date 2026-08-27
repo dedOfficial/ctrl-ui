@@ -14,7 +14,7 @@ describe("space", () => {
       expect(space.md).toBe(`${primitiveSpace[16]}px`);
       expect(space.lg).toBe(`${primitiveSpace[24]}px`);
       expect(space.xl).toBe(`${primitiveSpace[32]}px`);
-      expect(space["2xl"]).toBe(`${primitiveSpace[48]}px`);
+      expect(space.xxl).toBe(`${primitiveSpace[48]}px`);
     });
   });
 

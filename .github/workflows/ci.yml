@@ -40,10 +40,18 @@ jobs:
       - name: Test
         run: pnpm test
 
+      - name: Pack install
+        run: pnpm pack:proof
+
       - name: Catalog
         run: pnpm catalog:build
 
       - name: Commitlint
+        if: github.event_name == 'pull_request'
         run: |
-          git fetch origin main
-          pnpm exec commitlint --from origin/main --to HEAD
+          git fetch origin ${{ github.base_ref }}
+          pnpm exec commitlint --from origin/${{ github.base_ref }} --to HEAD
+
+      - name: Commitlint (push)
+        if: github.event_name == 'push'
+        run: git log -1 --format=%B ${{ github.sha }} | pnpm exec commitlint

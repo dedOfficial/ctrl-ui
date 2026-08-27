@@ -17,7 +17,16 @@ export const Gallery: Story = {
     <SchemePair>
       {() =>
         Object.entries(density).map(([name, value]) => (
-          <TokenRow key={name} name={name} value={String(value)} />
+          <TokenRow
+            key={name}
+            name={name}
+            value={String(value)}
+            swatch={{
+              width: `calc(var(--space-lg) * ${String(value)})`,
+              height: "var(--space-sm)",
+              background: "var(--color-action)",
+            }}
+          />
         ))
       }
     </SchemePair>

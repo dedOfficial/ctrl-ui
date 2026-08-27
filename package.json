@@ -12,6 +12,7 @@
     "catalog": "pnpm --filter catalog storybook",
     "catalog:build": "pnpm --filter catalog build-storybook",
     "tokens:generate": "pnpm --filter ctrlds tokens:generate",
+    "pack:proof": "node ./scripts/prove-pack-install.mjs",
     "prepare": "lefthook install --force"
   },
   "devDependencies": {

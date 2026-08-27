@@ -6,7 +6,7 @@ export const space = {
   md: `${primitiveSpace[16]}px`,
   lg: `${primitiveSpace[24]}px`,
   xl: `${primitiveSpace[32]}px`,
-  "2xl": `${primitiveSpace[48]}px`,
+  xxl: `${primitiveSpace[48]}px`,
 } as const;
 
 export const targetMinSize = `${primitiveSpace[24]}px`;

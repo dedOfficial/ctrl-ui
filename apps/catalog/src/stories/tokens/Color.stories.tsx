@@ -31,14 +31,34 @@ export const Gallery: Story = {
         const roles = color[scheme];
         return (
           <>
-            {Object.entries(roles).map(([name, value]) => (
-              <TokenRow
-                key={name}
-                name={name}
-                value={value}
-                swatch={{ background: `var(--color-${name})` }}
-              />
-            ))}
+            {Object.entries(roles)
+              .filter(([name]) => name !== "focus")
+              .map(([name, value]) => (
+                <TokenRow
+                  key={name}
+                  name={name}
+                  value={value}
+                  swatch={{ background: `var(--color-${name})` }}
+                />
+              ))}
+            <TokenRow
+              name="focus on surface"
+              value={roles.focus}
+              swatch={{
+                background: "var(--color-surface)",
+                outline: "var(--focus-ring-width) solid var(--color-focus)",
+                outlineOffset: "var(--focus-ring-offset)",
+              }}
+            />
+            <TokenRow
+              name="focus on action"
+              value={roles.focus}
+              swatch={{
+                background: "var(--color-action)",
+                outline: "var(--focus-ring-width) solid var(--color-focus)",
+                outlineOffset: "var(--focus-ring-offset)",
+              }}
+            />
             <h3 style={{ fontFamily: "var(--font-family)", fontSize: "var(--font-size-md)" }}>
               Painted pairs
             </h3>

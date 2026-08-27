@@ -1,3 +1,4 @@
+// @vitest-environment node
 import { mkdtempSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -33,8 +34,10 @@ describe("generateCss", () => {
     it("includes a custom property for every semantic color role in both schemes", () => {
       const css = generateCss();
 
+      expect(css).toContain(":root, [data-scheme='light']");
+      expect(css).toContain("[data-scheme='dark']");
+
       for (const scheme of colorSchemes) {
-        expect(css).toContain(`[data-scheme='${scheme}']`);
         for (const role of colorRoles) {
           expect(css).toContain(`--color-${role}: ${color[scheme][role]};`);
         }
@@ -46,12 +49,14 @@ describe("generateCss", () => {
     it("emits CSS custom property names for space, radius, font, density, direction, and focus ring", () => {
       const css = generateCss();
 
+      expect(css).toContain(":root, [data-scheme]");
+      expect(css).toContain(":root, [dir='ltr']");
+      expect(css).toContain("[dir='rtl']");
       expect(css).toContain("--space-md:");
+      expect(css).toContain("--space-xxl:");
       expect(css).toContain("--radius-sm:");
       expect(css).toContain("--font-family: Inter, system-ui, sans-serif;");
       expect(css).toContain("--density-comfortable:");
-      expect(css).toContain("[dir='ltr']");
-      expect(css).toContain("[dir='rtl']");
       expect(css).toContain("--direction: ltr;");
       expect(css).toContain("--direction: rtl;");
       expect(css).toContain(`--focus-ring-width: ${focusRing.width};`);
@@ -59,18 +64,21 @@ describe("generateCss", () => {
       expect(css).toContain(`--target-min-size: ${targetMinSize};`);
       expect(css).toContain(`--motion-duration: ${motion.duration};`);
       expect(css).toContain(motion.reducedMotionQuery);
+      expect(css).toContain(`--motion-duration: ${motion.reducedDuration};`);
     });
   });
 
   describe("when emitting directional inset and space", () => {
-    it("uses logical properties and omits physical left/right declarations", () => {
+    it("uses logical custom properties and omits utility and physical declarations", () => {
       const css = generateCss();
 
-      expect(css).toContain("margin-inline:");
-      expect(css).toContain("padding-inline:");
-      expect(css).toContain("inset-inline:");
-      expect(css).not.toMatch(/(?:^|[^-])left\s*:/m);
-      expect(css).not.toMatch(/(?:^|[^-])right\s*:/m);
+      expect(css).toContain("--space-inline-sm:");
+      expect(css).toContain("--inset-inline-md:");
+      expect(css).toContain("--inset-block-md:");
+      expect(css).not.toContain("margin-inline:");
+      expect(css).not.toContain("padding-inline:");
+      expect(css).not.toMatch(/(?:^|[^-])(?:margin|padding)-left\s*:/m);
+      expect(css).not.toMatch(/(?:^|[^-])(?:margin|padding)-right\s*:/m);
     });
   });
 });

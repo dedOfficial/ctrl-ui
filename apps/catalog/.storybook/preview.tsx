@@ -5,7 +5,7 @@ import "@fontsource/inter/400.css";
 import "@fontsource/inter/500.css";
 import "@fontsource/inter/600.css";
 import "@fontsource/inter/700.css";
-import "ctrlds/tokens.css";
+import "ctrlds/variables.css";
 
 type Scheme = keyof typeof color;
 type Direction = (typeof direction)[keyof typeof direction];

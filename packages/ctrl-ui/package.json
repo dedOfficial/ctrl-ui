@@ -16,7 +16,7 @@
       "types": "./dist/index.d.mts",
       "import": "./dist/index.mjs"
     },
-    "./tokens.css": "./dist/tokens/generated/variables.css"
+    "./variables.css": "./dist/tokens/generated/variables.css"
   },
   "scripts": {
     "build": "tsdown",

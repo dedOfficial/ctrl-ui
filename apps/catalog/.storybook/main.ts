@@ -11,7 +11,7 @@ const config: StorybookConfig = {
     return mergeConfig(viteConfig, {
       resolve: {
         alias: {
-          "ctrlds/tokens.css": fileURLToPath(
+          "ctrlds/variables.css": fileURLToPath(
             new URL(
               "../../../packages/ctrl-ui/src/tokens/generated/variables.css",
               import.meta.url,
