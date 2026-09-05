@@ -16,7 +16,7 @@ A named public role a consumer or UI module may use — `surface`, `action`, `xx
 
 The third token tier: token context for a specific UI module (button fill, table row gap). It is not a React “component.” UI modules are atoms, molecules, organisms, and templates.
 
-*Avoid:* calling UI modules “components” when the component-token tier is in scope.
+_Avoid:_ calling UI modules “components” when the component-token tier is in scope.
 
 ### Scheme
 
