@@ -21,7 +21,6 @@ export const Gallery: Story = {
           {Object.entries(typography.size).map(([name, value]) => (
             <p
               key={name}
-              aria-label={`size ${name} ${value}`}
               style={{
                 fontFamily: "var(--font-family)",
                 fontSize: `var(--font-size-${name})`,
@@ -36,7 +35,6 @@ export const Gallery: Story = {
           {Object.entries(typography.weight).map(([name, value]) => (
             <p
               key={name}
-              aria-label={`weight ${name} ${value}`}
               style={{
                 fontFamily: "var(--font-family)",
                 fontSize: "var(--font-size-md)",

@@ -1,6 +1,7 @@
 /* Generated from packages/ctrl-ui/src/tokens/css.ts. Do not edit by hand. */
 
 :root, [data-scheme='light'] {
+  color-scheme: light;
   --color-surface: #F2F2F2;
   --color-on-surface: #000000;
   --color-action: #000000;
@@ -16,6 +17,7 @@
   --color-focus: #757575;
 }
 [data-scheme='dark'] {
+  color-scheme: dark;
   --color-surface: #212121;
   --color-on-surface: #F2F2F2;
   --color-action: #FFFFFF;
@@ -38,12 +40,12 @@
   --space-lg: 24px;
   --space-xl: 32px;
   --space-xxl: 48px;
-  --space-inline-xs: 4px;
-  --space-inline-sm: 8px;
-  --space-inline-md: 16px;
-  --space-inline-lg: 24px;
-  --space-inline-xl: 32px;
-  --space-inline-xxl: 48px;
+  --space-inline-xs: var(--space-xs);
+  --space-inline-sm: var(--space-sm);
+  --space-inline-md: var(--space-md);
+  --space-inline-lg: var(--space-lg);
+  --space-inline-xl: var(--space-xl);
+  --space-inline-xxl: var(--space-xxl);
   --target-min-size: 24px;
   --radius-sm: 8px;
   --radius-md: 12px;
@@ -68,18 +70,18 @@
   --focus-ring-width: 2px;
   --focus-ring-offset: 2px;
   --motion-duration: 150ms;
-  --inset-inline-xs: 4px;
-  --inset-inline-sm: 8px;
-  --inset-inline-md: 16px;
-  --inset-inline-lg: 24px;
-  --inset-inline-xl: 32px;
-  --inset-inline-xxl: 48px;
-  --inset-block-xs: 4px;
-  --inset-block-sm: 8px;
-  --inset-block-md: 16px;
-  --inset-block-lg: 24px;
-  --inset-block-xl: 32px;
-  --inset-block-xxl: 48px;
+  --inset-inline-xs: var(--space-xs);
+  --inset-inline-sm: var(--space-sm);
+  --inset-inline-md: var(--space-md);
+  --inset-inline-lg: var(--space-lg);
+  --inset-inline-xl: var(--space-xl);
+  --inset-inline-xxl: var(--space-xxl);
+  --inset-block-xs: var(--space-xs);
+  --inset-block-sm: var(--space-sm);
+  --inset-block-md: var(--space-md);
+  --inset-block-lg: var(--space-lg);
+  --inset-block-xl: var(--space-xl);
+  --inset-block-xxl: var(--space-xxl);
 }
 
 :root, [dir='ltr'] {

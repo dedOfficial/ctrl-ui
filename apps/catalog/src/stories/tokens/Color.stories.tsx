@@ -76,7 +76,9 @@ export const Gallery: Story = {
                   width: "auto",
                   minWidth: "var(--target-min-size)",
                   paddingInline: "var(--space-xs)",
+                  fontFamily: "var(--font-family)",
                 }}
+                swatchContent="Aa"
               />
             ))}
           </>
