@@ -20,6 +20,15 @@ describe("typography", () => {
     });
   });
 
+  describe("when reading line-height steps", () => {
+    it("maps named steps onto the primitive scale", () => {
+      expect(typography.lineHeight.sm).toBe(`${primitiveTypography.lineHeight[20]}px`);
+      expect(typography.lineHeight.md).toBe(`${primitiveTypography.lineHeight[24]}px`);
+      expect(typography.lineHeight.lg).toBe(`${primitiveTypography.lineHeight[28]}px`);
+      expect(typography.lineHeight.xl).toBe(`${primitiveTypography.lineHeight[32]}px`);
+    });
+  });
+
   describe("when reading weight steps", () => {
     it("exposes 400, 500, 600, and 700", () => {
       expect(typography.weight.regular).toBe("400");
