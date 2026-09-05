@@ -1,7 +1,10 @@
 import { describe, expect, it } from "vitest";
 
+import * as publicApi from "../index.ts";
 import { color as primitiveColor, rampSteps } from "./primitive/color.ts";
 import { color, colorRoles, colorSchemes } from "./semantic/color.ts";
+
+const accentSteps = ["A100", "A200", "A400", "A700"];
 
 describe("color", () => {
   describe("when reading primitive ramps", () => {
@@ -16,14 +19,33 @@ describe("color", () => {
   });
 
   describe("when reading the public collection", () => {
-    it("omits primitive ramps and accent A100-A700 steps", () => {
-      const serialized = JSON.stringify(color);
+    // Serialising the semantic map alone can never contain a ramp name, so this
+    // asserts against the public export surface and against the values it can
+    // reach: a leaked ramp shows up as a step no semantic role points at.
+    it("reaches no color value that is not a semantic role value", () => {
+      const semanticValues = colorSchemes.flatMap((scheme) =>
+        colorRoles.map((role) => color[scheme][role]),
+      );
+      const reachableValues = JSON.stringify(publicApi).match(/#[0-9A-Fa-f]{6}/g) ?? [];
 
-      expect(serialized).not.toContain("A100");
-      expect(serialized).not.toContain("A200");
-      expect(serialized).not.toContain("A400");
-      expect(serialized).not.toContain("A700");
-      expect(serialized).not.toContain("neutral");
+      expect(reachableValues.length).toBeGreaterThan(0);
+      for (const value of reachableValues) {
+        expect(semanticValues).toContain(value);
+      }
+    });
+
+    it("keeps primitive ramp families off the public export surface", () => {
+      for (const family of Object.keys(primitiveColor)) {
+        expect(publicApi).not.toHaveProperty(family);
+      }
+    });
+
+    it("requires no accent A100-A700 step on any ramp", () => {
+      for (const ramp of Object.values(primitiveColor)) {
+        for (const step of accentSteps) {
+          expect(ramp).not.toHaveProperty(step);
+        }
+      }
     });
   });
 

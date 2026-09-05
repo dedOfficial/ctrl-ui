@@ -8,7 +8,7 @@
     "fmt": "oxfmt .",
     "fmt:check": "oxfmt --check .",
     "typecheck": "pnpm -r typecheck",
-    "test": "pnpm --filter ctrlds test",
+    "test": "pnpm -r test",
     "catalog": "pnpm --filter catalog storybook",
     "catalog:build": "pnpm --filter catalog build-storybook",
     "tokens:generate": "pnpm --filter ctrlds tokens:generate",
