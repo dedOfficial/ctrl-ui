@@ -5,8 +5,11 @@ pre-commit:
       glob: "*.{js,jsx,ts,tsx,mjs,cjs}"
       run: pnpm exec oxlint {staged_files}
     fmt:
-      glob: "*.{js,jsx,ts,tsx,mjs,cjs,json,jsonc,md,yml,css}"
-      run: pnpm exec oxfmt --check {staged_files}
+      # Repo-wide, like CI's fmt:check, so .oxfmtrc.json ignorePatterns stays
+      # the single source of truth. Passing {staged_files} under a glob that
+      # matches md fails a docs-only commit: every path is ignored by oxfmt,
+      # which then exits 2 on an empty target list.
+      run: pnpm exec oxfmt --check .
 
 commit-msg:
   commands:
