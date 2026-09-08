@@ -97,11 +97,18 @@ The committed dump matches those selectors (`packages/ctrl-ui/src/tokens/generat
 
 **Logical CSS shape (KTD13).** Directional inset and space in the dump MUST be custom properties (`--space-inline-*`, `--inset-inline-*`, `--inset-block-*`). The dump MUST NOT emit `margin-inline` / `padding-inline` utility rules or physical `left` / `right` inset properties. Story markup MAY use those CSS properties against the custom properties; the dump itself must not.
 
-```44:60:packages/ctrl-ui/src/tokens/css.ts
+**An alias family MUST resolve through `var()` on its source token, not copy its
+value.** `--space-inline-*`, `--inset-inline-*`, and `--inset-block-*` are aliases
+of `--space-*`. Emitting them as literal lengths satisfies the KTD13 name list
+while silently breaking customization channel 1: a consumer who overrides
+`--space-md` moves `--space-md` alone and gets a half-applied theme with no
+error. `aliasDeclarations` exists to keep the two apart from `tokenDeclarations`.
+
+```60:77:packages/ctrl-ui/src/tokens/css.ts
 function sharedDeclarations(): Array<readonly [string, string]> {
   return [
     ...tokenDeclarations({ prefix: "space", tokens: space }),
-    ...tokenDeclarations({ prefix: "space-inline", tokens: space }),
+    ...aliasDeclarations({ prefix: "space-inline", source: "space", tokens: space }),
     ["--target-min-size", targetMinSize],
     ...tokenDeclarations({ prefix: "radius", tokens: radius }),
     ["--font-family", typography.family],
@@ -112,13 +119,34 @@ function sharedDeclarations(): Array<readonly [string, string]> {
     ["--focus-ring-width", focusRing.width],
     ["--focus-ring-offset", focusRing.offset],
     ["--motion-duration", motion.duration],
-    ...tokenDeclarations({ prefix: "inset-inline", tokens: space }),
-    ...tokenDeclarations({ prefix: "inset-block", tokens: space }),
+    ...aliasDeclarations({ prefix: "inset-inline", source: "space", tokens: space }),
+    ...aliasDeclarations({ prefix: "inset-block", source: "space", tokens: space }),
   ];
 }
 ```
 
-The dump currently emits `--space-inline-xxl: 48px`, `--inset-inline-md: 16px`, and `--inset-block-md: 16px` (`packages/ctrl-ui/src/tokens/generated/variables.css:46`, `:73`, `:79`). `css.test.ts` asserts `--space-inline-sm:`, `--inset-inline-md:`, `--inset-block-md:`, and no `margin-inline:` (`packages/ctrl-ui/src/tokens/css.test.ts:75-78`).
+The dump emits `--space-inline-xxl: var(--space-xxl)`, `--inset-inline-md: var(--space-md)`,
+and `--inset-block-md: var(--space-md)` (`packages/ctrl-ui/src/tokens/generated/variables.css:48`,
+`:75`, `:81`). `css.test.ts` asserts every alias resolves to `var()` on its source
+and that none emits a raw length (`packages/ctrl-ui/src/tokens/css.test.ts:94-104`);
+a separate case forbids utility and physical declarations (`:106-113`). Asserting
+only that the property *name* appears passes on the literal-copy bug, so the
+assertion must include the value.
+
+**Each scheme block MUST declare `color-scheme` (KTD13 cascade).** Without it,
+user-agent surfaces — scrollbars, form controls, the canvas behind the page —
+stay light under `[data-scheme='dark']` no matter what the color roles say
+(`packages/ctrl-ui/src/tokens/css.ts:79-85`,
+`packages/ctrl-ui/src/tokens/generated/variables.css:4`, `:20`).
+
+**Scheme selection is the `data-scheme` attribute only — deliberately.** The dump
+ships no `@media (prefers-color-scheme: dark)` block, so a host that sets no
+`data-scheme` resolves light on every OS. That follows the plan's single switch
+mechanism (`docs/plans/2026-08-14-001-product-ctrl-ui-foundation-plan.md:519`,
+KTD13): the host decides scheme and may wire `prefers-color-scheme` itself.
+Adding an OS-following default would make `:root` resolve dark without any
+attribute, which is a public-contract change and needs a plan decision, not a
+patch.
 
 **Reduced-motion cascade (KTD13).** Encode reduced motion as `@media (prefers-reduced-motion: reduce)` setting `--motion-duration: 0s` on the same shared selector as other non-color tokens (`:root, [data-scheme]`). A `:root`-only override loses to a `[data-scheme]` rule that still holds `150ms`.
 
@@ -148,7 +176,7 @@ The dump currently emits `--motion-duration: 0s` inside that media query on `:ro
 
 **Font dependency.** `@fontsource/inter` is a catalog (and consumer) dependency, not a kit runtime dependency. The catalog loads weights 400, 500, 600, and 700 (`apps/catalog/.storybook/preview.tsx:4-7`, `apps/catalog/package.json:12`). Kit `package.json` has no `@fontsource/inter` dependency. The kit README states that fact (`packages/ctrl-ui/README.md:5`). `--font-family` in the dump is `Inter, system-ui, sans-serif` (`packages/ctrl-ui/src/tokens/generated/variables.css:52`).
 
-**Keep the dump honest.** `css.test.ts` MUST run in the Vitest Node environment (`packages/ctrl-ui/src/tokens/css.test.ts:1`) and MUST fail if the committed dump is stale (`packages/ctrl-ui/src/tokens/css.test.ts:15-20`). That file also asserts scheme selectors, `--space-xxl`, `--direction` on `:root` / `[dir]`, the reduced-motion query, logical custom-property names, and the absence of `margin-inline:` utilities (`packages/ctrl-ui/src/tokens/css.test.ts:33-83`).
+**Keep the dump honest.** `css.test.ts` MUST run in the Vitest Node environment (`packages/ctrl-ui/src/tokens/css.test.ts:1`) and MUST fail if the committed dump is stale (`packages/ctrl-ui/src/tokens/css.test.ts:25-31`). That file also asserts scheme selectors, `--space-xxl`, `--direction` on `:root` / `[dir]`, the reduced-motion query, `color-scheme` per scheme block, alias resolution through `var()`, and the absence of `margin-inline:` utilities (`packages/ctrl-ui/src/tokens/css.test.ts:43-114`). A `blockFor` helper scopes an assertion to one rule so a declaration cannot be satisfied by text in some other block (`packages/ctrl-ui/src/tokens/css.test.ts:14-22`).
 
 ## Why This Matters
 
@@ -158,7 +186,7 @@ Scheme and reduced-motion selector mistakes are silent. Light tokens that exist 
 
 Logical *utilities* in the dump (`margin-inline: var(--space-sm)` on a private attribute) are not the KTD13 directional token surface. Consumers cannot set `--inset-inline-md`; they can only opt into a one-off utility block. The contract is custom properties, so RTL layout in later atoms can read `--space-inline-*` / `--inset-inline-*` / `--inset-block-*` without importing a kit utility class.
 
-R18 is not “the catalog imported the CSS.” Catalog `workspace:*` plus Vite aliases (`apps/catalog/.storybook/main.ts:14-20`) resolve the kit to source, not to packed `dist`. Pack-and-install is the only proof that `exports`, tsdown `copy`, and `files: ["dist"]` actually ship the CSS export. Without `pnpm pack:proof` in CI (`.github/workflows/ci.yml:43-44` plus `scripts/prove-pack-install.mjs`), a renamed export or a missed copy step can merge green.
+R18 is not “the catalog imported the CSS.” Catalog `workspace:*` plus Vite aliases resolve the kit to source, not to packed `dist`. Those aliases live in one shared module (`apps/catalog/vite.alias.ts:5`) that both Storybook (`apps/catalog/.storybook/main.ts:13`) and Vitest (`apps/catalog/vitest.config.ts:7`) consume, so the build and the tests cannot resolve `ctrlds` differently. Pack-and-install is the only proof that `exports`, tsdown `copy`, and `files: ["dist"]` actually ship the CSS export. Without `pnpm pack:proof` in CI (`.github/workflows/ci.yml:43-44` plus `scripts/prove-pack-install.mjs`), a renamed export or a missed copy step can merge green.
 
 Galleries that fill-swatch `focus` hide that `--color-focus` is a ring (`packages/ctrl-ui/src/tokens/semantic/focus.ts:1-3`, `apps/catalog/src/stories/tokens/Color.stories.tsx:44-61`). Density without a scaled bar hides that the values are multipliers (`apps/catalog/src/stories/tokens/Density.stories.tsx:24-28`). A side-by-side grid without an ancestor-scheme sample hides that the toolbar paints the preview wrapper rather than only the two column nodes (`apps/catalog/.storybook/preview.tsx:18`, `apps/catalog/src/stories/tokens/TokenGallery.tsx:9-21`).
 
@@ -198,13 +226,15 @@ import { color, space, typography } from "ctrlds";
 
 **Prior / wrong:** color blocks were `[data-scheme='light']` and `[data-scheme='dark']` only; shared tokens were `[data-scheme]` only; `--direction` was `[dir='ltr']` / `[dir='rtl']` only. A document with no `data-scheme` attribute received neither light colors nor space / type tokens.
 
-**After:** light colors on `:root, [data-scheme='light']` (`packages/ctrl-ui/src/tokens/css.ts:70`, `packages/ctrl-ui/src/tokens/generated/variables.css:3`); dark on `[data-scheme='dark']` (`packages/ctrl-ui/src/tokens/css.ts:75`, `packages/ctrl-ui/src/tokens/generated/variables.css:18`); shared tokens on `:root, [data-scheme]` (`packages/ctrl-ui/src/tokens/css.ts:80`, `packages/ctrl-ui/src/tokens/generated/variables.css:34`); `--direction: ltr` on `:root, [dir='ltr']` (`packages/ctrl-ui/src/tokens/css.ts:85`, `packages/ctrl-ui/src/tokens/generated/variables.css:85`).
+**After:** light colors on `:root, [data-scheme='light']` (`packages/ctrl-ui/src/tokens/css.ts:88`, `packages/ctrl-ui/src/tokens/generated/variables.css:3`); dark on `[data-scheme='dark']` (`packages/ctrl-ui/src/tokens/css.ts:93`, `packages/ctrl-ui/src/tokens/generated/variables.css:19`); shared tokens on `:root, [data-scheme]` (`packages/ctrl-ui/src/tokens/css.ts:98`, `packages/ctrl-ui/src/tokens/generated/variables.css:36`); `--direction: ltr` on `:root, [dir='ltr']` (`packages/ctrl-ui/src/tokens/css.ts:103`, `packages/ctrl-ui/src/tokens/generated/variables.css:88`). Each scheme block also carries its own `color-scheme` (`packages/ctrl-ui/src/tokens/generated/variables.css:4`, `:20`).
 
 ### Logical CSS in the dump
 
 **Prior / wrong:** the dump included a `[data-ctrl-logical-space]` block with utility declarations `margin-inline: var(--space-sm)`, `padding-inline: var(--space-md)`, `inset-inline: auto`. No `--space-inline-*` / `--inset-inline-*` / `--inset-block-*` custom properties.
 
-**After:** shared declarations emit those custom properties (`packages/ctrl-ui/src/tokens/css.ts:47`, `:58-59`). Tests forbid `margin-inline:` in the dump (`packages/ctrl-ui/src/tokens/css.test.ts:78`). Direction *story* markup still uses `marginInline` / `paddingInline` / `insetInline` against those variables (`apps/catalog/src/stories/tokens/Direction.stories.tsx:26-28`) — that is host CSS, not dump utilities.
+**After:** shared declarations emit those custom properties, each resolving through `var()` on `--space-*` (`packages/ctrl-ui/src/tokens/css.ts:63`, `:74-75`). Tests forbid `margin-inline:` in the dump (`packages/ctrl-ui/src/tokens/css.test.ts:109`) and forbid an alias emitting a raw length (`:103`). Direction *story* markup still uses `marginInline` / `paddingInline` / `insetInline` against those variables (`apps/catalog/src/stories/tokens/Direction.stories.tsx:25-27`) — that is host CSS, not dump utilities.
+
+**Prior / wrong (second pass):** those custom properties held literal copies (`--inset-inline-md: 16px`), so overriding `--space-md` moved nothing else.
 
 ### Reduced motion
 
@@ -222,7 +252,11 @@ import { color, space, typography } from "ctrlds";
 
 **Prior / wrong:** Color painted `focus` as a filled `--color-focus` swatch. Density listed names and numeric multipliers with no bar. `SchemePair` was only the two-column `data-scheme` grid, so the scheme toolbar had no sample outside those columns.
 
-**After:** Color skips `focus` in the fill list and adds “focus on surface” / “focus on action” rows using `outline` and `outlineOffset` from `--focus-ring-width` / `--focus-ring-offset` (`apps/catalog/src/stories/tokens/Color.stories.tsx:35`, `:44-61`). Density swatch width is `calc(var(--space-lg) * ${value})` (`apps/catalog/src/stories/tokens/Density.stories.tsx:24-28`). `SchemePair` renders a sample labeled `root-inheriting scheme sample` above the grid (`apps/catalog/src/stories/tokens/TokenGallery.tsx:9-21`). That node has no column `data-scheme`; it follows the preview decorator `div[data-scheme]` (`apps/catalog/.storybook/preview.tsx:18`), not `:root`.
+**After:** Color skips `focus` in the fill list and adds “focus on surface” / “focus on action” rows using `outline` and `outlineOffset` from `--focus-ring-width` / `--focus-ring-offset` (`apps/catalog/src/stories/tokens/Color.stories.tsx:35`, `:44-61`). Density swatch width is `calc(var(--space-lg) * ${value})` (`apps/catalog/src/stories/tokens/Density.stories.tsx:24-28`). `SchemePair` renders a root-inheriting sample above the grid, carrying the visible text `Toolbar scheme sample` (`apps/catalog/src/stories/tokens/TokenGallery.tsx:13-27`). That node has no column `data-scheme`; it follows the preview decorator `div[data-scheme]` (`apps/catalog/.storybook/preview.tsx:18`), not `:root`.
+
+**A gallery row names itself with visible text or `role="group"`, never a bare `aria-label`.** `aria-label` is ARIA-prohibited on the default generic role and on `paragraph`, so putting one on a `<div>` or `<p>` produces no accessible name and an axe finding. `TokenRow` carries `role="group"` plus `aria-label` (`apps/catalog/src/stories/tokens/TokenGallery.tsx:71-73`); the painted-pair swatch renders a foreground sample through `swatchContent` rather than styling a childless span (`apps/catalog/src/stories/tokens/Color.stories.tsx:81`).
+
+**The axe pass runs in CI, not only in the addon panel.** `preview.tsx` sets `a11y.test: "error"`, which reports in the browser panel alone; `apps/catalog/src/stories/tokens/a11y.test.tsx` composes every gallery story and scans it with axe-core under Vitest and jsdom. It fails on `incomplete` results as well as `violations`: axe reports `aria-prohibited-attr` as incomplete when the element also has text, so asserting on violations alone misses exactly this finding. `color-contrast` is disabled there because jsdom computes no layout; contrast is asserted numerically in `packages/ctrl-ui/src/tokens/contrast.test.ts`.
 
 ### Pack proof and commitlint
 
