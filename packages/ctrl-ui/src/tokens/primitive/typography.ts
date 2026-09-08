@@ -6,6 +6,12 @@ export const typography = {
     20: 20,
     24: 24,
   },
+  lineHeight: {
+    20: 20,
+    24: 24,
+    28: 28,
+    32: 32,
+  },
   weight: {
     400: 400,
     500: 500,

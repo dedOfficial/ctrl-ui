@@ -20,7 +20,6 @@ export const Gallery: Story = {
           <div key={name} dir={value} style={{ position: "relative" }}>
             <TokenRow name={name} value={value} />
             <p
-              aria-label={`${value} logical inset`}
               style={{
                 position: "relative",
                 marginInline: "var(--space-inline-sm)",

@@ -1,3 +1,10 @@
+/*
+ * TokenRow marks each row role="group" so it can carry an accessible name;
+ * aria-label is ARIA-prohibited on the default generic role. None of the native
+ * tags this rule suggests (address, details, fieldset, hgroup, optgroup)
+ * describes a token row.
+ */
+/* oxlint-disable jsx-a11y/prefer-tag-over-role */
 import type { CSSProperties, ReactNode } from "react";
 import { color } from "ctrlds";
 
@@ -7,7 +14,6 @@ export function SchemePair({ children }: { children: (scheme: Scheme) => ReactNo
   return (
     <>
       <p
-        aria-label="root-inheriting scheme sample"
         style={{
           background: "var(--color-surface)",
           color: "var(--color-on-surface)",
@@ -54,13 +60,16 @@ export function TokenRow({
   name,
   value,
   swatch,
+  swatchContent,
 }: {
   name: string;
   value: string;
   swatch?: CSSProperties;
+  swatchContent?: ReactNode;
 }): ReactNode {
   return (
     <div
+      role="group"
       aria-label={`${name} ${value}`}
       style={{
         display: "grid",
@@ -72,6 +81,7 @@ export function TokenRow({
     >
       <code>{name}</code>
       {swatch ? (
+        // Decorative: the row already announces the token name and value.
         <span
           aria-hidden="true"
           style={{
@@ -81,7 +91,9 @@ export function TokenRow({
             boxShadow: "0 0 0 1px var(--color-on-surface)",
             ...swatch,
           }}
-        />
+        >
+          {swatchContent}
+        </span>
       ) : (
         <span />
       )}

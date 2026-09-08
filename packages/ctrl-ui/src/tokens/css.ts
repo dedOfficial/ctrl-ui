@@ -19,7 +19,7 @@ function declarationLines(declarations: ReadonlyArray<readonly [string, string]>
   return declarations.map(([name, value]) => `  ${name}: ${value};`).join("\n");
 }
 
-function customPropertyBlock({
+function declarationBlock({
   selector,
   declarations,
 }: {
@@ -41,10 +41,26 @@ function tokenDeclarations({
   );
 }
 
+// Alias families resolve through var() so a consumer overriding the source token
+// (for example --space-md) moves every alias with it.
+function aliasDeclarations({
+  prefix,
+  source,
+  tokens,
+}: {
+  prefix: string;
+  source: string;
+  tokens: Record<string, string | number>;
+}): Array<readonly [string, string]> {
+  return Object.keys(tokens).map(
+    (name) => [`--${prefix}-${name}`, `var(--${source}-${name})`] as const,
+  );
+}
+
 function sharedDeclarations(): Array<readonly [string, string]> {
   return [
     ...tokenDeclarations({ prefix: "space", tokens: space }),
-    ...tokenDeclarations({ prefix: "space-inline", tokens: space }),
+    ...aliasDeclarations({ prefix: "space-inline", source: "space", tokens: space }),
     ["--target-min-size", targetMinSize],
     ...tokenDeclarations({ prefix: "radius", tokens: radius }),
     ["--font-family", typography.family],
@@ -55,43 +71,46 @@ function sharedDeclarations(): Array<readonly [string, string]> {
     ["--focus-ring-width", focusRing.width],
     ["--focus-ring-offset", focusRing.offset],
     ["--motion-duration", motion.duration],
-    ...tokenDeclarations({ prefix: "inset-inline", tokens: space }),
-    ...tokenDeclarations({ prefix: "inset-block", tokens: space }),
+    ...aliasDeclarations({ prefix: "inset-inline", source: "space", tokens: space }),
+    ...aliasDeclarations({ prefix: "inset-block", source: "space", tokens: space }),
   ];
 }
 
 function colorDeclarations(scheme: "light" | "dark"): Array<readonly [string, string]> {
-  const roles = color[scheme];
-  return colorRoles.map((role) => [`--color-${role}`, roles[role]] as const);
+  return [
+    // Keeps user-agent surfaces (scrollbars, form controls, canvas) on the active scheme.
+    ["color-scheme", scheme],
+    ...colorRoles.map((role) => [`--color-${role}`, color[scheme][role]] as const),
+  ];
 }
 
 export function generateCss(): string {
-  const lightBlock = customPropertyBlock({
+  const lightBlock = declarationBlock({
     selector: ":root, [data-scheme='light']",
     declarations: colorDeclarations("light"),
   });
 
-  const darkBlock = customPropertyBlock({
+  const darkBlock = declarationBlock({
     selector: "[data-scheme='dark']",
     declarations: colorDeclarations("dark"),
   });
 
-  const sharedBlock = customPropertyBlock({
+  const sharedBlock = declarationBlock({
     selector: ":root, [data-scheme]",
     declarations: sharedDeclarations(),
   });
 
-  const ltrBlock = customPropertyBlock({
+  const ltrBlock = declarationBlock({
     selector: ":root, [dir='ltr']",
     declarations: [["--direction", direction.ltr]],
   });
 
-  const rtlBlock = customPropertyBlock({
+  const rtlBlock = declarationBlock({
     selector: "[dir='rtl']",
     declarations: [["--direction", direction.rtl]],
   });
 
-  const reducedMotionBlock = `@media ${motion.reducedMotionQuery} {\n${customPropertyBlock({
+  const reducedMotionBlock = `@media ${motion.reducedMotionQuery} {\n${declarationBlock({
     selector: ":root, [data-scheme]",
     declarations: [["--motion-duration", motion.reducedDuration]],
   })}\n}`;

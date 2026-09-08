@@ -15,9 +15,9 @@ export const typography = {
     bold: `${primitiveTypography.weight[700]}`,
   },
   lineHeight: {
-    sm: "20px",
-    md: "24px",
-    lg: "28px",
-    xl: "32px",
+    sm: `${primitiveTypography.lineHeight[20]}px`,
+    md: `${primitiveTypography.lineHeight[24]}px`,
+    lg: `${primitiveTypography.lineHeight[28]}px`,
+    xl: `${primitiveTypography.lineHeight[32]}px`,
   },
 } as const;

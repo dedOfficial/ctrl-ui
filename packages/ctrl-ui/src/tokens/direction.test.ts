@@ -19,9 +19,9 @@ describe("direction", () => {
       expect(css).toContain("[dir='rtl']");
       expect(css).toContain("--direction: ltr;");
       expect(css).toContain("--direction: rtl;");
-      expect(css).toContain("--space-inline-sm:");
-      expect(css).toContain("--inset-inline-md:");
-      expect(css).toContain("--inset-block-md:");
+      expect(css).toContain("--space-inline-sm: var(--space-sm);");
+      expect(css).toContain("--inset-inline-md: var(--space-md);");
+      expect(css).toContain("--inset-block-md: var(--space-md);");
       expect(css).not.toContain("margin-inline:");
     });
   });

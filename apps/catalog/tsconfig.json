@@ -13,7 +13,8 @@
     "allowImportingTsExtensions": true,
     "paths": {
       "ctrlds": ["../../packages/ctrl-ui/src/index.ts"]
-    }
+    },
+    "types": ["vite/client"]
   },
-  "include": ["src", ".storybook"]
+  "include": ["src", ".storybook", "vite.alias.ts", "vitest.config.ts"]
 }

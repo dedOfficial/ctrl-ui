@@ -9,7 +9,17 @@ import { generateCss, generatedCssPath, writeGeneratedCss } from "./css.ts";
 import { color, colorRoles, colorSchemes } from "./semantic/color.ts";
 import { focusRing } from "./semantic/focus.ts";
 import { motion } from "./semantic/motion.ts";
-import { targetMinSize } from "./semantic/space.ts";
+import { space, targetMinSize } from "./semantic/space.ts";
+
+// Isolates one rule's declarations so a test cannot be satisfied by a string
+// that happens to appear in some other block.
+function blockFor(css: string, selector: string): string {
+  const start = css.indexOf(`${selector} {`);
+  if (start < 0) {
+    throw new Error(`generateCss emitted no block for selector ${selector}`);
+  }
+  return css.slice(start, css.indexOf("}", start));
+}
 
 describe("generateCss", () => {
   describe("when the committed dump is current", () => {
@@ -68,13 +78,34 @@ describe("generateCss", () => {
     });
   });
 
-  describe("when emitting directional inset and space", () => {
-    it("uses logical custom properties and omits utility and physical declarations", () => {
+  describe("when emitting a color scheme", () => {
+    it("declares color-scheme on each scheme block", () => {
       const css = generateCss();
 
-      expect(css).toContain("--space-inline-sm:");
-      expect(css).toContain("--inset-inline-md:");
-      expect(css).toContain("--inset-block-md:");
+      expect(blockFor(css, ":root, [data-scheme='light']")).toContain("color-scheme: light;");
+      expect(blockFor(css, "[data-scheme='dark']")).toContain("color-scheme: dark;");
+    });
+  });
+
+  describe("when emitting directional inset and space", () => {
+    // Asserting the property name alone passes on a literal px copy, which is
+    // the failure this guards: an alias must resolve through its source token so
+    // a consumer override of --space-* moves the whole family.
+    it("resolves every alias family through var() on its source token", () => {
+      const css = generateCss();
+
+      for (const name of Object.keys(space)) {
+        expect(css).toContain(`--space-inline-${name}: var(--space-${name});`);
+        expect(css).toContain(`--inset-inline-${name}: var(--space-${name});`);
+        expect(css).toContain(`--inset-block-${name}: var(--space-${name});`);
+      }
+
+      expect(css).not.toMatch(/--(?:space-inline|inset-inline|inset-block)-[a-z]+:\s*[\d.]/);
+    });
+
+    it("omits utility and physical declarations", () => {
+      const css = generateCss();
+
       expect(css).not.toContain("margin-inline:");
       expect(css).not.toContain("padding-inline:");
       expect(css).not.toMatch(/(?:^|[^-])(?:margin|padding)-left\s*:/m);
